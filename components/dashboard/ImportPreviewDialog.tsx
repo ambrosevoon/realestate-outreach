@@ -34,13 +34,16 @@ function isDuplicate(candidate: RawAgent, existing: Lead[]): boolean {
   const candPhone = normalizePhone(candidate.phone)
   const candEmail = (candidate.email || '').toLowerCase().trim()
   const candName = (candidate.name || '').toLowerCase().trim()
+  const candAgency = (candidate.agency_name || '').toLowerCase().trim()
 
   return existing.some(lead => {
     const nameMatch = candName === lead.name.toLowerCase().trim()
+    const agencyMatch = candAgency && candAgency === (lead.agency_name || '').toLowerCase().trim()
     const phoneMatch = candPhone && candPhone === normalizePhone(lead.phone)
     const emailMatch =
       candEmail && lead.email && candEmail === lead.email.toLowerCase().trim()
-    return (nameMatch && phoneMatch) || emailMatch
+    // Match by phone+name, email, or name+agency (fallback for agents with no contact info)
+    return (nameMatch && phoneMatch) || emailMatch || (nameMatch && agencyMatch)
   })
 }
 
