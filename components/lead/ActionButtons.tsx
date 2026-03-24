@@ -22,7 +22,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
     setSending(true)
     const { error } = await sendEmail({
       lead_id: lead.id,
-      email: lead.email,
+      email: lead.email ?? '',
       name: lead.name,
       agency_name: lead.agency_name,
     })

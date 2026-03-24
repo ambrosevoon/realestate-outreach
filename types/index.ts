@@ -3,7 +3,7 @@ export type LeadStatus = 'new' | 'contacted' | 'replied' | 'demo_booked' | 'won'
 export interface Lead {
   id: string
   name: string
-  email: string
+  email?: string
   phone?: string
   agency_name: string
   suburb: string
