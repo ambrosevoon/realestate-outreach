@@ -76,10 +76,9 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy, sele
           <TableRow className="border-slate-700/50 hover:bg-transparent">
             <TableHead className="w-10 pl-4">
               <Checkbox
-                checked={allSelected}
-                data-state={someSelected ? 'indeterminate' : allSelected ? 'checked' : 'unchecked'}
-                onCheckedChange={checked => onToggleAll(leads.map(l => l.id), !!checked)}
-                className="border-slate-600 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 data-[state=indeterminate]:bg-blue-600 data-[state=indeterminate]:border-blue-600"
+                checked={someSelected ? 'indeterminate' : allSelected}
+                onCheckedChange={checked => onToggleAll(leads.map(l => l.id), checked === true)}
+                className="border-slate-600 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 data-[state=indeterminate]:bg-blue-600/60 data-[state=indeterminate]:border-blue-600"
               />
             </TableHead>
             <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium">
