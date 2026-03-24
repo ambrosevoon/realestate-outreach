@@ -11,6 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Checkbox } from '@/components/ui/checkbox'
 import { StatusBadge } from './StatusBadge'
 import type { Lead } from '@/types'
 
@@ -20,6 +21,9 @@ interface Props {
   onRowClick: (lead: Lead) => void
   sortBy: string
   setSortBy: (s: 'score' | 'last_contacted_at' | 'created_at') => void
+  selectedIds: Set<string>
+  onToggle: (id: string) => void
+  onToggleAll: (ids: string[], checked: boolean) => void
 }
 
 function SortBtn({
@@ -43,7 +47,9 @@ function SortBtn({
   )
 }
 
-export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy }: Props) {
+export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy, selectedIds, onToggle, onToggleAll }: Props) {
+  const allSelected = leads.length > 0 && leads.every(l => selectedIds.has(l.id))
+  const someSelected = leads.some(l => selectedIds.has(l.id)) && !allSelected
   if (loading) {
     return (
       <div className="space-y-2">
@@ -68,6 +74,14 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy }: Pr
       <Table>
         <TableHeader>
           <TableRow className="border-slate-700/50 hover:bg-transparent">
+            <TableHead className="w-10 pl-4">
+              <Checkbox
+                checked={allSelected}
+                data-state={someSelected ? 'indeterminate' : allSelected ? 'checked' : 'unchecked'}
+                onCheckedChange={checked => onToggleAll(leads.map(l => l.id), !!checked)}
+                className="border-slate-600 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 data-[state=indeterminate]:bg-blue-600 data-[state=indeterminate]:border-blue-600"
+              />
+            </TableHead>
             <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium">
               Agent
             </TableHead>
@@ -107,8 +121,14 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy }: Pr
             <TableRow
               key={lead.id}
               onClick={() => onRowClick(lead)}
-              className="border-slate-700/40 hover:bg-slate-800/40 cursor-pointer transition-colors group"
+              className={`border-slate-700/40 hover:bg-slate-800/40 cursor-pointer transition-colors group ${selectedIds.has(lead.id) ? 'bg-slate-800/30' : ''}`}
             >
+              <TableCell className="pl-4" onClick={e => { e.stopPropagation(); onToggle(lead.id) }}>
+                <Checkbox
+                  checked={selectedIds.has(lead.id)}
+                  className="border-slate-600 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                />
+              </TableCell>
               <TableCell>
                 <div>
                   <p className="text-sm font-medium text-white">{lead.name}</p>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, SlidersHorizontal, RefreshCw, LogOut } from 'lucide-react'
+import { Search, SlidersHorizontal, RefreshCw, LogOut, Trash2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -45,6 +45,7 @@ export default function DashboardPage() {
     fetchLeads,
     createLead,
     updateLead,
+    deleteLead,
     bulkCreateLeads,
     page,
     setPage,
@@ -56,6 +57,8 @@ export default function DashboardPage() {
 
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [deleting, setDeleting] = useState(false)
 
   const handleRowClick = (lead: Lead) => {
     setSelectedLead(lead)
@@ -68,6 +71,30 @@ export default function DashboardPage() {
       setSelectedLead(result.data)
     }
     return result
+  }
+
+  const handleToggle = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
+
+  const handleToggleAll = (ids: string[], checked: boolean) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      ids.forEach(id => checked ? next.add(id) : next.delete(id))
+      return next
+    })
+  }
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.size === 0) return
+    setDeleting(true)
+    await Promise.all([...selectedIds].map(id => deleteLead(id)))
+    setSelectedIds(new Set())
+    setDeleting(false)
   }
 
   const handleImported = (_count: number) => {
@@ -165,8 +192,22 @@ export default function DashboardPage() {
             </Select>
           </div>
 
-          <div className="text-xs text-slate-600 ml-auto">
-            {filtered.length} of {leads.length} leads
+          <div className="flex items-center gap-3 ml-auto">
+            {selectedIds.size > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDeleteSelected}
+                disabled={deleting}
+                className="border-red-700/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 cursor-pointer h-9 gap-1.5"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                {deleting ? 'Deleting…' : `Delete ${selectedIds.size}`}
+              </Button>
+            )}
+            <span className="text-xs text-slate-600">
+              {filtered.length} of {leads.length} leads
+            </span>
           </div>
         </div>
 
@@ -177,6 +218,9 @@ export default function DashboardPage() {
           onRowClick={handleRowClick}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          selectedIds={selectedIds}
+          onToggle={handleToggle}
+          onToggleAll={handleToggleAll}
         />
 
         {/* Pagination */}
