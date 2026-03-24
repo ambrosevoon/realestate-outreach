@@ -72,6 +72,9 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy }: Pr
               Agent
             </TableHead>
             <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium hidden md:table-cell">
+              Phone
+            </TableHead>
+            <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium hidden md:table-cell">
               Email
             </TableHead>
             <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium hidden lg:table-cell">
@@ -111,6 +114,19 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy }: Pr
                   <p className="text-sm font-medium text-white">{lead.name}</p>
                   <p className="text-xs text-slate-500">{lead.agency_name}</p>
                 </div>
+              </TableCell>
+              <TableCell className="hidden md:table-cell text-sm text-slate-300">
+                {lead.phone ? (
+                  <a
+                    href={`tel:${lead.phone}`}
+                    onClick={e => e.stopPropagation()}
+                    className="hover:text-blue-400 transition-colors"
+                  >
+                    {lead.phone}
+                  </a>
+                ) : (
+                  <span className="text-slate-600">—</span>
+                )}
               </TableCell>
               <TableCell className="hidden md:table-cell">
                 <a

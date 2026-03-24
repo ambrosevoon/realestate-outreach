@@ -66,7 +66,7 @@ export function useLeads() {
       agents.map(agent =>
         supabase
           .from('re_outreach_leads')
-          .insert({ ...agent, status: 'new', score: 0 })
+          .insert({ ...agent, email: agent.email || '', status: 'new', score: 0 })
           .select()
           .single()
       )
