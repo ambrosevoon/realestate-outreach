@@ -50,13 +50,14 @@
 
 ---
 
-## 📋 Phase 4 — Production Hardening
-**Status: NOT STARTED**
+## ✅ Phase 4 — Production Hardening
+**Completed: 2026-03-24**
 
-- [x] Enable Supabase RLS on re_outreach_leads and re_outreach_activities (2026-03-24) — permissive anon policies in place until auth is added
-- [ ] Add auth (Supabase Auth or simple password protection)
-- [ ] Deploy to Vercel or VPS (alongside existing n8n stack)
-- [ ] Add pagination for large lead lists (50+ agents)
+- [x] Enable Supabase RLS on re_outreach_leads and re_outreach_activities (2026-03-24)
+- [x] Add single-password auth gate (middleware + login page + API routes) (2026-03-24)
+- [x] Deploy to Vercel — https://realestate-outreach.vercel.app (2026-03-24)
+- [x] Add pagination for large lead lists — 25/page, client-side (2026-03-24)
+- [x] Add logout button to dashboard header (2026-03-24)
 
 ---
 

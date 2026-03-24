@@ -115,30 +115,42 @@
 
 ---
 
+### Phase 4 — Production Hardening (Complete)
+- Single-password auth gate: `middleware.ts` + `/api/auth/login` + `/api/auth/logout` + `app/login/page.tsx`
+- Two env vars: `AUTH_PASSWORD` (login check) + `AUTH_TOKEN` (httpOnly cookie value, 64-char hex)
+- Client-side pagination: 25 leads/page, page resets on search/filter/sort change, hidden when ≤1 page
+- Logout button (LogOut icon) in dashboard header, calls `/api/auth/logout` then `router.replace('/login')`
+- Deployed to Vercel: `https://realestate-outreach.vercel.app` (private, Hobby plan)
+- GitHub: `https://github.com/ambrosevoon/realestate-outreach` (private, standalone repo)
+
+---
+
 ### 📍 Current Phase
 
-**Phase 3 — Data Import Complete**
-CSV import + Discover Agents (Perplexity) both live. Deduplication and preview confirmed.
+**Phase 4 — Production Hardening Complete**
+Auth gate, pagination, and Vercel deployment all live and verified.
 
 ---
 
 ### 🎯 Immediate Goal
 
-Phase 4: Enable Supabase RLS + deploy.
+Phase 5: Analytics & Tracking (charts, reply rate, pace tracker)
 
 ---
 
 ### 🔄 Last Session Summary (2026-03-24)
 
-- Built 3 n8n workflows: Send Email, Update Lead, Schedule Followup
-- Fixed n8n expression issues: webhook body at `$json.body.X`, URL expressions use `={{ '...' + $json.body.lead_id }}`
-- All 3 workflows active and verified: Supabase PATCHes confirmed, Gmail send confirmed
-- Gmail credential: `VcLjSm5vjePd5FQs` (Property Agent Demo's Gmail)
+- Built auth gate: middleware + login page + login/logout API routes (timingSafeEqual, httpOnly cookie)
+- Added client-side pagination (25/page) and logout button to dashboard
+- Created standalone GitHub repo `ambrosevoon/realestate-outreach`
+- Deployed to Vercel — login page confirmed live in production
 
 ---
 
 ### ⏭️ Next Step
 
-1. Phase 3: CSV import — bulk agent upload (name, email, agency, suburb columns)
-2. Phase 4: Enable Supabase RLS on both tables before production use
-3. Phase 4: Deploy to Vercel or VPS
+Phase 5: Analytics & Tracking
+1. Email activity chart (sent over time)
+2. Status breakdown donut chart
+3. Reply rate tracking
+4. Days left / pace tracker
