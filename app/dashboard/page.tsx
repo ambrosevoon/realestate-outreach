@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { StatsCards } from '@/components/dashboard/StatsCards'
+import { AnalyticsSection } from '@/components/dashboard/AnalyticsSection'
 import { LeadsTable } from '@/components/dashboard/LeadsTable'
 import { CreateLeadDialog } from '@/components/dashboard/CreateLeadDialog'
 import { CSVImportDialog } from '@/components/dashboard/CSVImportDialog'
@@ -157,6 +158,9 @@ export default function DashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* Stats */}
         <StatsCards leads={leads} />
+
+        {/* Analytics */}
+        <AnalyticsSection leads={leads} />
 
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">

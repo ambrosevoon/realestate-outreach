@@ -20,6 +20,7 @@ export function useLeads() {
       .from('re_outreach_leads')
       .select('*')
       .order(sortBy, { ascending: false })
+      .order('created_at', { ascending: false })
     if (!error && data) setLeads(data as Lead[])
     setLoading(false)
   }, [sortBy])

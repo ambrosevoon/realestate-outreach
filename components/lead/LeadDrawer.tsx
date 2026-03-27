@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { format } from 'date-fns'
 import {
   Building2,
@@ -11,8 +12,8 @@ import {
   Save,
   Loader2,
   ExternalLink,
+  X,
 } from 'lucide-react'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import {
   Select,
   SelectContent,
@@ -51,7 +52,30 @@ export function LeadDrawer({ lead, open, onClose, onUpdate }: Props) {
   const [status, setStatus] = useState<LeadStatus>('new')
   const [savingNotes, setSavingNotes] = useState(false)
   const [savingStatus, setSavingStatus] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const overlayRef = useRef<HTMLDivElement>(null)
   const { activities, loading: activitiesLoading, fetchActivities, addActivity } = useActivities()
+
+  // Mount/unmount with animation
+  useEffect(() => {
+    if (open) {
+      setMounted(true)
+      requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)))
+    } else {
+      setVisible(false)
+      const t = setTimeout(() => setMounted(false), 220)
+      return () => clearTimeout(t)
+    }
+  }, [open])
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [open, onClose])
 
   useEffect(() => {
     if (lead) {
@@ -84,45 +108,64 @@ export function LeadDrawer({ lead, open, onClose, onUpdate }: Props) {
     if (lead) await onUpdate(lead.id, patch)
   }
 
-  const handleActivityAdded = async (
-    type: 'email_sent' | 'followup_sent',
-    subject: string
-  ) => {
+  const handleActivityAdded = async (type: 'email_sent' | 'followup_sent', subject: string) => {
     if (lead) await addActivity(lead.id, type, subject)
   }
 
-  if (!lead) return null
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === overlayRef.current) onClose()
+  }
 
-  return (
-    <Sheet open={open} onOpenChange={v => !v && onClose()}>
-      <SheetContent
-        side="right"
-        className="w-full sm:w-[480px] bg-slate-900 border-slate-700 text-white p-0 overflow-y-auto"
+  if (!mounted || !lead) return null
+
+  const modal = (
+    <div
+      ref={overlayRef}
+      onClick={handleOverlayClick}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{
+        backgroundColor: visible ? 'rgba(2, 6, 23, 0.75)' : 'rgba(2, 6, 23, 0)',
+        backdropFilter: visible ? 'blur(4px)' : 'blur(0px)',
+        transition: 'background-color 200ms ease, backdrop-filter 200ms ease',
+      }}
+    >
+      <div
+        style={{
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(8px)',
+          transition: 'opacity 200ms ease, transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+        }}
+        className="relative w-full max-w-lg max-h-[90vh] flex flex-col bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden"
       >
         {/* Header */}
-        <SheetHeader className="px-6 pt-6 pb-4 border-b border-slate-700/50">
+        <div className="px-6 pt-5 pb-4 border-b border-slate-700/50 flex-shrink-0">
           <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <SheetTitle className="text-white text-lg font-semibold truncate">
-                {lead.name}
-              </SheetTitle>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-white text-lg font-semibold truncate">{lead.name}</h2>
               <div className="flex items-center gap-1.5 mt-1">
                 <Building2 className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
                 <span className="text-sm text-slate-400 truncate">{lead.agency_name}</span>
               </div>
             </div>
-            <div className="flex-shrink-0 mt-0.5">
+            <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
               <StatusBadge status={status} />
+              <button
+                onClick={onClose}
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
           </div>
-        </SheetHeader>
+        </div>
 
-        <div className="px-6 py-4 space-y-5">
+        {/* Scrollable body */}
+        <div className="overflow-y-auto flex-1 px-6 py-4 space-y-5">
           {/* Contact Info */}
           <div className="space-y-2">
             <a
               href={`mailto:${lead.email}`}
-              className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors group"
+              className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               {lead.email}
@@ -205,7 +248,7 @@ export function LeadDrawer({ lead, open, onClose, onUpdate }: Props) {
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Add context about this lead..."
-              rows={4}
+              rows={3}
               className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-600 focus-visible:ring-blue-500 resize-none text-sm"
             />
             <Button
@@ -254,7 +297,9 @@ export function LeadDrawer({ lead, open, onClose, onUpdate }: Props) {
             <p>Updated {format(new Date(lead.updated_at), 'dd MMM yyyy, HH:mm')}</p>
           </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </div>
+    </div>
   )
+
+  return createPortal(modal, document.body)
 }
