@@ -66,7 +66,7 @@ function buildEmailHtml(lead: Lead, body: string) {
         <!-- Hero Banner -->
         <tr>
           <td style="padding:0;margin:0;">
-            <img src="https://cloud.inference.sh/app/files/u/64cky3p22fmmvttcyq2q640b1s/01kmq85q7x62v6e384ez4s36qb.png"
+            <img src="https://cloud.inference.sh/app/files/u/64cky3p22fmmvttcyq2q640b1s/01kmqcj2zqr8xpc28rbk3824wx.png"
                  alt="Header"
                  width="600"
                  style="display:block;width:100%;max-width:600px;height:auto;" />
@@ -75,9 +75,9 @@ function buildEmailHtml(lead: Lead, body: string) {
 
         <!-- Header text -->
         <tr>
-          <td style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%);padding:20px 40px 24px;">
-            <p style="margin:0;font-size:12px;font-weight:600;letter-spacing:3px;color:#a5b4fc;text-transform:uppercase;">Real Estate Outreach</p>
-            <h1 style="margin:6px 0 0;font-size:22px;font-weight:700;color:#ffffff;line-height:1.3;">Smarter Follow-Up for ${lead.agency_name}</h1>
+          <td style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%);padding:24px 40px 26px;">
+            <h1 style="margin:0;font-size:22px;font-weight:700;color:#ffffff;line-height:1.3;">A quick note for ${lead.agency_name}</h1>
+            <p style="margin:6px 0 0;font-size:13px;color:#a5b4fc;">From Ambrose Voon</p>
           </td>
         </tr>
 
