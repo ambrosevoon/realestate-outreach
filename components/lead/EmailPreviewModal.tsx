@@ -76,7 +76,7 @@ function buildEmailHtml(lead: Lead, body: string) {
         <!-- Header text -->
         <tr>
           <td style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%);padding:24px 40px 26px;">
-            <h1 style="margin:0;font-size:22px;font-weight:700;color:#ffffff;line-height:1.3;">A quick note for ${lead.agency_name}</h1>
+            <h1 style="margin:0;font-size:20px;font-weight:700;color:#ffffff;line-height:1.3;letter-spacing:0.3px;">24/7 EMAIL AUTOMATION FOR REAL ESTATE AGENTS</h1>
             <p style="margin:6px 0 0;font-size:13px;color:#a5b4fc;">From Ambrose Voon</p>
           </td>
         </tr>
