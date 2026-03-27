@@ -125,7 +125,7 @@ function buildEmailHtml(lead: Lead, body: string) {
               &nbsp;·&nbsp;
               <a href="mailto:ambrosevoon@gmail.com" style="color:#6366f1;text-decoration:none;">ambrosevoon@gmail.com</a>
             </p>
-            <p style="margin:16px 0 0;font-size:12px;color:#9ca3af;line-height:1.6;">You're receiving this because your agency was suggested as a great fit for smarter outreach. No hard feelings if it's not for you — just reply "unsubscribe" and I'll remove you immediately.</p>
+            <p style="margin:16px 0 0;font-size:12px;color:#9ca3af;line-height:1.6;">You're receiving this because your agency was suggested as a great fit for smarter outreach. No hard feelings if it's not for you. Just reply "unsubscribe" and I'll remove you immediately.</p>
           </td>
         </tr>
 
