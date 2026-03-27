@@ -278,6 +278,7 @@ export function LeadDrawer({ lead, open, onClose, onUpdate }: Props) {
               lead={lead}
               onLeadUpdate={handleLeadUpdate}
               onActivityAdded={handleActivityAdded}
+              onRefreshActivities={() => fetchActivities(lead.id)}
               onClose={onClose}
             />
           </div>

@@ -13,6 +13,7 @@ interface Props {
   lead: Lead
   onLeadUpdate: (patch: Partial<Lead>) => void
   onActivityAdded: (type: 'email_sent' | 'followup_sent', subject: string) => void
+  onRefreshActivities?: () => void
   onClose?: () => void
 }
 
@@ -72,7 +73,7 @@ function DraftBody({ body }: { body: string }) {
   return <div className="space-y-0.5">{elements}</div>
 }
 
-export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onClose }: Props) {
+export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onRefreshActivities, onClose }: Props) {
   const [sending, setSending] = useState(false)
   const [scheduling, setScheduling] = useState(false)
   const [marking, setMarking] = useState<'won' | 'lost' | null>(null)
@@ -97,7 +98,8 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onClose }: 
       toast.error('Failed to trigger email. Check n8n webhook.')
     } else {
       onLeadUpdate({ status: 'contacted', last_contacted_at: new Date().toISOString() })
-      onActivityAdded('email_sent', `Outreach email to ${lead.name}`)
+      // n8n logs the activity with full HTML — refresh from DB instead of adding a duplicate
+      setTimeout(() => onRefreshActivities?.(), 1500)
       toast.success('Email sent! Closing…')
       setTimeout(() => onClose?.(), 1200)
     }
