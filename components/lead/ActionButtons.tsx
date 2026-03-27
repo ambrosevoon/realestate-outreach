@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Mail, Calendar, Trophy, XCircle, Sparkles, Loader2, Copy, Check, RefreshCw, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -19,6 +19,46 @@ interface Props {
 interface Draft {
   subject: string
   body: string
+}
+
+function DraftBody({ body }: { body: string }) {
+  const lines = body.split('\n')
+  const elements: React.ReactNode[] = []
+  let inBox = false
+  const boxLines: string[] = []
+
+  const flushBox = () => {
+    if (boxLines.length === 0) return
+    elements.push(
+      <div key={`box-${elements.length}`} className="my-2 rounded-lg border border-violet-500/30 bg-violet-950/30 px-3 py-2.5 space-y-1.5">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-violet-400">What most agents deal with</p>
+        {boxLines.map((l, i) => {
+          const text = l.startsWith('•') ? l.slice(1).trim() : l
+          return (
+            <div key={i} className="flex items-start gap-2">
+              <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-violet-400 flex-shrink-0" />
+              <p className="text-xs text-violet-200 leading-relaxed font-medium">{text}</p>
+            </div>
+          )
+        })}
+      </div>
+    )
+    boxLines.length = 0
+  }
+
+  lines.forEach((raw, i) => {
+    const line = raw.trim()
+    if (line === '[[') { inBox = true; return }
+    if (line === ']]') { inBox = false; flushBox(); return }
+    if (inBox) { boxLines.push(line); return }
+    if (line === '') {
+      elements.push(<br key={i} />)
+    } else {
+      elements.push(<p key={i} className="text-sm text-slate-300 leading-relaxed">{line}</p>)
+    }
+  })
+
+  return <div className="space-y-0.5">{elements}</div>
 }
 
 export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onClose }: Props) {
@@ -192,7 +232,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onClose }: 
                 <p className="text-sm text-slate-200 font-medium">{draft.subject}</p>
                 <div className="h-px bg-violet-700/20 my-2" />
                 <div className="text-xs text-slate-500 font-medium uppercase tracking-wider">Body</div>
-                <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">{draft.body}</p>
+                <DraftBody body={draft.body} />
               </>
             ) : null}
           </div>
