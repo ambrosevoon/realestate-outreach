@@ -135,7 +135,7 @@ export function LeadDrawer({ lead, open, onClose, onUpdate }: Props) {
           transform: visible ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(8px)',
           transition: 'opacity 200ms ease, transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1)',
         }}
-        className="relative w-full max-w-lg max-h-[90vh] flex flex-col bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden"
+        className="relative w-full max-w-3xl max-h-[90vh] flex flex-col bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden"
       >
         {/* Header */}
         <div className="px-6 pt-5 pb-4 border-b border-slate-700/50 flex-shrink-0">
