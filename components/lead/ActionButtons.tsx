@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Mail, Calendar, Trophy, XCircle, Sparkles, Loader2, Copy, Check, RefreshCw } from 'lucide-react'
+import { Mail, Calendar, Trophy, XCircle, Sparkles, Loader2, Copy, Check, RefreshCw, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import { sendEmail, scheduleFollowup, updateLeadStatus, generateDraft } from '@/lib/n8n'
+import { EmailPreviewModal } from './EmailPreviewModal'
 import type { Lead } from '@/types'
 
 interface Props {
@@ -29,6 +30,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
   const [draftLoading, setDraftLoading] = useState(false)
   const [customInstructions, setCustomInstructions] = useState('')
   const [copied, setCopied] = useState(false)
+  const [previewOpen, setPreviewOpen] = useState(false)
 
   const handleSendEmail = async () => {
     setSending(true)
@@ -103,6 +105,16 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
   }
 
   return (
+    <>
+    {draft && (
+      <EmailPreviewModal
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        lead={lead}
+        subject={draft.subject}
+        body={draft.body}
+      />
+    )}
     <div className="space-y-3">
       {/* Primary action buttons */}
       <div className="grid grid-cols-2 gap-2">
@@ -142,13 +154,22 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
               <span className="text-xs font-medium text-violet-300">AI Draft</span>
             </div>
             {draft && (
-              <button
-                onClick={handleCopy}
-                className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
-              >
-                {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
-                {copied ? 'Copied' : 'Copy'}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setPreviewOpen(true)}
+                  className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  Preview
+                </button>
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copied ? 'Copied' : 'Copy'}
+                </button>
+              </div>
             )}
           </div>
 
@@ -234,5 +255,6 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
         </Button>
       </div>
     </div>
+    </>
   )
 }

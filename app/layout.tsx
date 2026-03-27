@@ -12,10 +12,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Apply saved theme before first paint to avoid flash */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('sf-theme');if(t==='light')document.documentElement.classList.add('light');}catch(e){}})()` }} />
+      </head>
       <body className={`${inter.className} min-h-screen bg-slate-950 text-slate-100`}>
         {children}
-        <Toaster theme="dark" position="bottom-right" />
+        <Toaster position="bottom-right" />
       </body>
     </html>
   )
