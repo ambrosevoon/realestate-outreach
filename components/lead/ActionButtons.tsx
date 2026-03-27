@@ -13,6 +13,7 @@ interface Props {
   lead: Lead
   onLeadUpdate: (patch: Partial<Lead>) => void
   onActivityAdded: (type: 'email_sent' | 'followup_sent', subject: string) => void
+  onClose?: () => void
 }
 
 interface Draft {
@@ -20,7 +21,7 @@ interface Draft {
   body: string
 }
 
-export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
+export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onClose }: Props) {
   const [sending, setSending] = useState(false)
   const [scheduling, setScheduling] = useState(false)
   const [marking, setMarking] = useState<'won' | 'lost' | null>(null)
@@ -46,7 +47,8 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
     } else {
       onLeadUpdate({ status: 'contacted', last_contacted_at: new Date().toISOString() })
       onActivityAdded('email_sent', `Outreach email to ${lead.name}`)
-      toast.success('Email triggered via n8n.')
+      toast.success('Email sent! Closing…')
+      setTimeout(() => onClose?.(), 1200)
     }
   }
 
@@ -121,7 +123,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
         <Button
           onClick={handleSendEmail}
           disabled={sending}
-          className="bg-blue-600 hover:bg-blue-700 text-white text-sm cursor-pointer w-full"
+          className="bg-blue-600 hover:bg-blue-700 text-white text-sm cursor-pointer w-full active:scale-[0.96] transition-transform duration-100"
         >
           {sending ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Mail className="w-4 h-4 mr-1.5" />}
           Send Email
@@ -130,7 +132,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
           variant="outline"
           onClick={handleGenerateDraft}
           disabled={draftLoading}
-          className="border-violet-700/50 text-violet-300 hover:bg-violet-500/10 hover:text-violet-200 text-sm cursor-pointer w-full"
+          className="border-violet-700/50 text-violet-300 hover:bg-violet-500/10 hover:text-violet-200 text-sm cursor-pointer w-full active:scale-[0.96] transition-transform duration-100"
         >
           {draftLoading ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1.5" />}
           AI Draft
@@ -212,7 +214,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
               variant="outline"
               onClick={handleGenerateDraft}
               disabled={draftLoading}
-              className="border-violet-700/50 text-violet-300 hover:bg-violet-500/10 hover:text-violet-200 cursor-pointer w-full text-xs h-8"
+              className="border-violet-700/50 text-violet-300 hover:bg-violet-500/10 hover:text-violet-200 cursor-pointer w-full text-xs h-8 active:scale-[0.96] transition-transform duration-100"
             >
               {draftLoading
                 ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
@@ -228,7 +230,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
         variant="outline"
         onClick={handleFollowup}
         disabled={scheduling}
-        className="border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white text-sm cursor-pointer w-full"
+        className="border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white text-sm cursor-pointer w-full active:scale-[0.96] transition-transform duration-100"
       >
         {scheduling ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Calendar className="w-4 h-4 mr-1.5 text-amber-400" />}
         Schedule Follow-up (3 days)
@@ -239,7 +241,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
           variant="outline"
           onClick={() => handleMark('won')}
           disabled={marking !== null || lead.status === 'won'}
-          className="border-emerald-700/50 text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 text-sm cursor-pointer"
+          className="border-emerald-700/50 text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 text-sm cursor-pointer active:scale-[0.96] transition-transform duration-100"
         >
           {marking === 'won' ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Trophy className="w-4 h-4 mr-1" />}
           Mark Won
@@ -248,7 +250,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded }: Props) {
           variant="outline"
           onClick={() => handleMark('lost')}
           disabled={marking !== null || lead.status === 'lost'}
-          className="border-red-700/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 text-sm cursor-pointer"
+          className="border-red-700/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 text-sm cursor-pointer active:scale-[0.96] transition-transform duration-100"
         >
           {marking === 'lost' ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <XCircle className="w-4 h-4 mr-1" />}
           Mark Lost
