@@ -34,3 +34,13 @@ export function scheduleFollowup(lead_id: string, next_followup_at: string) {
 export function discoverAgents(count: number, location: string) {
   return call('/discover-agents', { count, location })
 }
+
+export function generateDraft(lead: {
+  name: string
+  agency_name: string
+  suburb?: string
+  email?: string
+  custom_instructions?: string
+}) {
+  return call('/generate-draft', lead)
+}
