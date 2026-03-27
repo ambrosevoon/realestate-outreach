@@ -48,8 +48,19 @@ function DraftBody({ body }: { body: string }) {
 
   lines.forEach((raw, i) => {
     const line = raw.trim()
-    if (line === '[[') { inBox = true; return }
-    if (line === ']]') { inBox = false; flushBox(); return }
+    if (line.startsWith('[[')) {
+      inBox = true
+      const rest = line.slice(2).trim()
+      if (rest) boxLines.push(rest)
+      return
+    }
+    if (line === ']]' || line.endsWith(']]')) {
+      const beforeClose = line === ']]' ? '' : line.slice(0, -2).trim()
+      if (beforeClose) boxLines.push(beforeClose)
+      inBox = false
+      flushBox()
+      return
+    }
     if (inBox) { boxLines.push(line); return }
     if (line === '') {
       elements.push(<br key={i} />)

@@ -22,14 +22,24 @@ function buildEmailHtml(lead: Lead, body: string) {
 
   for (const raw of lines) {
     const line = raw.trim()
-    if (line === '[[') {
+    if (line.startsWith('[[')) {
       inBox = true
+      const rest = line.slice(2).trim()
       segments.push(`<table width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 20px;border-radius:10px;overflow:hidden;border:1.5px solid #e0e7ff;background:#f5f3ff;">
         <tr><td style="padding:16px 20px 8px;">
           <p style="margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:2px;color:#6366f1;text-transform:uppercase;">What most agents deal with</p>`)
+      if (rest) segments.push(`<p style="margin:0 0 12px;font-size:14px;color:#374151;line-height:1.6;font-style:italic;">${rest}</p>`)
       continue
     }
-    if (line === ']]') {
+    if (line === ']]' || line.endsWith(']]')) {
+      const beforeClose = line === ']]' ? '' : line.slice(0, -2).trim()
+      if (beforeClose) {
+        const text = beforeClose.startsWith('•') ? beforeClose.slice(1).trim() : beforeClose
+        segments.push(`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+        <div style="width:6px;height:6px;background:#6366f1;border-radius:50%;margin-top:6px;flex-shrink:0;"></div>
+        <p style="margin:0;font-size:14px;color:#374151;line-height:1.6;font-weight:500;">${text}</p>
+      </div>`)
+      }
       inBox = false
       segments.push(`</td></tr></table>`)
       continue
