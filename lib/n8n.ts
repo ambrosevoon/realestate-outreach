@@ -42,5 +42,5 @@ export function generateDraft(lead: {
   email?: string
   custom_instructions?: string
 }) {
-  return call('/generate-draft', lead)
+  return call('/generate-draft', { ...lead, _seed: Math.random().toString(36).slice(2) })
 }
