@@ -37,6 +37,7 @@ export function discoverAgents(count: number, location: string) {
 }
 
 export function generateDraft(lead: {
+  lead_id?: string
   name: string
   agency_name: string
   suburb?: string

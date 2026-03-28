@@ -109,6 +109,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onRefreshAc
   const handleGenerateDraft = async () => {
     setDraftLoading(true)
     const { data, error } = await generateDraft({
+      lead_id: lead.id,
       name: lead.name,
       agency_name: lead.agency_name,
       suburb: lead.suburb,
