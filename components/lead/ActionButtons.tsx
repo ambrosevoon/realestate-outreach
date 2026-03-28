@@ -5,7 +5,6 @@ import { Mail, Calendar, Trophy, XCircle, Sparkles, Loader2, Copy, Check, Refres
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
-import { buildEmailHtml } from '@/lib/emailTemplate'
 import { sendEmail, scheduleFollowup, updateLeadStatus, generateDraft } from '@/lib/n8n'
 import { EmailPreviewModal } from './EmailPreviewModal'
 import type { Lead } from '@/types'
@@ -94,7 +93,6 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onRefreshAc
       name: lead.name,
       agency_name: lead.agency_name,
       subject: draft?.subject,
-      bodyHtml: draft ? buildEmailHtml(lead, draft.body) : undefined,
     })
     setSending(false)
     if (error) {

@@ -20,7 +20,6 @@ export function sendEmail(lead: {
   name: string
   agency_name: string
   subject?: string
-  bodyHtml?: string
 }) {
   return call('/send-email', lead)
 }
