@@ -560,3 +560,19 @@ Live verification for repaired glow buttons:
 - Live Playwright snapshot and screenshot were captured during verification
 - Screenshot file captured locally during verification:
   - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-30T06-59-31-486Z.png`
+
+### 🔄 Session Update (2026-03-30 #14) — Codex
+
+Button style refinement based on further user feedback:
+
+- User wanted to keep the premium button treatment but remove the large glowing background flash when buttons sit near each other
+- Codex updated [components/ui/shiny-button-1.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/shiny-button-1.tsx) to:
+  - remove the oversized ambient glow layer
+  - keep the shine concentrated along the outer edge of the button
+  - retain subtle animated edge movement without flooding nearby layout areas
+
+**Verification**
+- `npm run build` passes after the edge-shine-only refinement
+
+**Next verification step**
+- As with the previous button issue, this should be visually verified on the deployed app after push/deploy

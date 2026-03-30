@@ -128,21 +128,14 @@ export const GlowButton = React.forwardRef<HTMLButtonElement, GlowButtonProps>(
         </svg>
 
         <div
-          className={cn(glowVariants({ variant: resolvedVariant }), 'pointer-events-none inset-[-6%] opacity-18 group-hover:opacity-40')}
-          style={{ filter: `blur(0.8em) url(#${filters.unopaq})` }}
+          className={cn(
+            glowVariants({ variant: resolvedVariant }),
+            'pointer-events-none inset-[-1px] overflow-hidden rounded-[1.2rem] opacity-30 group-hover:opacity-55'
+          )}
+          style={{ filter: `blur(0.24em) url(#${filters.unopaq2})` }}
         >
           <div
-            className="absolute inset-[-35%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite,woah_4s_infinite]"
-            style={{ background: glowGradient(resolvedVariant) }}
-          />
-        </div>
-
-        <div
-          className="pointer-events-none absolute inset-[-1px] -z-10 overflow-hidden rounded-[1.2rem] opacity-35 transition-opacity duration-300 group-hover:opacity-65"
-          style={{ filter: `blur(0.16em) url(#${filters.unopaq2})` }}
-        >
-          <div
-            className="absolute inset-[-35%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite,woah_4s_infinite]"
+            className="absolute inset-[-24%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite]"
             style={{ background: glowGradient(resolvedVariant) }}
           />
         </div>
@@ -150,11 +143,11 @@ export const GlowButton = React.forwardRef<HTMLButtonElement, GlowButtonProps>(
         <div className={cn(borderVariants({ variant: resolvedVariant }), size === 'icon' ? 'rounded-[1rem]' : '', surfaceClassName)}>
           <div className="relative">
             <div
-              className="pointer-events-none absolute inset-[-1px] -z-10 overflow-hidden rounded-[1.15rem] opacity-45 transition-opacity duration-300 group-hover:opacity-70"
+              className="pointer-events-none absolute inset-[-1px] -z-10 overflow-hidden rounded-[1.15rem] opacity-38 transition-opacity duration-300 group-hover:opacity-62"
               style={{ filter: `blur(2px) url(#${filters.unopaq3})` }}
             >
               <div
-                className="absolute inset-[-35%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite,woah_4s_infinite]"
+                className="absolute inset-[-20%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite]"
                 style={{ background: glowGradient(resolvedVariant) }}
               />
             </div>
