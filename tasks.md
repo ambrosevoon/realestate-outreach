@@ -61,10 +61,69 @@
 
 ---
 
-## 📋 Phase 5 — Analytics & Tracking
-**Status: NOT STARTED**
+## ✅ Phase 5 — Analytics & Tracking
+**Completed: 2026-03-27**
 
-- [ ] Email activity chart (sent over time, like reference screenshot)
-- [ ] Status breakdown donut chart
-- [ ] Days left / pace tracker (X leads remaining at Y/day)
-- [ ] Reply rate tracking
+- [x] Email activity chart (sent over time — last 14 days bar chart) (2026-03-27)
+- [x] Status breakdown bar chart (counts per status with color-coded progress bars) (2026-03-27)
+- [x] Days left / pace tracker (contacted/remaining progress bar, per-day rate, days left estimate) (2026-03-27)
+- [x] Reply rate tracking (% of contacted leads who replied, with progress bar) (2026-03-27)
+
+---
+
+## ✅ Phase 6 — Outreach Email / Booking Flow Hardening
+**Completed by Codex: 2026-03-28**
+
+- [x] Investigate mismatch between AI draft subject and actual sent email subject (2026-03-28)
+- [x] Confirm actual architecture: AI draft flow and send-email flow were separate (2026-03-28)
+- [x] Update app to pass `lead_id` into AI draft generation for per-lead subject history checks (2026-03-28)
+- [x] Update live send-email workflow to support subject override while preserving legacy HTML body format (2026-03-28)
+- [x] Preserve original send-email visual layout after discovering full draft-body handoff changed the email format too much (2026-03-28)
+- [x] Add subject uniqueness guard per lead in live send-email workflow (2026-03-28)
+- [x] Add subject uniqueness guard in live generate-draft workflow using prior sent-subject history (2026-03-28)
+- [x] Increase pain-point section from fixed 3 items to random 5–8 items in live send-email workflow (2026-03-28)
+- [x] Improve copy after pain points to better explain conversion benefit while keeping legacy format (2026-03-28)
+- [x] Verify safe test emails only to `ambrosevoon@gmail.com` (2026-03-28)
+- [x] Push app-side commits to GitHub `main` for the draft/subject fixes (2026-03-28)
+
+---
+
+## ✅ Phase 7 — Cal.com Demo Booked Automation Repair
+**Completed by Codex: 2026-03-28**
+
+- [x] Inspect live Cal.com booking workflow after end-to-end booking failed to update dashboard (2026-03-28)
+- [x] Identify initial workflow error: unused / invalid webhook response-node setup (2026-03-28)
+- [x] Identify duplicate safe leads on same email and harden matching logic to choose the intended `Happy Realty` lead (2026-03-28)
+- [x] Fix `Get Lead ID` node to use the full HTTP result set instead of only the first item (2026-03-28)
+- [x] Fix response body so webhook returns valid JSON and workflow finishes with `status: success` (2026-03-28)
+- [x] Verify safe lead updates to `demo_booked` in Supabase after booking webhook runs (2026-03-28)
+- [x] Verify `Demo booked via cal.com` activity note is written to `re_outreach_activities` (2026-03-28)
+- [x] Format booking activity content in natural-language Perth time instead of raw ISO timestamp (2026-03-28)
+- [x] Verify deployed dashboard shows safe `Ambrose / Happy Realty` row as `Demo Booked` (2026-03-28)
+
+---
+
+## ✅ Phase 8 — Testing Phase Safety Config
+**Completed: 2026-03-30**
+
+- [x] Hardcode send-email destination to `ambrosevoon@gmail.com` in `lib/n8n.ts` — prevents real leads receiving test emails (2026-03-30)
+- [x] Disable auth/login gate in `middleware.ts` — dashboard open without password during testing (2026-03-30)
+
+> **Revert checklist before go-live:**
+> - `lib/n8n.ts` — remove `TEST_EMAIL` constant, restore `call('/send-email', lead)`
+> - `middleware.ts` — restore full `safeEqual` + cookie check
+
+---
+
+## Notes For Next Session
+
+- Safe lead used throughout testing:
+  - `aeea7bb1-0ab3-4e01-b9ee-6a625ea17a01` — Ambrose / Happy Realty / `ambrosevoon@gmail.com`
+- App-side Git commits made by Codex in this session:
+  - `5a2d697`
+  - `bef6528`
+  - `eaac23d`
+- Live n8n workflows modified directly in this session:
+  - `gkDnKkwCC4YEPoyu` — Send Email
+  - `QKSf9yZfaB3nTmXx` — Generate AI Draft
+  - `RO7X6UUdta1ibcap` — Cal.com Booking → Demo Booked

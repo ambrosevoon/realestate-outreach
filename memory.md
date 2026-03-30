@@ -2,6 +2,74 @@
 
 ## Current Status (Live Snapshot)
 
+### 🔄 Session Update (2026-03-28) — Codex
+
+This section documents work completed in this Codex session so a later Claude Code session can continue with full context.
+
+**What Codex changed in the app repo**
+- Updated [components/lead/ActionButtons.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/lead/ActionButtons.tsx) so `generateDraft()` sends `lead_id`
+- Updated [lib/n8n.ts](/Users/ambrosevoon/Projects/realestate-outreach/lib/n8n.ts) so `generateDraft()` accepts optional `lead_id`
+- Shared preview/send rendering was attempted first, then rolled back to preserve the legacy send-email body format
+- Git commits pushed by Codex this session:
+  - `5a2d697` — initial draft/send bridging work
+  - `bef6528` — preserve legacy outreach email body layout
+  - `eaac23d` — avoid reusing outreach subjects per lead
+
+**What Codex changed live in n8n**
+- `[Realestate Outreach] Send Email` — ID: `gkDnKkwCC4YEPoyu`
+  - Preserved the original HTML email layout instead of replacing it with AI draft body HTML
+  - Added subject override support so the sent email can use AI-generated subject lines
+  - Added subject uniqueness guard against prior `email_sent` subjects for the same lead
+  - Pain-point section now randomises between 5 and 8 items per send
+  - Conversion-focused copy after the pain-point block was improved while keeping the legacy visual format
+- `[Realestate Outreach] Generate AI Draft` — ID: `QKSf9yZfaB3nTmXx`
+  - Uses `lead_id` and prior sent-subject history to avoid repeating subjects for the same lead
+- `[Realestate Outreach] Cal.com Booking → Demo Booked` — ID: `RO7X6UUdta1ibcap`
+  - Fixed broken webhook execution path
+  - Fixed lead matching when multiple leads share the same email
+  - Correctly updates the intended `Happy Realty` safe lead to `demo_booked`
+  - Logs activity note `Demo booked via cal.com`
+  - Formats booked time in natural language in Perth time, e.g. `Wednesday 1 April 2026 at 9:00 am Perth time`
+  - Returns valid JSON response and now completes with `status: success`
+
+**What Codex verified end to end**
+- Safe test recipient rule followed throughout: only `ambrosevoon@gmail.com` was used
+- GitHub access verified and pushes to `main` succeeded
+- n8n API access verified and workflows updated live
+- Supabase API access verified for lead/activity inspection
+- Vercel production flow understood through GitHub-connected deployment on `main`
+- Cal.com booking flow tested end to end using Playwright with safe identity only
+- Booking confirmation page reached successfully on Cal.com
+- Safe lead `Ambrose / Happy Realty / ambrosevoon@gmail.com` updated to `demo_booked`
+- Dashboard table verified visually on deployed app: safe lead row shows `Demo Booked`
+
+**Important findings from this session**
+- The “AI subject not reaching sent email” bug was real, but the live state had evolved:
+  - old issue: hardcoded send subject
+  - intermediate live issue: randomised send subject but still disconnected from AI draft subject
+  - final fix: keep legacy body, allow AI subject override only
+- The Cal.com booking workflow was previously failing for 2 separate reasons:
+  - invalid webhook/response-node configuration
+  - `Get Lead ID` code node incorrectly used only the first input item instead of the full result set
+- Duplicate safe leads existed for `ambrosevoon@gmail.com`, so lead matching had to prefer the row with agency context and more recent activity
+- Dashboard initially loaded stale/empty data until refreshed after login, but the deployed UI did reflect the corrected `demo_booked` state after refresh
+
+**Safe lead used for all testing in this session**
+- `aeea7bb1-0ab3-4e01-b9ee-6a625ea17a01`
+- Name: `Ambrose`
+- Agency: `Happy Realty`
+- Email: `ambrosevoon@gmail.com`
+
+**Current result after Codex session**
+- AI-generated subjects can influence sent emails
+- Legacy email body format is preserved
+- Subject reuse per lead is guarded
+- Pain-point block is randomised 5–8 items
+- Post-pain-point copy is more conversion-focused
+- Cal.com booking now updates lead status to `demo_booked`
+- Activity note now shows friendly Perth-time booked date/time
+- End-to-end safe verification has been completed
+
 ### ✅ Completed
 
 **Infrastructure**
@@ -93,12 +161,16 @@
 ---
 
 ### n8n Workflows (Phase 3 Addition)
-- `[Realestate Outreach] Discover Agents` — ID: `36zDpxdGMZBUPl95` — active
+- `[Realestate Outreach] Discover Agents` — ID: `sxGma92qx6nwJ10k` — active
   - Webhook: `POST /webhook/discover-agents` — payload: `{ count, location }`
+  - webhookId: `realestate-discover-agents-v1` (required for webhook registration)
   - Calls Perplexity `sonar` model to search for real estate agents in the given location
-  - Code node parses LLM response JSON (strips markdown fences if present)
+  - Count capped at 20 per request (prevents rate limit errors)
+  - Code node parses LLM response JSON (strips markdown fences, finds array by bracket scan)
   - Responds: `{ agents: [...], total: N }`
   - Perplexity credential: `LnbJBjfV1EgRKlN1` (predefined credential type works)
+  - **Note:** Previous workflow ID `36zDpxdGMZBUPl95` was deleted mid-session. Rebuilt 2026-03-25.
+  - **Key n8n lesson:** Webhook nodes MUST have `webhookId` field set or the path won't register.
 
 ### Phase 3 Frontend Components
 - `components/dashboard/ImportPreviewDialog.tsx` — shared dedup + preview modal
@@ -115,6 +187,16 @@
 
 ---
 
+### Phase 5 — Analytics & Tracking (Complete)
+- `components/dashboard/AnalyticsSection.tsx` — analytics section below StatsCards
+  - Email activity bar chart (last 14 days, fetches all activities from Supabase)
+  - Pace tracker: contacted/remaining progress bar, daily rate, estimated days left
+  - Reply rate: % of contacted leads who replied, with progress bar
+  - Status breakdown: horizontal bars per status, sorted by count
+- `hooks/useAllActivities.ts` — fetches all activities (not per-lead) for analytics
+- `recharts` + `@tailwindcss/postcss` added to package.json (devDep)
+- **Node_modules note:** `@tailwindcss/postcss` is a devDep — must run `npm install --include=dev` locally (Vercel handles this automatically)
+
 ### Phase 4 — Production Hardening (Complete)
 - Single-password auth gate: `middleware.ts` + `/api/auth/login` + `/api/auth/logout` + `app/login/page.tsx`
 - Two env vars: `AUTH_PASSWORD` (login check) + `AUTH_TOKEN` (httpOnly cookie value, 64-char hex)
@@ -125,32 +207,52 @@
 
 ---
 
+### 🔄 Session Update (2026-03-30)
+
+**Changes made this session:**
+
+1. **Hardcoded test email destination** — `lib/n8n.ts`
+   - `sendEmail()` now always sends to `ambrosevoon@gmail.com` regardless of which lead is selected
+   - Real lead email preserved in payload for n8n logging; only the `email` field is overridden
+   - Commit: `cef87fc`
+
+2. **Disabled login gate** — `middleware.ts`
+   - Auth middleware replaced with a pass-through — dashboard accessible without password
+   - Full `safeEqual` + cookie check preserved in git history for easy restore
+   - Commit: `47dd16c`
+
+**Revert checklist before go-live:**
+- `lib/n8n.ts` — remove `TEST_EMAIL` constant, restore `call('/send-email', lead)`
+- `middleware.ts` — restore `safeEqual` + cookie check from git history
+
+---
+
 ### 📍 Current Phase
 
-**Phase 4 — Production Hardening Complete**
-Auth gate, pagination, and Vercel deployment all live and verified.
+**Phase 5 — Analytics & Tracking Complete**
+AnalyticsSection added to dashboard with email chart, pace tracker, reply rate, and status breakdown.
 
 ---
 
 ### 🎯 Immediate Goal
 
-Phase 5: Analytics & Tracking (charts, reply rate, pace tracker)
+Phase 6: continue product improvements on top of the now-working outreach + booking pipeline
 
 ---
 
-### 🔄 Last Session Summary (2026-03-24)
+### 🔄 Last Session Summary (2026-03-27)
 
-- Built auth gate: middleware + login page + login/logout API routes (timingSafeEqual, httpOnly cookie)
-- Added client-side pagination (25/page) and logout button to dashboard
-- Created standalone GitHub repo `ambrosevoon/realestate-outreach`
-- Deployed to Vercel — login page confirmed live in production
+- Built Phase 5 Analytics: AnalyticsSection component (email chart, pace tracker, reply rate, status breakdown)
+- Added useAllActivities hook for global activity fetching
+- Fixed missing @tailwindcss/postcss devDep (must use npm install --include=dev locally)
+- Build passes clean; ready to redeploy to Vercel
 
 ---
 
 ### ⏭️ Next Step
 
-Phase 5: Analytics & Tracking
-1. Email activity chart (sent over time)
-2. Status breakdown donut chart
-3. Reply rate tracking
-4. Days left / pace tracker
+Main outreach pipeline and booking pipeline are now working. Next sensible options:
+- clean up older duplicate safe-test activity rows if desired
+- add richer booking metadata to activity log if needed
+- improve dashboard auto-refresh after booking events
+- decide next Phase 6 feature scope
