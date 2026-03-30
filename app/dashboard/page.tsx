@@ -154,7 +154,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-8 pt-[32vh] space-y-6">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-8 pt-[14vh] md:pt-[16vh] lg:pt-[18vh] space-y-6">
         <section className="space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.22em] text-stone-200 backdrop-blur-sm">
             <Sparkles className="h-3.5 w-3.5 text-amber-300" />

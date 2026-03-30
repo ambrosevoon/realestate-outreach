@@ -184,5 +184,6 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Refined the dashboard from a shader hero section into a full-page shader environment so the experience fills the entire screen like the user’s reference image (2026-03-30)
 - [x] Extracted reusable `ShaderBackdrop` from the hero component so whole-page shader treatments can be reused outside the hero layout (2026-03-30)
 - [x] Verified the whole-page shader refinement still builds successfully with `npm run build` (2026-03-30)
+- [x] Adjusted dashboard hero/content stack upward so the headline and top cards sit in the upper section of the viewport instead of starting too low (2026-03-30)
 
 > **Codex handoff note:** this phase was implemented locally in the app repo only. No live n8n workflow changes were needed.

@@ -367,3 +367,13 @@ This section records the follow-up shader refinement after the user clarified th
 **Codex handoff note**
 - This refinement is app-only and does not touch Supabase or live n8n workflows
 - Push this state to GitHub so Claude Code sees the full-page shader version, not the earlier section-only draft
+
+### 🔄 Session Update (2026-03-30 #5) — Codex
+
+Small layout refinement after visual review:
+
+- User feedback: shader look was correct, but the dashboard content stack began too low on the page
+- Codex adjusted the dashboard top padding in [app/dashboard/page.tsx](/Users/ambrosevoon/Projects/realestate-outreach/app/dashboard/page.tsx) so the headline and first content blocks sit higher in the viewport, closer to the provided reference composition
+- Verified again with `npm run build`
+
+This is a layout-positioning tweak only; no workflow, data, or dependency changes were made.
