@@ -294,3 +294,53 @@ Main outreach pipeline and booking pipeline are now working. Next sensible optio
 - add richer booking metadata to activity log if needed
 - improve dashboard auto-refresh after booking events
 - decide next Phase 6 feature scope
+
+---
+
+### 🔄 Session Update (2026-03-30 #3) — Codex
+
+This section documents the premium theme integration and GitHub handoff so Claude Code and Codex can continue from the same repo state.
+
+**What Codex changed in the app repo**
+- Installed new UI dependencies in [package.json](/Users/ambrosevoon/Projects/realestate-outreach/package.json):
+  - `framer-motion`
+  - `@paper-design/shaders-react`
+- Added reusable shader hero component:
+  - [components/ui/hero.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/hero.tsx)
+- Added requested demo wrapper:
+  - [components/ui/demo.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/demo.tsx)
+- Updated main user-facing surfaces to match the new premium visual direction:
+  - [app/login/page.tsx](/Users/ambrosevoon/Projects/realestate-outreach/app/login/page.tsx)
+  - [app/dashboard/page.tsx](/Users/ambrosevoon/Projects/realestate-outreach/app/dashboard/page.tsx)
+  - [components/dashboard/StatsCards.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/StatsCards.tsx)
+  - [components/dashboard/AnalyticsSection.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/AnalyticsSection.tsx)
+  - [components/dashboard/LeadsTable.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/LeadsTable.tsx)
+  - [components/lead/LeadDrawer.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/lead/LeadDrawer.tsx)
+  - [components/ThemeToggle.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ThemeToggle.tsx)
+
+**Design intent used by Codex**
+- Product context supplied by user: outreach system for selling automated email workflows to real estate agents
+- Brand direction chosen: premium, polished, high-trust B2B rather than generic startup / neon demo styling
+- The imported 21st.dev shader concept was adapted to SmartFlow’s actual use case instead of being pasted verbatim with generic “shader experiences” copy
+
+**Important implementation notes**
+- The repo already supported the required setup:
+  - TypeScript
+  - Tailwind CSS
+  - ShadCN-style `components/ui`
+- No scaffolding migration was required
+- The original prompt’s shader props did not fully match the real installed `@paper-design/shaders-react` API
+- Codex inspected the installed type definitions in `node_modules` and adjusted unsupported props so the component would compile cleanly
+
+**What Codex verified**
+- `npm run build` passes after all shader/theme updates
+- Visual refresh remains app-only and does not touch live n8n workflows
+
+**Git / handoff state**
+- Codex branding commit already existed earlier in the day:
+  - `1a012e1` — `feat(brand): redesign smartflow logo`
+- Codex will also push this theme integration session to GitHub so `main` reflects the current UI state for future Claude Code / Codex sessions
+
+**Process note requested by user**
+- User asked that Codex push all completed changes to GitHub and document all work in both `tasks.md` and `memory.md` for cross-tool continuity
+- Treat this as an active project workflow preference going forward unless the user says otherwise

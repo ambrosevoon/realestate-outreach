@@ -62,44 +62,44 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy, sele
 
   if (!leads.length) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <p className="text-slate-500 text-sm">No leads found.</p>
-        <p className="text-slate-600 text-xs mt-1">Add your first lead to get started.</p>
+      <div className="flex flex-col items-center justify-center rounded-[1.75rem] border border-white/8 bg-white/[0.03] py-20 text-center backdrop-blur-sm">
+        <p className="text-sm text-stone-300">No leads found.</p>
+        <p className="mt-1 text-xs text-stone-500">Add your first lead to get started.</p>
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border border-slate-700/50 overflow-hidden">
+    <div className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] backdrop-blur-sm">
       <Table>
         <TableHeader>
-          <TableRow className="border-slate-700/50 hover:bg-transparent">
+          <TableRow className="border-white/8 hover:bg-transparent">
             <TableHead className="w-10 pl-4">
               <Checkbox
                 checked={someSelected ? 'indeterminate' : allSelected}
                 onCheckedChange={checked => onToggleAll(leads.map(l => l.id), checked === true)}
-                className="border-slate-600 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 data-[state=indeterminate]:bg-blue-600/60 data-[state=indeterminate]:border-blue-600"
+                className="border-stone-600 data-[state=checked]:border-amber-400 data-[state=checked]:bg-amber-400 data-[state=indeterminate]:border-amber-400 data-[state=indeterminate]:bg-amber-400/70"
               />
             </TableHead>
-            <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium">
+            <TableHead className="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">
               Agent
             </TableHead>
-            <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium hidden md:table-cell">
+            <TableHead className="hidden text-xs font-medium uppercase tracking-[0.2em] text-stone-500 md:table-cell">
               Phone
             </TableHead>
-            <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium hidden md:table-cell">
+            <TableHead className="hidden text-xs font-medium uppercase tracking-[0.2em] text-stone-500 md:table-cell">
               Email
             </TableHead>
-            <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium hidden lg:table-cell">
+            <TableHead className="hidden text-xs font-medium uppercase tracking-[0.2em] text-stone-500 lg:table-cell">
               <div className="flex items-center gap-2">
                 Score
                 <SortBtn field="score" current={sortBy} onSort={() => setSortBy('score')} />
               </div>
             </TableHead>
-            <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium">
+            <TableHead className="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">
               Status
             </TableHead>
-            <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium hidden lg:table-cell">
+            <TableHead className="hidden text-xs font-medium uppercase tracking-[0.2em] text-stone-500 lg:table-cell">
               <div className="flex items-center gap-2">
                 Last Contact
                 <SortBtn
@@ -109,7 +109,7 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy, sele
                 />
               </div>
             </TableHead>
-            <TableHead className="text-slate-500 text-xs uppercase tracking-wider font-medium hidden xl:table-cell">
+            <TableHead className="hidden text-xs font-medium uppercase tracking-[0.2em] text-stone-500 xl:table-cell">
               Next Follow-up
             </TableHead>
             <TableHead className="w-8" />
@@ -120,38 +120,38 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy, sele
             <TableRow
               key={lead.id}
               onClick={() => onRowClick(lead)}
-              className={`border-slate-700/40 hover:bg-slate-800/40 cursor-pointer transition-colors group ${selectedIds.has(lead.id) ? 'bg-slate-800/30' : ''}`}
+              className={`group cursor-pointer border-white/8 transition-colors hover:bg-white/[0.045] ${selectedIds.has(lead.id) ? 'bg-white/[0.05]' : ''}`}
             >
               <TableCell className="pl-4" onClick={e => { e.stopPropagation(); onToggle(lead.id) }}>
                 <Checkbox
                   checked={selectedIds.has(lead.id)}
-                  className="border-slate-600 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                  className="border-stone-600 data-[state=checked]:border-amber-400 data-[state=checked]:bg-amber-400"
                 />
               </TableCell>
               <TableCell>
                 <div>
                   <p className="text-sm font-medium text-white">{lead.name}</p>
-                  <p className="text-xs text-slate-500">{lead.agency_name}</p>
+                  <p className="text-xs text-stone-500">{lead.agency_name}</p>
                 </div>
               </TableCell>
-              <TableCell className="hidden md:table-cell text-sm text-slate-300">
+              <TableCell className="hidden text-sm text-stone-200 md:table-cell">
                 {lead.phone ? (
                   <a
                     href={`tel:${lead.phone}`}
                     onClick={e => e.stopPropagation()}
-                    className="hover:text-blue-400 transition-colors"
+                    className="transition-colors hover:text-cyan-300"
                   >
                     {lead.phone}
                   </a>
                 ) : (
-                  <span className="text-slate-600">—</span>
+                  <span className="text-stone-600">—</span>
                 )}
               </TableCell>
               <TableCell className="hidden md:table-cell">
                 <a
                   href={`mailto:${lead.email}`}
                   onClick={e => e.stopPropagation()}
-                  className="text-sm text-slate-300 hover:text-blue-400 flex items-center gap-1 transition-colors"
+                  className="flex items-center gap-1 text-sm text-stone-200 transition-colors hover:text-cyan-300"
                 >
                   {lead.email}
                   <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-60" />
@@ -163,8 +163,8 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy, sele
                     lead.score >= 80
                       ? 'text-emerald-400'
                       : lead.score >= 50
-                      ? 'text-blue-400'
-                      : 'text-slate-400'
+                      ? 'text-cyan-300'
+                      : 'text-stone-300'
                   }`}
                 >
                   {lead.score}
@@ -173,18 +173,18 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy, sele
               <TableCell>
                 <StatusBadge status={lead.status} />
               </TableCell>
-              <TableCell className="hidden lg:table-cell text-sm text-slate-500">
+              <TableCell className="hidden text-sm text-stone-500 lg:table-cell">
                 {lead.last_contacted_at
                   ? format(new Date(lead.last_contacted_at), 'dd MMM yyyy')
                   : '—'}
               </TableCell>
-              <TableCell className="hidden xl:table-cell text-sm text-slate-500">
+              <TableCell className="hidden text-sm text-stone-500 xl:table-cell">
                 {lead.next_followup_at ? (
                   <span
                     className={
                       new Date(lead.next_followup_at) < new Date()
                         ? 'text-red-400'
-                        : 'text-slate-400'
+                        : 'text-stone-300'
                     }
                   >
                     {format(new Date(lead.next_followup_at), 'dd MMM yyyy')}
@@ -194,7 +194,7 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy, sele
                 )}
               </TableCell>
               <TableCell>
-                <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 transition-colors" />
+                <ChevronRight className="w-4 h-4 text-stone-600 transition-colors group-hover:text-stone-300" />
               </TableCell>
             </TableRow>
           ))}

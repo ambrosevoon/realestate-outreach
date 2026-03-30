@@ -28,7 +28,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggle}
-      className="text-slate-500 hover:text-white cursor-pointer w-8 h-8"
+      className="w-8 h-8 cursor-pointer rounded-full border border-white/10 bg-white/[0.04] text-stone-400 hover:bg-white/[0.08] hover:text-white"
       title={light ? 'Switch to dark mode' : 'Switch to light mode'}
     >
       {light ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}

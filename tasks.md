@@ -166,3 +166,20 @@ Manual deploy required after every push to GitHub. Steps:
 - Dashboard shows 0 leads on initial page load — clicking Refresh loads them immediately
 - Root cause: client-side hydration timing delay, not a data/auth bug
 - Fix: add loading state retry or delayed fetch in `useLeads` hook (not yet implemented)
+
+---
+
+## ✅ Phase 10 — Premium Theme / 21st.dev-Inspired Visual Refresh
+**Completed by Codex: 2026-03-30**
+
+- [x] Reviewed the 21st.dev shader prompt and adapted it to the existing Next.js + ShadCN + Tailwind + TypeScript app structure (2026-03-30)
+- [x] Installed required frontend dependencies: `framer-motion` and `@paper-design/shaders-react` (2026-03-30)
+- [x] Added reusable shader hero component at `components/ui/hero.tsx` and companion demo wrapper at `components/ui/demo.tsx` (2026-03-30)
+- [x] Reworked login page into a premium branded entry experience using the new shader hero (2026-03-30)
+- [x] Reworked dashboard top section with a compact shader hero tailored to real-estate outreach operations (2026-03-30)
+- [x] Applied the new premium visual language across stats cards, analytics, leads table, lead drawer, and theme toggle (2026-03-30)
+- [x] Preserved project context by adapting copy and styling to SmartFlow’s “premium outreach automation for real estate agents” positioning rather than using the generic shader demo text (2026-03-30)
+- [x] Verified app still builds successfully with `npm run build` after shader integration (2026-03-30)
+- [x] Pushed the visual refresh work and documentation updates to GitHub `main` for Claude Code / Codex handoff continuity (2026-03-30)
+
+> **Codex handoff note:** this phase was implemented locally in the app repo only. No live n8n workflow changes were needed.

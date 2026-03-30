@@ -23,36 +23,36 @@ export function StatsCards({ leads }: Props) {
         value: total,
         sub: 'in database',
         icon: Users,
-        color: 'text-slate-400',
-        bg: 'bg-slate-800/50',
-        border: 'border-slate-700/50',
+        color: 'text-stone-200',
+        bg: 'bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))]',
+        border: 'border-white/10',
       },
       {
         label: 'Contacted',
         value: total ? `${Math.round((contacted / total) * 100)}%` : '0%',
         sub: `${contacted} of ${total}`,
         icon: Mail,
-        color: 'text-blue-400',
-        bg: 'bg-blue-500/10',
-        border: 'border-blue-500/20',
+        color: 'text-cyan-300',
+        bg: 'bg-[linear-gradient(180deg,rgba(56,189,248,0.16),rgba(7,18,28,0.24))]',
+        border: 'border-cyan-400/20',
       },
       {
         label: 'Replied',
         value: total ? `${Math.round((replied / total) * 100)}%` : '0%',
         sub: `${replied} responses`,
         icon: MessageSquare,
-        color: 'text-green-400',
-        bg: 'bg-green-500/10',
-        border: 'border-green-500/20',
+        color: 'text-emerald-300',
+        bg: 'bg-[linear-gradient(180deg,rgba(52,211,153,0.16),rgba(7,18,28,0.24))]',
+        border: 'border-emerald-400/20',
       },
       {
         label: 'Demo Booked',
         value: total ? `${Math.round((demo / total) * 100)}%` : '0%',
         sub: `${demo} demos`,
         icon: Calendar,
-        color: 'text-violet-400',
-        bg: 'bg-violet-500/10',
-        border: 'border-violet-500/20',
+        color: 'text-amber-200',
+        bg: 'bg-[linear-gradient(180deg,rgba(212,164,97,0.2),rgba(7,18,28,0.22))]',
+        border: 'border-amber-300/20',
       },
     ]
   }, [leads])
@@ -62,17 +62,17 @@ export function StatsCards({ leads }: Props) {
       {stats.map(({ label, value, sub, icon: Icon, color, bg, border }) => (
         <div
           key={label}
-          className={`rounded-xl border ${border} ${bg} p-5 flex flex-col gap-3`}
+          className={`rounded-[1.6rem] border ${border} ${bg} p-5 flex flex-col gap-3 backdrop-blur-sm shadow-[0_24px_80px_-48px_rgba(0,0,0,0.9)]`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">
               {label}
             </span>
             <Icon className={`w-4 h-4 ${color}`} />
           </div>
           <div>
             <p className="text-2xl font-semibold text-white">{value}</p>
-            <p className="text-xs text-slate-500 mt-0.5">{sub}</p>
+            <p className="mt-0.5 text-xs text-stone-500">{sub}</p>
           </div>
         </div>
       ))}
