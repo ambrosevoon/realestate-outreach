@@ -14,6 +14,9 @@ async function call(path: string, body?: object) {
   }
 }
 
+// TESTING PHASE: destination email hardcoded — remove before going live
+const TEST_EMAIL = 'ambrosevoon@gmail.com'
+
 export function sendEmail(lead: {
   lead_id: string
   email: string
@@ -21,7 +24,7 @@ export function sendEmail(lead: {
   agency_name: string
   subject?: string
 }) {
-  return call('/send-email', lead)
+  return call('/send-email', { ...lead, email: TEST_EMAIL })
 }
 
 export function updateLeadStatus(lead_id: string, status: string, notes?: string) {
