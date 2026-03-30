@@ -703,3 +703,22 @@ Mobile dashboard header responsiveness:
 **Evidence**
 - Local mobile verification screenshot:
   - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-30T07-54-37-118Z.png`
+
+**Production verification**
+- Pushed commit:
+  - `2ae8f82` — `fix(ui): improve mobile dashboard header`
+- Deployed production build:
+  - `dpl_Bh14rposBH94t2TzXohgrQnCaGTM`
+- Verified live on:
+  - `https://realestate-outreach-sand.vercel.app/dashboard`
+  - viewport: `390x844`
+
+**Live result**
+- Mobile action buttons fit within the viewport
+- The old right-edge clipping is gone
+- Utility controls remain accessible in the top row
+- Main actions now read as a compact two-row mobile header control set
+
+**Live evidence**
+- Production mobile verification screenshot:
+  - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-30T07-59-13-088Z.png`
