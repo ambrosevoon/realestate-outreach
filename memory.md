@@ -485,3 +485,35 @@ Day-mode readability fix:
 - Verified with `npm run build`
 
 This preserves the day-mode setting while keeping the dashboard content readable on top of the shader background.
+
+### 🔄 Session Update (2026-03-30 #11) — Codex
+
+21st.dev glow button integration:
+
+**What Codex changed**
+- Added glow button source component:
+  - [components/ui/shiny-button-1.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/shiny-button-1.tsx)
+- Added demo wrapper:
+  - [components/ui/shiny-button-demo.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/shiny-button-demo.tsx)
+- Updated shared button primitive:
+  - [components/ui/button.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/button.tsx)
+
+**Implementation decision**
+- The raw 21st.dev button uses fixed dimensions that would break many existing controls if pasted literally into every button instance
+- Codex adapted the glow treatment into the shared button primitive so it can scale across the app’s real buttons
+- Main action variants now use the glow style:
+  - `default`
+  - `outline`
+  - `secondary`
+  - `destructive`
+- Utility variants remain plain:
+  - `ghost`
+  - `link`
+
+**Why this decision was made**
+- The user asked for the style to be applied broadly across the app
+- Applying the fixed-size effect literally to all buttons would have broken icon-only controls, small utility buttons, and low-emphasis actions
+- This approach keeps the visual language while preserving app usability
+
+**Verification**
+- `npm run build` passes after the shared button integration

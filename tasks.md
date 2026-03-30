@@ -210,4 +210,18 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Fixed dashboard day-mode readability by restoring bright text colors inside the shader-based dashboard surface instead of allowing light-mode global text overrides to turn critical copy dark (2026-03-30)
 - [x] Verified the dashboard day-mode contrast fix still builds successfully with `npm run build` (2026-03-30)
 
+---
+
+## ✅ Phase 12 — 21st.dev Glow Button Integration
+**Completed by Codex: 2026-03-30**
+
+- [x] Confirmed the repo already supports the required stack: ShadCN-style `components/ui`, Tailwind CSS, and TypeScript (2026-03-30)
+- [x] Added the requested 21st.dev-inspired glow button component at `components/ui/shiny-button-1.tsx` (2026-03-30)
+- [x] Added a companion demo wrapper at `components/ui/shiny-button-demo.tsx` (2026-03-30)
+- [x] Integrated the glow treatment into the shared `components/ui/button.tsx` primitive so the main action buttons across the app inherit the new shiny style automatically (2026-03-30)
+- [x] Preserved plain utility behavior for `ghost` and `link` button variants so top-bar icon controls and low-emphasis actions remain usable and compact (2026-03-30)
+- [x] Verified the glow button integration still builds successfully with `npm run build` (2026-03-30)
+
+> **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
+
 > **Codex handoff note:** Tavily discovery is now app-side via Next.js route. Existing n8n discovery workflow may still exist remotely, but the frontend no longer depends on it.

@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import { GlowButton } from "@/components/ui/shiny-button-1"
 
 import { cn } from "@/lib/utils"
 
@@ -42,6 +43,24 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+
+    const shouldUseGlow =
+      !asChild &&
+      variant !== "ghost" &&
+      variant !== "link"
+
+    if (shouldUseGlow) {
+      return (
+        <GlowButton
+          ref={ref}
+          variant={(variant ?? "default") as "default" | "outline" | "secondary" | "destructive"}
+          size={(size ?? "default") as "default" | "sm" | "lg" | "icon"}
+          className={className}
+          {...props}
+        />
+      )
+    }
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
