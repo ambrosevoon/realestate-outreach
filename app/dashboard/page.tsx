@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, SlidersHorizontal, RefreshCw, LogOut, Trash2 } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { SmartFlowLogo } from '@/components/brand/SmartFlowLogo'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -113,15 +114,7 @@ export default function DashboardPage() {
       {/* Top Bar */}
       <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-xs font-bold">SF</span>
-            </div>
-            <div>
-              <h1 className="text-sm font-semibold text-white leading-none">SmartFlow</h1>
-              <p className="text-xs text-slate-500 leading-none mt-0.5">Outreach Dashboard</p>
-            </div>
-          </div>
+          <SmartFlowLogo size="sm" />
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button
