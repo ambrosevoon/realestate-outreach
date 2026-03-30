@@ -574,5 +574,21 @@ Button style refinement based on further user feedback:
 **Verification**
 - `npm run build` passes after the edge-shine-only refinement
 
-**Next verification step**
-- As with the previous button issue, this should be visually verified on the deployed app after push/deploy
+### 🔄 Session Update (2026-03-30 #15) — Codex
+
+Live verification for edge-shine-only button refinement:
+
+- Pushed refinement commit:
+  - `224905b` — `fix(ui): reduce glow button ambient bleed`
+- Deployed production build via Vercel CLI
+- Verified the live dashboard visually on:
+  - `https://realestate-outreach-sand.vercel.app/dashboard`
+
+**Visual verification result**
+- The grouped header buttons render cleanly as separate controls
+- The section-level ambient glow wash behind grouped buttons is gone
+- The shine is now concentrated on the outer edge of each button, which matches the user's requested direction much more closely
+
+**Evidence**
+- Live Playwright screenshot captured during verification:
+  - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-30T07-15-47-564Z.png`
