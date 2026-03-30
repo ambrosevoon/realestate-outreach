@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, SlidersHorizontal, RefreshCw, LogOut, Trash2 } from 'lucide-react'
+import { Search, SlidersHorizontal, RefreshCw, LogOut, Trash2, Sparkles } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { SmartFlowLogo } from '@/components/brand/SmartFlowLogo'
-import ShaderShowcase from '@/components/ui/hero'
+import { ShaderBackdrop } from '@/components/ui/hero'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -111,9 +111,12 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(86,214,222,0.08),transparent_24%),radial-gradient(circle_at_top_right,rgba(212,164,97,0.12),transparent_18%),linear-gradient(180deg,#02040a_0%,#08101b_100%)]">
+    <div className="relative min-h-screen overflow-hidden bg-[#02040a] text-white">
+      <ShaderBackdrop variant="full" className="fixed inset-0" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_20%),linear-gradient(180deg,rgba(0,0,0,0.14),rgba(0,0,0,0.58)_46%,rgba(2,4,10,0.88)_100%)]" />
+
       {/* Top Bar */}
-      <header className="sticky top-0 z-40 border-b border-white/8 bg-[#04070d]/70 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           <SmartFlowLogo size="sm" />
           <div className="flex items-center gap-2">
@@ -151,26 +154,25 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-        <ShaderShowcase
-          variant="compact"
-          eyebrow="Automation command center"
-          title="Premium outbound operations for real-estate growth."
-          description="Track lead flow, launch AI-assisted outreach, and keep every follow-up polished enough to sell the system before the demo even starts."
-          navLinks={[
-            { label: 'Pipeline', href: '#pipeline' },
-            { label: 'Activity', href: '#pipeline' },
-            { label: 'Follow-up', href: '#pipeline' },
-          ]}
-          primaryAction={{ label: 'Open pipeline', href: '#pipeline' }}
-          secondaryAction={{ label: 'Review metrics', href: '#analytics' }}
-          stats={[
-            { label: 'Leads', value: String(leads.length) },
-            { label: 'Filtered', value: String(filtered.length) },
-            { label: 'Status', value: statusFilter === 'all' ? 'All' : statusFilter.replace('_', ' ') },
-            { label: 'Sort', value: sortBy.replaceAll('_', ' ') },
-          ]}
-        />
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-8 pt-[32vh] space-y-6">
+        <section className="space-y-6">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.22em] text-stone-200 backdrop-blur-sm">
+            <Sparkles className="h-3.5 w-3.5 text-amber-300" />
+            Premium outbound system
+          </div>
+          <div className="max-w-5xl">
+            <h1 className="text-5xl font-semibold leading-[0.92] tracking-[-0.06em] text-white md:text-7xl lg:text-[6.2rem]">
+              <span className="block bg-[linear-gradient(135deg,#f8edd4_0%,#92edf0_28%,#d6a15c_72%,#ffffff_100%)] bg-[length:180%_180%] bg-clip-text text-transparent">
+                SmartFlow
+              </span>
+              <span className="block font-black text-white">Outreach</span>
+              <span className="block font-light italic text-white/78">Command Center</span>
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg font-light leading-relaxed text-stone-200/88 md:text-xl">
+              Discover agents, launch AI-assisted email campaigns, and manage follow-up from a single premium operating layer built to sell automation before the first demo.
+            </p>
+          </div>
+        </section>
 
         {/* Stats */}
         <div id="analytics">
@@ -181,7 +183,7 @@ export default function DashboardPage() {
         <AnalyticsSection leads={leads} />
 
         {/* Toolbar */}
-        <div id="pipeline" className="flex flex-col sm:flex-row gap-3 items-start sm:items-center rounded-[1.75rem] border border-white/8 bg-white/[0.03] px-4 py-4 backdrop-blur-sm">
+        <div id="pipeline" className="flex flex-col sm:flex-row gap-3 items-start sm:items-center rounded-[1.75rem] border border-white/8 bg-white/[0.05] px-4 py-4 backdrop-blur-md shadow-[0_30px_80px_-52px_rgba(0,0,0,0.95)]">
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
             <Input
@@ -234,16 +236,18 @@ export default function DashboardPage() {
         </div>
 
         {/* Table */}
-        <LeadsTable
-          leads={paginated}
-          loading={loading}
-          onRowClick={handleRowClick}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          selectedIds={selectedIds}
-          onToggle={handleToggle}
-          onToggleAll={handleToggleAll}
-        />
+        <div className="rounded-[2rem] border border-white/6 bg-black/8 backdrop-blur-[2px]">
+          <LeadsTable
+            leads={paginated}
+            loading={loading}
+            onRowClick={handleRowClick}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            selectedIds={selectedIds}
+            onToggle={handleToggle}
+            onToggleAll={handleToggleAll}
+          />
+        </div>
 
         {/* Pagination */}
         {totalPages > 1 && (

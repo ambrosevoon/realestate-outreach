@@ -181,5 +181,8 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Preserved project context by adapting copy and styling to SmartFlow’s “premium outreach automation for real estate agents” positioning rather than using the generic shader demo text (2026-03-30)
 - [x] Verified app still builds successfully with `npm run build` after shader integration (2026-03-30)
 - [x] Pushed the visual refresh work and documentation updates to GitHub `main` for Claude Code / Codex handoff continuity (2026-03-30)
+- [x] Refined the dashboard from a shader hero section into a full-page shader environment so the experience fills the entire screen like the user’s reference image (2026-03-30)
+- [x] Extracted reusable `ShaderBackdrop` from the hero component so whole-page shader treatments can be reused outside the hero layout (2026-03-30)
+- [x] Verified the whole-page shader refinement still builds successfully with `npm run build` (2026-03-30)
 
 > **Codex handoff note:** this phase was implemented locally in the app repo only. No live n8n workflow changes were needed.

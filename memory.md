@@ -344,3 +344,26 @@ This section documents the premium theme integration and GitHub handoff so Claud
 **Process note requested by user**
 - User asked that Codex push all completed changes to GitHub and document all work in both `tasks.md` and `memory.md` for cross-tool continuity
 - Treat this as an active project workflow preference going forward unless the user says otherwise
+
+### 🔄 Session Update (2026-03-30 #4) — Codex
+
+This section records the follow-up shader refinement after the user clarified that the shader treatment should fill the entire page, not sit inside a single section.
+
+**What Codex changed**
+- Extracted reusable shader background layer from [components/ui/hero.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/hero.tsx):
+  - added exported `ShaderBackdrop`
+  - kept the existing hero component intact for full hero usage on login
+- Reworked [app/dashboard/page.tsx](/Users/ambrosevoon/Projects/realestate-outreach/app/dashboard/page.tsx) so the dashboard now uses the shader as a fixed full-page background instead of a compact hero block at the top
+- Moved the dashboard heading/content into floating overlay content so the whole screen reads as one shader experience, closer to the supplied reference image
+
+**Result**
+- Login page continues to use a full-screen shader experience
+- Dashboard now also reads as a full-page shader environment with glassy overlay panels and content floating on top
+- The visual direction is now much closer to “entire page is the experience” rather than “one premium section inside a standard page”
+
+**Verification**
+- `npm run build` passes after the full-page shader refinement
+
+**Codex handoff note**
+- This refinement is app-only and does not touch Supabase or live n8n workflows
+- Push this state to GitHub so Claude Code sees the full-page shader version, not the earlier section-only draft

@@ -28,19 +28,13 @@ function cn(...values: Array<string | false | null | undefined>) {
   return values.filter(Boolean).join(' ')
 }
 
-export default function ShaderShowcase({
+export function ShaderBackdrop({
   variant = 'full',
-  title,
-  eyebrow = 'Premium real-estate automation',
-  description,
-  stats = [],
-  navLinks = [],
-  primaryAction,
-  secondaryAction,
   className,
-}: HeroProps) {
-  const [isActive, setIsActive] = useState(false)
-
+}: {
+  variant?: 'full' | 'compact'
+  className?: string
+}) {
   const palette = useMemo(
     () =>
       variant === 'compact'
@@ -50,17 +44,7 @@ export default function ShaderShowcase({
   )
 
   return (
-    <section
-      className={cn(
-        'group relative overflow-hidden border border-white/10 text-white shadow-[0_40px_120px_-64px_rgba(0,0,0,0.95)]',
-        variant === 'compact'
-          ? 'min-h-[19rem] rounded-[2rem]'
-          : 'min-h-screen rounded-none',
-        className
-      )}
-      onMouseEnter={() => setIsActive(true)}
-      onMouseLeave={() => setIsActive(false)}
-    >
+    <div className={cn('absolute inset-0 overflow-hidden', className)}>
       <svg className="absolute inset-0 h-0 w-0">
         <defs>
           <filter id="sf-glass" x="-50%" y="-50%" width="200%" height="200%">
@@ -97,6 +81,36 @@ export default function ShaderShowcase({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_22%),radial-gradient(circle_at_20%_20%,rgba(79,209,217,0.16),transparent_24%),linear-gradient(180deg,rgba(2,4,10,0.12),rgba(2,4,10,0.7))]" />
       <div className="absolute -right-20 top-12 h-56 w-56 rounded-full bg-amber-300/10 blur-3xl" />
       <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl" />
+    </div>
+  )
+}
+
+export default function ShaderShowcase({
+  variant = 'full',
+  title,
+  eyebrow = 'Premium real-estate automation',
+  description,
+  stats = [],
+  navLinks = [],
+  primaryAction,
+  secondaryAction,
+  className,
+}: HeroProps) {
+  const [isActive, setIsActive] = useState(false)
+
+  return (
+    <section
+      className={cn(
+        'group relative overflow-hidden border border-white/10 text-white shadow-[0_40px_120px_-64px_rgba(0,0,0,0.95)]',
+        variant === 'compact'
+          ? 'min-h-[19rem] rounded-[2rem]'
+          : 'min-h-screen rounded-none',
+        className
+      )}
+      onMouseEnter={() => setIsActive(true)}
+      onMouseLeave={() => setIsActive(false)}
+    >
+      <ShaderBackdrop variant={variant} />
 
       <div className="relative z-10 flex min-h-inherit flex-col">
         <header
