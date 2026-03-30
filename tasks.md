@@ -227,6 +227,7 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Refined the glow-button style again to remove the large ambient section glow and keep only a tighter animated outer-edge shine around each button (2026-03-30)
 - [x] Verified the edge-shine-only button refinement still builds successfully with `npm run build` (2026-03-30)
 - [x] Pushed the edge-shine-only refinement to GitHub `main`, deployed it to Vercel production, and visually verified on the live dashboard that grouped buttons now keep a restrained outer-edge shine without the previous section-level glow wash behind them (2026-03-30)
+- [x] Documented the approved glow button pattern for future reuse in `docs/glow-button-style.md`, including design intent, supported variants, usage guidance, and the verified approved state (2026-03-30)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

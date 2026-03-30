@@ -592,3 +592,22 @@ Live verification for edge-shine-only button refinement:
 **Evidence**
 - Live Playwright screenshot captured during verification:
   - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-30T07-15-47-564Z.png`
+
+### 🔄 Session Update (2026-03-30 #16) — Codex
+
+Reusable documentation for the glow button system:
+
+- Added a dedicated reference doc:
+  - [docs/glow-button-style.md](/Users/ambrosevoon/Projects/realestate-outreach/docs/glow-button-style.md)
+
+**What the doc captures**
+- source-of-truth files for the shared button primitive and glow implementation
+- design intent for the premium edge-shine treatment
+- which button variants should use the glow treatment and which should stay plain
+- copy-paste usage example with the shared `Button` component
+- implementation notes for where the visual behavior lives in code
+- the approved verified state after the section-level ambient glow was removed
+
+**Reuse guidance**
+- Future work in this repo should prefer the shared [components/ui/button.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/button.tsx) primitive
+- If the glow style needs refinement, update [components/ui/shiny-button-1.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/shiny-button-1.tsx) rather than duplicating custom button effects in feature components
