@@ -207,5 +207,7 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Verified live production discovery endpoint returns HTTP 200 and 50 Tavily-backed agent results for `count=50`, `location=perth` (2026-03-30)
 - [x] Added a bold testing-mode notice at the top of the dashboard with a blinking animated warning icon and explicit safe-destination email text (`ambrosevoon@gmail.com`) (2026-03-30)
 - [x] Verified the testing-mode banner change still builds successfully with `npm run build` (2026-03-30)
+- [x] Fixed dashboard day-mode readability by restoring bright text colors inside the shader-based dashboard surface instead of allowing light-mode global text overrides to turn critical copy dark (2026-03-30)
+- [x] Verified the dashboard day-mode contrast fix still builds successfully with `npm run build` (2026-03-30)
 
 > **Codex handoff note:** Tavily discovery is now app-side via Next.js route. Existing n8n discovery workflow may still exist remotely, but the frontend no longer depends on it.

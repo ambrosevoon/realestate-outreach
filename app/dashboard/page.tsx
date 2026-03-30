@@ -111,7 +111,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#02040a] text-white">
+    <div className="dashboard-page relative min-h-screen overflow-hidden bg-[#02040a] text-white">
       <ShaderBackdrop variant="full" className="fixed inset-0" />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_20%),linear-gradient(180deg,rgba(0,0,0,0.14),rgba(0,0,0,0.58)_46%,rgba(2,4,10,0.88)_100%)]" />
 

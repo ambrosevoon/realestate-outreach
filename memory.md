@@ -473,3 +473,15 @@ Testing-mode visibility update:
 - Verified with `npm run build`
 
 This update is purely presentational and exists to reduce operator mistakes during the testing phase.
+
+### 🔄 Session Update (2026-03-30 #10) — Codex
+
+Day-mode readability fix:
+
+- User reported that after switching default theme behavior to day mode, key dashboard text became hard to read against the still-dark shader surface
+- Root cause: global `html.light .text-white` override was turning dashboard text dark even though the dashboard itself intentionally remains a dark shader environment
+- Codex added `dashboard-page` scope in [app/dashboard/page.tsx](/Users/ambrosevoon/Projects/realestate-outreach/app/dashboard/page.tsx)
+- Codex updated [app/globals.css](/Users/ambrosevoon/Projects/realestate-outreach/app/globals.css) so `text-white` stays bright inside the shader dashboard even when the app is in light mode
+- Verified with `npm run build`
+
+This preserves the day-mode setting while keeping the dashboard content readable on top of the shader background.

@@ -80,6 +80,10 @@ html.light .hover\:text-white:hover { color: oklch(12% 0.02 260) !important; }
 html.light .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.12) !important; }
 html.light .shadow-black\/60 { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.12) !important; }
 
+/* Dashboard keeps a dark shader surface even in day mode, so restore bright text there */
+html.light .dashboard-page .text-white { color: oklch(98% 0.005 260) !important; }
+html.light .dashboard-page .hover\:text-white:hover { color: oklch(98% 0.005 260) !important; }
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
