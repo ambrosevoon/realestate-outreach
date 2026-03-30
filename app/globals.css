@@ -28,6 +28,21 @@ body {
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
+@keyframes testingPulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.18);
+  }
+}
+
+.testing-ping {
+  animation: testingPulse 1.2s ease-in-out infinite;
+}
+
 /* ── Light mode: remap the slate scale so all bg-slate-*, text-slate-*,
       border-slate-* (including /opacity variants) flip automatically ── */
 html.light {

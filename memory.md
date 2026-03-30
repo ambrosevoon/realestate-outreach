@@ -462,3 +462,14 @@ Live verification and deployment follow-through for Tavily discovery:
 **Important process note**
 - User explicitly asked that verification happen before finishing
 - For live integrations like this, “build passes” is not sufficient; verify the real runtime endpoint and deployment env before closing the task
+
+### 🔄 Session Update (2026-03-30 #9) — Codex
+
+Testing-mode visibility update:
+
+- Added a prominent testing banner to [app/dashboard/page.tsx](/Users/ambrosevoon/Projects/realestate-outreach/app/dashboard/page.tsx)
+- Banner content explicitly says the page is in testing mode and that all destination email addresses are overridden to `ambrosevoon@gmail.com`
+- Added a blinking animated warning indicator via [app/globals.css](/Users/ambrosevoon/Projects/realestate-outreach/app/globals.css)
+- Verified with `npm run build`
+
+This update is purely presentational and exists to reduce operator mistakes during the testing phase.

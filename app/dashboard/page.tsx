@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, SlidersHorizontal, RefreshCw, LogOut, Trash2, Sparkles } from 'lucide-react'
+import { Search, SlidersHorizontal, RefreshCw, LogOut, Trash2, Sparkles, TriangleAlert } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { SmartFlowLogo } from '@/components/brand/SmartFlowLogo'
 import { ShaderBackdrop } from '@/components/ui/hero'
@@ -154,7 +154,26 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-8 pt-[14vh] md:pt-[16vh] lg:pt-[18vh] space-y-6">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-8 pt-10 md:pt-12 space-y-6">
+        <div className="rounded-[1.6rem] border border-amber-300/25 bg-[linear-gradient(135deg,rgba(255,191,36,0.22),rgba(255,120,56,0.16))] px-5 py-4 shadow-[0_18px_60px_-32px_rgba(255,179,0,0.55)] backdrop-blur-md">
+          <div className="flex items-start gap-3">
+            <div className="relative mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-amber-200/40 bg-amber-300/18">
+              <span className="testing-ping absolute inline-flex h-full w-full rounded-full bg-amber-300/30" />
+              <TriangleAlert className="relative z-10 h-5 w-5 text-amber-100" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-black uppercase tracking-[0.24em] text-amber-50">
+                Testing Mode
+              </p>
+              <p className="text-base font-bold leading-relaxed text-white">
+                All destination email addresses are currently overridden and sent to:
+                {' '}
+                <span className="text-amber-100">ambrosevoon@gmail.com</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
         <section className="space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.22em] text-stone-200 backdrop-blur-sm">
             <Sparkles className="h-3.5 w-3.5 text-amber-300" />
