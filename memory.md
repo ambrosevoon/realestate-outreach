@@ -221,31 +221,50 @@ This section documents work completed in this Codex session so a later Claude Co
    - Full `safeEqual` + cookie check preserved in git history for easy restore
    - Commit: `47dd16c`
 
+3. **Redeployed to Vercel** — triggered manually via CLI after GitHub auto-deploy wasn't firing
+   - Linked project locally: `.vercel/project.json` now exists (`prj_hxB2TVCnvTK3o0GCQr1eoUSpZWw4`)
+   - Updated Vercel env vars to match `.env.local` (overrode stale 6-day-old values)
+   - Deployments: `dpl_6jLLGTh5G29VLAjj56k8xgVEbdFP` then `dpl_92FNf9CxUuCSBE6wKkgBhk69X5aN`
+
+**IMPORTANT — Two different Vercel URLs:**
+- ✅ **Our app (correct):** `https://realestate-outreach-sand.vercel.app` — project `prj_hxB2TVCnvTK3o0GCQr1eoUSpZWw4`, linked to `github.com/ambrosevoon/realestate-outreach`
+- ❌ **Different project:** `https://realestate-outreach.vercel.app` — completely different codebase (email+password Supabase auth, "RealEstate OutReach" branding). Do NOT use this URL for this project.
+
+**Verified working (2026-03-30):**
+- Email send flow: n8n confirms `email: ambrosevoon@gmail.com` in every execution, Gmail thread ID returned
+- Dashboard loads all leads on `realestate-outreach-sand.vercel.app` after clicking Refresh
+- Initial page load shows 0 leads (timing/hydration delay) — clicking Refresh always fixes it
+- Supabase connection confirmed working: RLS enabled, `anon_full_access` policies on both tables
+
 **Revert checklist before go-live:**
-- `lib/n8n.ts` — remove `TEST_EMAIL` constant, restore `call('/send-email', lead)`
-- `middleware.ts` — restore `safeEqual` + cookie check from git history
+- `lib/n8n.ts` — remove `TEST_EMAIL` constant, change `{ ...lead, email: TEST_EMAIL }` back to `lead`
+- `middleware.ts` — restore `safeEqual` + cookie check (see git history commit `47dd16c~1`)
 
 ---
 
 ### 📍 Current Phase
 
-**Phase 5 — Analytics & Tracking Complete**
-AnalyticsSection added to dashboard with email chart, pace tracker, reply rate, and status breakdown.
+**Phase 8 — Testing Phase Safety Config (Complete)**
+App is in testing mode: email hardcoded to safe address, login disabled, dashboard open.
 
 ---
 
 ### 🎯 Immediate Goal
 
-Phase 6: continue product improvements on top of the now-working outreach + booking pipeline
+Continue testing the outreach flow end-to-end. When testing is done, revert the two items in the checklist above before go-live.
 
 ---
 
-### 🔄 Last Session Summary (2026-03-27)
+### 🔄 Last Session Summary (2026-03-30)
 
-- Built Phase 5 Analytics: AnalyticsSection component (email chart, pace tracker, reply rate, status breakdown)
-- Added useAllActivities hook for global activity fetching
-- Fixed missing @tailwindcss/postcss devDep (must use npm install --include=dev locally)
-- Build passes clean; ready to redeploy to Vercel
+- Hardcoded `sendEmail()` destination to `ambrosevoon@gmail.com` for testing phase
+- Disabled middleware auth gate for testing phase
+- Discovered GitHub→Vercel auto-deploy was NOT firing — must deploy manually with `npx vercel --prod --yes --scope ambrosevoon-4152s-projects` from project dir
+- Linked local project to Vercel (`.vercel/project.json` now exists)
+- Confirmed correct app URL is `realestate-outreach-sand.vercel.app` (NOT `realestate-outreach.vercel.app`)
+- Verified email flow end-to-end via n8n execution logs
+- Verified dashboard loads leads (initial load slow — Refresh button works immediately)
+- All commits pushed to `github.com/ambrosevoon/realestate-outreach` on `main`
 
 ---
 

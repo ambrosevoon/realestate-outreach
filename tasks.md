@@ -127,3 +127,30 @@
   - `gkDnKkwCC4YEPoyu` — Send Email
   - `QKSf9yZfaB3nTmXx` — Generate AI Draft
   - `RO7X6UUdta1ibcap` — Cal.com Booking → Demo Booked
+
+---
+
+## Infrastructure Notes (2026-03-30)
+
+### Vercel Deployment
+- ✅ **Correct app URL:** `https://realestate-outreach-sand.vercel.app`
+- ❌ **Different project (wrong URL):** `https://realestate-outreach.vercel.app` — completely different codebase, do NOT use
+- **Vercel project ID:** `prj_hxB2TVCnvTK3o0GCQr1eoUSpZWw4`
+- **GitHub repo:** `github.com/ambrosevoon/realestate-outreach` (private)
+- **Local link:** `.vercel/project.json` exists — project already linked
+
+### Deploy Command (MUST use this exact command)
+```
+cd /Users/ambrosevoon/Projects/realestate-outreach
+npx vercel --prod --yes --scope ambrosevoon-4152s-projects
+```
+
+### ⚠️ GitHub → Vercel Auto-Deploy is NOT Enabled
+Manual deploy required after every push to GitHub. Steps:
+1. `git add -A && git commit -m "..." && git push origin main`
+2. `cd /Users/ambrosevoon/Projects/realestate-outreach && npx vercel --prod --yes --scope ambrosevoon-4152s-projects`
+
+### Known UX Issue
+- Dashboard shows 0 leads on initial page load — clicking Refresh loads them immediately
+- Root cause: client-side hydration timing delay, not a data/auth bug
+- Fix: add loading state retry or delayed fetch in `useLeads` hook (not yet implemented)
