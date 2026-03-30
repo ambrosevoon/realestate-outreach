@@ -645,3 +645,8 @@ Lead-name cleanup for messy scraped discovery results:
 **Why this approach was chosen**
 - It cleans the current UI immediately without needing a risky one-off database migration
 - It also cleans future Tavily-discovered leads at import time so the issue does not keep reappearing
+
+Additional presentation polish:
+
+- Updated [components/dashboard/LeadsTable.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/LeadsTable.tsx) so when a cleaned `name` and `agency_name` are identical, the table only shows one line instead of repeating the same label twice
+- This helps rows like `Lally Real Estate` and `Mark Hay Realty Group` read as deliberate cleanup rather than duplicated scraped data

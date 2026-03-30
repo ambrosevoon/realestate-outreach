@@ -233,6 +233,7 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Applied lead normalization to both existing fetched leads and newly created/imported leads via `hooks/useLeads.ts` so bad names are cleaned without requiring an immediate database migration (2026-03-30)
 - [x] Verified the cleanup logic against the reported examples: `Mark Hay Realty Group: Real Estate Agents and Property...` now resolves cleanly, and `Home` with agency `Lally Real Estate` now resolves to `Lally Real Estate` instead of the junk title (2026-03-30)
 - [x] Verified the dashboard cleanup changes still build successfully with `npm run build` (2026-03-30)
+- [x] Polished the leads table rendering so rows no longer repeat the same cleaned label twice when `name` and `agency_name` resolve to the same value (2026-03-30)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

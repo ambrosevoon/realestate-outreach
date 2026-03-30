@@ -131,7 +131,9 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy, sele
               <TableCell>
                 <div>
                   <p className="text-sm font-medium text-white">{lead.name}</p>
-                  <p className="text-xs text-stone-500">{lead.agency_name}</p>
+                  {lead.agency_name && lead.agency_name.toLowerCase() !== lead.name.toLowerCase() ? (
+                    <p className="text-xs text-stone-500">{lead.agency_name}</p>
+                  ) : null}
                 </div>
               </TableCell>
               <TableCell className="hidden text-sm text-stone-200 md:table-cell">
