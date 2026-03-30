@@ -540,3 +540,23 @@ Glow button repair after user visual feedback:
 
 **Open verification note**
 - Because this was a visual bug, ideal next verification is a deployed visual check, not just build success
+
+### 🔄 Session Update (2026-03-30 #13) — Codex
+
+Live verification for repaired glow buttons:
+
+- Pushed repair commit:
+  - `9b4cd74` — `fix(ui): repair glow button layout`
+- Deployed production build via Vercel CLI
+- Verified the live dashboard visually on:
+  - `https://realestate-outreach-sand.vercel.app/dashboard`
+
+**Visual verification result**
+- Header buttons now render as separate controls again
+- The previous oversized glow spill across the header is gone
+- Main action buttons remain styled, but the layout is no longer broken
+
+**Evidence**
+- Live Playwright snapshot and screenshot were captured during verification
+- Screenshot file captured locally during verification:
+  - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-30T06-59-31-486Z.png`
