@@ -432,3 +432,33 @@ Follow-up debugging for “Discover Agents”:
 
 **Verification**
 - `npm run build` passes after the discovery error-handling/search-breadth update
+
+### 🔄 Session Update (2026-03-30 #8) — Codex
+
+Live verification and deployment follow-through for Tavily discovery:
+
+**What Codex verified live**
+- Production endpoint before fix:
+  - `POST https://realestate-outreach-sand.vercel.app/api/discover-agents`
+  - response: HTTP 500
+  - body: `{"error":"TAVILY_API_KEY is not configured"}`
+- Vercel production environment was missing `TAVILY_API_KEY`
+- Local `.env.local` did contain the key, so the issue was deployment config, not repo code
+
+**What Codex changed outside the repo**
+- Added `TAVILY_API_KEY` to Vercel production env for project `realestate-outreach`
+- Triggered manual production deploy via Vercel CLI
+- Verified first live deploy changed the failure from missing-config 500 to Tavily 401
+- Replaced the Vercel secret with a newline-free value
+- Triggered a second production deploy
+
+**Final live verification**
+- Production endpoint after env + redeploy:
+  - `POST https://realestate-outreach-sand.vercel.app/api/discover-agents`
+  - request body: `{"count":50,"location":"perth"}`
+  - response: HTTP 200
+  - body included `total: 50` and a Tavily-backed `agents` array
+
+**Important process note**
+- User explicitly asked that verification happen before finishing
+- For live integrations like this, “build passes” is not sufficient; verify the real runtime endpoint and deployment env before closing the task

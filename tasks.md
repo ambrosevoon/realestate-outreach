@@ -201,5 +201,9 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Verified the new discovery route and theme boot changes still build successfully with `npm run build` (2026-03-30)
 - [x] Improved discovery failure feedback so the UI now surfaces Tavily/configuration errors instead of the stale “check n8n workflow” message (2026-03-30)
 - [x] Expanded Tavily discovery to use multiple search query variations so higher requested counts such as 50 have a better chance of filling (2026-03-30)
+- [x] Verified live production failure root cause on Vercel: `TAVILY_API_KEY` missing from production env, causing `/api/discover-agents` to return HTTP 500 (2026-03-30)
+- [x] Added `TAVILY_API_KEY` to Vercel production env and manually redeployed `realestate-outreach-sand.vercel.app` (deployment `dpl_55qsqW3yJxDtr8UFFsqFjLJjcEtS`) (2026-03-30)
+- [x] Replaced the malformed Vercel Tavily secret with a newline-free value and redeployed again (deployment alias `realestate-outreach-sand.vercel.app`) (2026-03-30)
+- [x] Verified live production discovery endpoint returns HTTP 200 and 50 Tavily-backed agent results for `count=50`, `location=perth` (2026-03-30)
 
 > **Codex handoff note:** Tavily discovery is now app-side via Next.js route. Existing n8n discovery workflow may still exist remotely, but the frontend no longer depends on it.
