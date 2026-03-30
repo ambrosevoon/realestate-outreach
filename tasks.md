@@ -187,3 +187,17 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Adjusted dashboard hero/content stack upward so the headline and top cards sit in the upper section of the viewport instead of starting too low (2026-03-30)
 
 > **Codex handoff note:** this phase was implemented locally in the app repo only. No live n8n workflow changes were needed.
+
+---
+
+## ✅ Phase 11 — Tavily Discovery + Light Mode Default
+**Completed by Codex: 2026-03-30**
+
+- [x] Replaced the app-side “Discover Agents” call path so it now uses a server route backed by Tavily web search instead of the previous n8n discovery webhook path (2026-03-30)
+- [x] Added `app/api/discover-agents/route.ts` to keep Tavily API usage server-side and out of the client bundle (2026-03-30)
+- [x] Updated `lib/n8n.ts` so `discoverAgents()` calls the local Next.js API route rather than `POST /webhook/discover-agents` (2026-03-30)
+- [x] Added `TAVILY_API_KEY` placeholder to `.env.local.example` and configured the local runtime env for testing (2026-03-30)
+- [x] Changed the app’s first-load theme behavior so day mode is now the default unless the user explicitly saved dark mode (2026-03-30)
+- [x] Verified the new discovery route and theme boot changes still build successfully with `npm run build` (2026-03-30)
+
+> **Codex handoff note:** Tavily discovery is now app-side via Next.js route. Existing n8n discovery workflow may still exist remotely, but the frontend no longer depends on it.

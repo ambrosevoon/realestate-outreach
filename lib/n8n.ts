@@ -36,7 +36,16 @@ export function scheduleFollowup(lead_id: string, next_followup_at: string) {
 }
 
 export function discoverAgents(count: number, location: string) {
-  return call('/discover-agents', { count, location })
+  return fetch('/api/discover-agents', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ count, location }),
+  })
+    .then(async res => {
+      if (!res.ok) return { data: null, error: `HTTP ${res.status}` }
+      return { data: await res.json().catch(() => ({})), error: null }
+    })
+    .catch(error => ({ data: null, error: String(error) }))
 }
 
 export function generateDraft(lead: {

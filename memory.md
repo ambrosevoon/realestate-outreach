@@ -377,3 +377,40 @@ Small layout refinement after visual review:
 - Verified again with `npm run build`
 
 This is a layout-positioning tweak only; no workflow, data, or dependency changes were made.
+
+### 🔄 Session Update (2026-03-30 #6) — Codex
+
+This section records the discovery-source change and the theme-default change.
+
+**What Codex changed**
+- Added server-side discovery route:
+  - [app/api/discover-agents/route.ts](/Users/ambrosevoon/Projects/realestate-outreach/app/api/discover-agents/route.ts)
+- Updated [lib/n8n.ts](/Users/ambrosevoon/Projects/realestate-outreach/lib/n8n.ts):
+  - `discoverAgents()` no longer calls the n8n `/discover-agents` webhook
+  - it now calls the local Next.js API route `/api/discover-agents`
+- Updated theme boot behavior:
+  - [app/layout.tsx](/Users/ambrosevoon/Projects/realestate-outreach/app/layout.tsx)
+  - [components/ThemeToggle.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ThemeToggle.tsx)
+- Updated env example:
+  - [.env.local.example](/Users/ambrosevoon/Projects/realestate-outreach/.env.local.example)
+
+**Discovery implementation details**
+- Tavily is now used as the search provider for “Discover Agents”
+- The API key is read from server env var `TAVILY_API_KEY`
+- The key is intentionally kept server-side; the client never receives it
+- The route builds a location-aware query, calls Tavily search, and maps search results into `RawAgent` objects for the existing import preview flow
+
+**Theme change**
+- First load now defaults to light mode
+- If the user has explicitly saved `sf-theme=dark` in localStorage, dark mode still wins
+
+**Verification**
+- `npm run build` passes with the new route
+- New route appears in build output:
+  - `/api/discover-agents`
+
+**Codex handoff note**
+- There is now a split between historical docs and current implementation:
+  - historical state: discovery used n8n
+  - current app state: discovery uses Tavily through Next.js route
+- Future sessions should treat the app-side Tavily route as the live frontend path unless deliberately migrated again
