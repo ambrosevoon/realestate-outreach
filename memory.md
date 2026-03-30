@@ -650,3 +650,24 @@ Additional presentation polish:
 
 - Updated [components/dashboard/LeadsTable.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/LeadsTable.tsx) so when a cleaned `name` and `agency_name` are identical, the table only shows one line instead of repeating the same label twice
 - This helps rows like `Lally Real Estate` and `Mark Hay Realty Group` read as deliberate cleanup rather than duplicated scraped data
+
+**Production verification**
+- Pushed cleanup commit:
+  - `0345934` — `fix(ui): clean dashboard shareable state`
+- Pushed table-polish follow-up:
+  - `b25dafb` — `fix(ui): polish cleaned lead rows`
+- Deployed production builds:
+  - `dpl_6gcgjDzQMCTWxZMnQJvpoFutTcEb`
+  - `dpl_HLNSA9X6ZFqGZRR19Mi4y66f1hQe`
+- Verified live on:
+  - `https://realestate-outreach-sand.vercel.app/dashboard`
+
+**Live result**
+- The testing banner is no longer visible
+- The email override remains hardcoded internally in [lib/n8n.ts](/Users/ambrosevoon/Projects/realestate-outreach/lib/n8n.ts)
+- Cleaned rows such as `Mark Hay Realty Group` now render without a duplicated second line
+- The first-load empty-table issue still exists, but using the built-in Refresh button loads the lead list correctly for verification
+
+**Evidence**
+- Live verification screenshot:
+  - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-30T07-40-03-235Z.png`
