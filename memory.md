@@ -268,6 +268,25 @@ Continue testing the outreach flow end-to-end. When testing is done, revert the 
 
 ---
 
+### 🔄 Session Update (2026-03-30 #2)
+
+**Bug fixed: Send Email silently failing for new leads with no prior email history**
+
+Root cause: `Fetch Prior Subjects` HTTP node returns an empty JSON array `[]` when a lead has no prior `email_sent` activities. n8n silently stops workflow execution when a node outputs 0 items — so `Build Email`, `Send Outreach Email`, `Log Email Activity` never ran. The email was never sent and no activity was logged.
+
+Fix applied live to n8n workflow `gkDnKkwCC4YEPoyu`:
+- `Fetch Prior Subjects` node: added `options.response.response.fullResponse = true` — this forces the node to always output exactly 1 item (the full HTTP response object) regardless of whether the body is empty or not
+- `Build Email` node: updated `usedSubjects` logic to parse `$('Fetch Prior Subjects').item.json.body` as an array instead of iterating `.all()` on multiple items
+
+Verified fix end-to-end:
+- Test execution 42351: all 7 nodes ran, last node = Respond ✅
+- Activity `email_sent` correctly written to Supabase for Xuan Test lead ✅
+- Gmail send confirmed (subject: "Still following up leads by hand?") ✅
+
+**How this applies**: Any lead that has never been emailed before will now work correctly. Previously only leads with ≥1 prior email activity worked.
+
+---
+
 ### ⏭️ Next Step
 
 Main outreach pipeline and booking pipeline are now working. Next sensible options:
