@@ -199,5 +199,7 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Added `TAVILY_API_KEY` placeholder to `.env.local.example` and configured the local runtime env for testing (2026-03-30)
 - [x] Changed the app’s first-load theme behavior so day mode is now the default unless the user explicitly saved dark mode (2026-03-30)
 - [x] Verified the new discovery route and theme boot changes still build successfully with `npm run build` (2026-03-30)
+- [x] Improved discovery failure feedback so the UI now surfaces Tavily/configuration errors instead of the stale “check n8n workflow” message (2026-03-30)
+- [x] Expanded Tavily discovery to use multiple search query variations so higher requested counts such as 50 have a better chance of filling (2026-03-30)
 
 > **Codex handoff note:** Tavily discovery is now app-side via Next.js route. Existing n8n discovery workflow may still exist remotely, but the frontend no longer depends on it.

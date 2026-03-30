@@ -7,6 +7,11 @@ type TavilyResult = {
   content?: string
 }
 
+type TavilyResponse = {
+  results?: TavilyResult[]
+  error?: string
+}
+
 function clean(text: string) {
   return text.replace(/\s+/g, ' ').trim()
 }
@@ -84,39 +89,60 @@ export async function POST(request: Request) {
     }
 
     const desiredCount = Math.max(1, Math.min(50, Number(count) || 10))
-    const query = `real estate agents ${location} contact email phone agency website`
+    const queries = [
+      `real estate agents ${location} contact email phone agency website`,
+      `property agents ${location} real estate agency contact details`,
+      `realty group ${location} sales agent email phone`,
+      `top real estate agencies ${location} agent profiles`,
+      `independent real estate agent ${location} WA`,
+    ]
 
-    const tavilyRes = await fetch('https://api.tavily.com/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        api_key: apiKey,
-        query,
-        search_depth: 'advanced',
-        topic: 'general',
-        max_results: Math.min(desiredCount * 3, 20),
-        include_answer: false,
-        include_raw_content: false,
-      }),
-      cache: 'no-store',
-    })
+    const unique = new Map<string, RawAgent>()
+    let lastError: string | null = null
 
-    if (!tavilyRes.ok) {
-      return NextResponse.json(
-        { error: `Tavily returned HTTP ${tavilyRes.status}` },
-        { status: 502 }
-      )
+    for (const query of queries) {
+      const tavilyRes = await fetch('https://api.tavily.com/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: apiKey,
+          query,
+          search_depth: 'advanced',
+          topic: 'general',
+          max_results: 20,
+          include_answer: false,
+          include_raw_content: false,
+        }),
+        cache: 'no-store',
+      })
+
+      if (!tavilyRes.ok) {
+        lastError = `Tavily returned HTTP ${tavilyRes.status}`
+        continue
+      }
+
+      const data = await tavilyRes.json() as TavilyResponse
+      if (data.error) {
+        lastError = data.error
+        continue
+      }
+
+      for (const result of data.results || []) {
+        const agent = resultToAgent(result, String(location || ''))
+        if (!agent) continue
+        const key = `${agent.name.toLowerCase()}|${agent.agency_name.toLowerCase()}`
+        if (!unique.has(key)) unique.set(key, agent)
+        if (unique.size >= desiredCount) break
+      }
+
+      if (unique.size >= desiredCount) break
     }
 
-    const data = await tavilyRes.json() as { results?: TavilyResult[] }
-    const unique = new Map<string, RawAgent>()
-
-    for (const result of data.results || []) {
-      const agent = resultToAgent(result, String(location || ''))
-      if (!agent) continue
-      const key = `${agent.name.toLowerCase()}|${agent.agency_name.toLowerCase()}`
-      if (!unique.has(key)) unique.set(key, agent)
-      if (unique.size >= desiredCount) break
+    if (unique.size === 0) {
+      return NextResponse.json(
+        { error: lastError || 'No agents found from Tavily search' },
+        { status: 502 }
+      )
     }
 
     return NextResponse.json({

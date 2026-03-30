@@ -414,3 +414,21 @@ This section records the discovery-source change and the theme-default change.
   - historical state: discovery used n8n
   - current app state: discovery uses Tavily through Next.js route
 - Future sessions should treat the app-side Tavily route as the live frontend path unless deliberately migrated again
+
+### 🔄 Session Update (2026-03-30 #7) — Codex
+
+Follow-up debugging for “Discover Agents”:
+
+- User reported that entering `50` and clicking Discover Agents still showed:
+  - `Discovery failed, check n8n workflow`
+- Codex verified the current frontend no longer uses n8n for discovery, so that toast message was stale and misleading
+- Codex updated [components/dashboard/DiscoverAgentsButton.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/DiscoverAgentsButton.tsx) to surface the actual backend/config error instead
+- Codex updated [app/api/discover-agents/route.ts](/Users/ambrosevoon/Projects/realestate-outreach/app/api/discover-agents/route.ts) to run multiple Tavily query variants instead of a single search call, which helps larger requested counts such as `50`
+
+**Likely runtime explanation if failure still appears on deployed app**
+- The deployed Vercel environment may not yet have `TAVILY_API_KEY` configured
+- Or the latest GitHub changes may not yet be deployed to Vercel
+- In that case the new UI should now show a more truthful error after redeploy, rather than mentioning n8n
+
+**Verification**
+- `npm run build` passes after the discovery error-handling/search-breadth update

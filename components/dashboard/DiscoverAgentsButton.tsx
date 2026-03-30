@@ -56,7 +56,13 @@ export function DiscoverAgentsButton({ existingLeads, onImported, bulkCreate }: 
     const { data, error } = await discoverAgents(settings.count, settings.location)
     setDiscovering(false)
     if (error || !data?.agents) {
-      toast.error('Discovery failed. Check n8n workflow.')
+      toast.error(
+        typeof data?.error === 'string'
+          ? `Discovery failed: ${data.error}`
+          : error
+            ? `Discovery failed: ${error}`
+            : 'Discovery failed. Check Tavily configuration or redeploy the app.'
+      )
       return
     }
     if (!Array.isArray(data.agents)) {
