@@ -517,3 +517,26 @@ This preserves the day-mode setting while keeping the dashboard content readable
 
 **Verification**
 - `npm run build` passes after the shared button integration
+
+### 🔄 Session Update (2026-03-30 #12) — Codex
+
+Glow button repair after user visual feedback:
+
+- User reported the buttons were not displaying properly
+- Root cause:
+  - glow layers were too large and visually spilled across the header
+  - custom per-button classes like compact sizing and split rounded corners were not being applied to the visible button surface
+- Codex repaired:
+  - [components/ui/shiny-button-1.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/shiny-button-1.tsx)
+  - [components/ui/button.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/button.tsx)
+- Changes made:
+  - reduced default glow size and opacity
+  - tightened animated gradient bounds
+  - removed forced minimum widths from the glow button sizing
+  - applied consumer `className` values to the actual visible button surface so shape/sizing utilities work correctly
+
+**Verification**
+- `npm run build` passes after the glow button repair
+
+**Open verification note**
+- Because this was a visual bug, ideal next verification is a deployed visual check, not just build success

@@ -221,6 +221,8 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Integrated the glow treatment into the shared `components/ui/button.tsx` primitive so the main action buttons across the app inherit the new shiny style automatically (2026-03-30)
 - [x] Preserved plain utility behavior for `ghost` and `link` button variants so top-bar icon controls and low-emphasis actions remain usable and compact (2026-03-30)
 - [x] Verified the glow button integration still builds successfully with `npm run build` (2026-03-30)
+- [x] Fixed the initial glow-button rendering bug by reducing uncontrolled glow bleed and making per-button layout classes apply to the visible button surface rather than only the wrapper (2026-03-30)
+- [x] Verified the repaired glow button system still builds successfully with `npm run build` (2026-03-30)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

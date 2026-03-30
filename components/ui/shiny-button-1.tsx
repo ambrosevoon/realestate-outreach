@@ -3,7 +3,7 @@ import { useId } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
-const shinyButtonVariants = cva('group relative inline-flex shrink-0 cursor-pointer select-none', {
+const shinyButtonVariants = cva('group relative isolate inline-flex shrink-0 cursor-pointer select-none rounded-[1.1rem]', {
   variants: {
     variant: {
       default: '',
@@ -12,9 +12,9 @@ const shinyButtonVariants = cva('group relative inline-flex shrink-0 cursor-poin
       destructive: '',
     },
     size: {
-      default: 'min-h-10 min-w-[9.75rem] text-sm',
-      sm: 'min-h-9 min-w-[8.5rem] text-xs',
-      lg: 'min-h-11 min-w-[11rem] text-base',
+      default: 'h-10 text-sm',
+      sm: 'h-9 text-xs',
+      lg: 'h-11 text-base',
       icon: 'size-10',
     },
   },
@@ -95,10 +95,12 @@ function glowGradient(variant: 'default' | 'outline' | 'secondary' | 'destructiv
 
 export interface GlowButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof shinyButtonVariants> {}
+    VariantProps<typeof shinyButtonVariants> {
+  surfaceClassName?: string
+}
 
 export const GlowButton = React.forwardRef<HTMLButtonElement, GlowButtonProps>(
-  ({ children, className, variant = 'default', size = 'default', ...props }, ref) => {
+  ({ children, className, surfaceClassName, variant = 'default', size = 'default', ...props }, ref) => {
     const resolvedVariant = (variant ?? 'default') as 'default' | 'outline' | 'secondary' | 'destructive'
     const id = useId().replace(/:/g, '')
     const filters = {
@@ -125,36 +127,39 @@ export const GlowButton = React.forwardRef<HTMLButtonElement, GlowButtonProps>(
           </filter>
         </svg>
 
-        <div className={cn(glowVariants({ variant: resolvedVariant }))} style={{ filter: `blur(1.6em) url(#${filters.unopaq})` }}>
+        <div
+          className={cn(glowVariants({ variant: resolvedVariant }), 'pointer-events-none inset-[-6%] opacity-18 group-hover:opacity-40')}
+          style={{ filter: `blur(0.8em) url(#${filters.unopaq})` }}
+        >
           <div
-            className="absolute inset-[-150%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite,woah_4s_infinite]"
+            className="absolute inset-[-35%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite,woah_4s_infinite]"
             style={{ background: glowGradient(resolvedVariant) }}
           />
         </div>
 
         <div
-          className="absolute inset-[-2px] -z-10 overflow-hidden rounded-[1.2rem] opacity-55 transition-opacity duration-300 group-hover:opacity-85"
-          style={{ filter: `blur(0.35em) url(#${filters.unopaq2})` }}
+          className="pointer-events-none absolute inset-[-1px] -z-10 overflow-hidden rounded-[1.2rem] opacity-35 transition-opacity duration-300 group-hover:opacity-65"
+          style={{ filter: `blur(0.16em) url(#${filters.unopaq2})` }}
         >
           <div
-            className="absolute inset-[-150%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite,woah_4s_infinite]"
+            className="absolute inset-[-35%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite,woah_4s_infinite]"
             style={{ background: glowGradient(resolvedVariant) }}
           />
         </div>
 
-        <div className={cn(borderVariants({ variant: resolvedVariant }), size === 'icon' ? 'rounded-[1rem]' : '')}>
+        <div className={cn(borderVariants({ variant: resolvedVariant }), size === 'icon' ? 'rounded-[1rem]' : '', surfaceClassName)}>
           <div className="relative">
             <div
-              className="absolute inset-[-2px] -z-10 overflow-hidden rounded-[1.15rem] opacity-55 transition-opacity duration-300 group-hover:opacity-85"
+              className="pointer-events-none absolute inset-[-1px] -z-10 overflow-hidden rounded-[1.15rem] opacity-45 transition-opacity duration-300 group-hover:opacity-70"
               style={{ filter: `blur(2px) url(#${filters.unopaq3})` }}
             >
               <div
-                className="absolute inset-[-150%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite,woah_4s_infinite]"
+                className="absolute inset-[-35%] group-hover:animate-[speen_8s_cubic-bezier(0.56,0.15,0.28,0.86)_infinite,woah_4s_infinite]"
                 style={{ background: glowGradient(resolvedVariant) }}
               />
             </div>
 
-            <div className={cn(surfaceVariants({ variant: resolvedVariant, size }), size === 'icon' ? 'rounded-[0.95rem]' : '')}>
+            <div className={cn(surfaceVariants({ variant: resolvedVariant, size }), size === 'icon' ? 'rounded-[0.95rem]' : '', surfaceClassName)}>
               {children}
             </div>
           </div>

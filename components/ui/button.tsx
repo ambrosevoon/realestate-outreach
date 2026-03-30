@@ -55,7 +55,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           ref={ref}
           variant={(variant ?? "default") as "default" | "outline" | "secondary" | "destructive"}
           size={(size ?? "default") as "default" | "sm" | "lg" | "icon"}
-          className={className}
+          surfaceClassName={className}
           {...props}
         />
       )
