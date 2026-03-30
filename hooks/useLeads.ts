@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import { normalizeLead, normalizeRawAgent } from '@/lib/leadFormatting'
 import { supabase } from '@/lib/supabase'
 import type { Lead, LeadStatus, RawAgent } from '@/types'
 
@@ -21,7 +22,7 @@ export function useLeads() {
       .select('*')
       .order(sortBy, { ascending: false })
       .order('created_at', { ascending: false })
-    if (!error && data) setLeads(data as Lead[])
+    if (!error && data) setLeads((data as Lead[]).map(normalizeLead))
     setLoading(false)
   }, [sortBy])
 
@@ -30,14 +31,16 @@ export function useLeads() {
   }, [fetchLeads])
 
   const createLead = useCallback(async (input: Omit<Lead, 'id' | 'created_at' | 'updated_at' | 'status' | 'score'>) => {
+    const normalizedInput = normalizeRawAgent(input)
     const { data, error } = await supabase
       .from('re_outreach_leads')
-      .insert({ ...input, status: 'new', score: 0 })
+      .insert({ ...normalizedInput, status: 'new', score: 0 })
       .select()
       .single()
     if (!error && data) {
-      setLeads(prev => [data as Lead, ...prev])
-      return { data: data as Lead, error: null }
+      const normalizedLead = normalizeLead(data as Lead)
+      setLeads(prev => [normalizedLead, ...prev])
+      return { data: normalizedLead, error: null }
     }
     return { data: null, error }
   }, [])
@@ -50,8 +53,9 @@ export function useLeads() {
       .select()
       .single()
     if (!error && data) {
-      setLeads(prev => prev.map(l => (l.id === id ? (data as Lead) : l)))
-      return { data: data as Lead, error: null }
+      const normalizedLead = normalizeLead(data as Lead)
+      setLeads(prev => prev.map(l => (l.id === id ? normalizedLead : l)))
+      return { data: normalizedLead, error: null }
     }
     return { data: null, error }
   }, [])
@@ -67,7 +71,7 @@ export function useLeads() {
       agents.map(agent =>
         supabase
           .from('re_outreach_leads')
-          .insert({ ...agent, email: agent.email || null, status: 'new', score: 0 })
+          .insert({ ...normalizeRawAgent(agent), email: agent.email || null, status: 'new', score: 0 })
           .select()
           .single()
       )
@@ -76,7 +80,7 @@ export function useLeads() {
     let errors = 0
     for (const r of results) {
       if (r.status === 'fulfilled' && r.value.data) {
-        inserted.push(r.value.data as Lead)
+        inserted.push(normalizeLead(r.value.data as Lead))
       } else {
         errors++
       }

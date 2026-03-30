@@ -228,6 +228,11 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Verified the edge-shine-only button refinement still builds successfully with `npm run build` (2026-03-30)
 - [x] Pushed the edge-shine-only refinement to GitHub `main`, deployed it to Vercel production, and visually verified on the live dashboard that grouped buttons now keep a restrained outer-edge shine without the previous section-level glow wash behind them (2026-03-30)
 - [x] Documented the approved glow button pattern for future reuse in `docs/glow-button-style.md`, including design intent, supported variants, usage guidance, and the verified approved state (2026-03-30)
+- [x] Removed the public testing-mode banner from the dashboard while keeping the email override hardcoded internally in `lib/n8n.ts` (2026-03-30)
+- [x] Added a shared lead-formatting normalization layer in `lib/leadFormatting.ts` so messy scraped discovery titles are cleaned before display and before new Tavily-discovered leads are inserted (2026-03-30)
+- [x] Applied lead normalization to both existing fetched leads and newly created/imported leads via `hooks/useLeads.ts` so bad names are cleaned without requiring an immediate database migration (2026-03-30)
+- [x] Verified the cleanup logic against the reported examples: `Mark Hay Realty Group: Real Estate Agents and Property...` now resolves cleanly, and `Home` with agency `Lally Real Estate` now resolves to `Lally Real Estate` instead of the junk title (2026-03-30)
+- [x] Verified the dashboard cleanup changes still build successfully with `npm run build` (2026-03-30)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

@@ -611,3 +611,37 @@ Reusable documentation for the glow button system:
 **Reuse guidance**
 - Future work in this repo should prefer the shared [components/ui/button.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/button.tsx) primitive
 - If the glow style needs refinement, update [components/ui/shiny-button-1.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/shiny-button-1.tsx) rather than duplicating custom button effects in feature components
+
+### 🔄 Session Update (2026-03-30 #17) — Codex
+
+Pre-share cleanup based on stakeholder comments:
+
+- Removed the visible testing-mode banner from the dashboard:
+  - [app/dashboard/page.tsx](/Users/ambrosevoon/Projects/realestate-outreach/app/dashboard/page.tsx)
+- Removed the now-unused banner pulse CSS:
+  - [app/globals.css](/Users/ambrosevoon/Projects/realestate-outreach/app/globals.css)
+- Kept the actual testing safeguard unchanged:
+  - [lib/n8n.ts](/Users/ambrosevoon/Projects/realestate-outreach/lib/n8n.ts)
+  - outbound email destination remains hardcoded to `ambrosevoon@gmail.com`
+
+Lead-name cleanup for messy scraped discovery results:
+
+- Added a shared formatter/normalizer:
+  - [lib/leadFormatting.ts](/Users/ambrosevoon/Projects/realestate-outreach/lib/leadFormatting.ts)
+- Updated Tavily discovery parsing to normalize names/agencies before returning agents:
+  - [app/api/discover-agents/route.ts](/Users/ambrosevoon/Projects/realestate-outreach/app/api/discover-agents/route.ts)
+- Updated lead fetching and insert paths so normalization applies to:
+  - existing fetched leads shown in the table
+  - newly discovered/imported leads inserted into Supabase
+  - manually created leads
+  - file: [hooks/useLeads.ts](/Users/ambrosevoon/Projects/realestate-outreach/hooks/useLeads.ts)
+
+**Targeted verification**
+- `npm run build` passes after the cleanup
+- Targeted formatter check:
+  - `Mark Hay Realty Group: Real Estate Agents and Property...` normalizes to `Mark Hay Realty Group`
+  - `Home` with agency `Lally Real Estate` normalizes to `Lally Real Estate`
+
+**Why this approach was chosen**
+- It cleans the current UI immediately without needing a risky one-off database migration
+- It also cleans future Tavily-discovered leads at import time so the issue does not keep reappearing

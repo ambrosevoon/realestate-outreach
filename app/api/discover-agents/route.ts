@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { cleanAgencyName, cleanLeadName, normalizeRawAgent } from '@/lib/leadFormatting'
 import type { RawAgent } from '@/types'
 
 type TavilyResult = {
@@ -24,11 +25,17 @@ function titleToNameAndAgency(title: string) {
 
   const [first = '', second = ''] = parts
 
+  const cleanedAgency = cleanAgencyName(second || first)
+  const cleanedName = cleanLeadName(first, cleanedAgency)
+
   if (first && second) {
-    return { name: first, agency_name: second }
+    return { name: cleanedName, agency_name: cleanedAgency }
   }
 
-  return { name: first || 'Unknown Agent', agency_name: second || first || 'Unknown Agency' }
+  return {
+    name: cleanedName || 'Unknown Agent',
+    agency_name: cleanedAgency || 'Unknown Agency',
+  }
 }
 
 function extractEmail(text: string) {
@@ -69,14 +76,14 @@ function resultToAgent(result: TavilyResult, location: string): RawAgent | null 
 
   if (!name || !agency_name) return null
 
-  return {
+  return normalizeRawAgent({
     name,
     agency_name,
     email: extractEmail(content),
     phone: extractPhone(content),
     suburb: extractSuburb(`${title} ${content}`, location),
     website: url,
-  }
+  })
 }
 
 export async function POST(request: Request) {
