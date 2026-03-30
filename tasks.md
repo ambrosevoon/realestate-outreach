@@ -130,6 +130,18 @@
 
 ---
 
+## ✅ Phase 9 — Bug Fix: Send Email for New Leads
+**Completed: 2026-03-30**
+
+- [x] Identified root cause: `Fetch Prior Subjects` HTTP node returns 0 items for leads with no prior email history, causing n8n to silently stop the workflow before sending (2026-03-30)
+- [x] Fixed `Fetch Prior Subjects` node: enabled `fullResponse: true` so it always outputs 1 item regardless of empty Supabase response (2026-03-30)
+- [x] Fixed `Build Email` node: updated `usedSubjects` logic to parse `item.json.body` from the full response object instead of iterating `.all()` (2026-03-30)
+- [x] Verified fix: all 7 workflow nodes now execute, activity logged to Supabase, Gmail send confirmed (execution 42351) (2026-03-30)
+
+> **Note:** This was a live n8n workflow fix — no app code changes required.
+
+---
+
 ## Infrastructure Notes (2026-03-30)
 
 ### Vercel Deployment
