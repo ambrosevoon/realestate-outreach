@@ -235,6 +235,9 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Verified the dashboard cleanup changes still build successfully with `npm run build` (2026-03-30)
 - [x] Polished the leads table rendering so rows no longer repeat the same cleaned label twice when `name` and `agency_name` resolve to the same value (2026-03-30)
 - [x] Pushed the dashboard/shareability cleanup to GitHub `main`, deployed it to Vercel production (`dpl_6gcgjDzQMCTWxZMnQJvpoFutTcEb` then `dpl_HLNSA9X6ZFqGZRR19Mi4y66f1hQe` after the table polish), and verified live that the testing banner is gone and cleaned rows like `Mark Hay Realty Group` no longer display duplicated labels (2026-03-30)
+- [x] Reworked the dashboard mobile header layout so utility icons stay in the top row and the main action buttons fit below as a compact grid instead of clipping offscreen (2026-03-30)
+- [x] Added shorter mobile button labels for Import / Discover / Add while preserving the full desktop labels (2026-03-30)
+- [x] Verified the responsive header changes build successfully with `npm run build` and visually fit at a 390px-wide viewport in local browser verification (2026-03-30)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

@@ -116,40 +116,68 @@ export default function DashboardPage() {
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_20%),linear-gradient(180deg,rgba(0,0,0,0.14),rgba(0,0,0,0.58)_46%,rgba(2,4,10,0.88)_100%)]" />
 
       {/* Top Bar */}
-      <header className="sticky top-0 z-40 bg-transparent">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-          <SmartFlowLogo size="sm" />
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLogout}
-              className="h-8 w-8 cursor-pointer text-stone-500 hover:text-white"
-              title="Sign out"
-            >
-              <LogOut className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={fetchLeads}
-              className="h-8 w-8 cursor-pointer text-stone-500 hover:text-white"
-              title="Refresh"
-            >
-              <RefreshCw className="w-4 h-4" />
-            </Button>
+      <header className="sticky top-0 z-40 border-b border-white/6 bg-black/10 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:h-14 sm:py-0">
+          <div className="flex items-start justify-between gap-3 sm:items-center">
+            <SmartFlowLogo size="sm" className="min-w-0 shrink" />
+            <div className="flex items-center gap-2 sm:hidden">
+              <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                className="h-8 w-8 shrink-0 cursor-pointer text-stone-500 hover:text-white"
+                title="Sign out"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={fetchLeads}
+                className="h-8 w-8 shrink-0 cursor-pointer text-stone-500 hover:text-white"
+                title="Refresh"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-0 sm:flex sm:flex-nowrap sm:items-center sm:justify-end">
+            <div className="hidden items-center gap-2 sm:flex">
+              <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                className="h-8 w-8 shrink-0 cursor-pointer text-stone-500 hover:text-white"
+                title="Sign out"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={fetchLeads}
+                className="h-8 w-8 shrink-0 cursor-pointer text-stone-500 hover:text-white"
+                title="Refresh"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </Button>
+            </div>
             <CSVImportDialog
               existingLeads={leads}
               onImported={handleImported}
               bulkCreate={bulkCreateLeads}
+              className="w-full sm:w-auto"
             />
             <DiscoverAgentsButton
               existingLeads={leads}
               onImported={handleImported}
               bulkCreate={bulkCreateLeads}
+              className="w-full sm:w-auto"
             />
-            <CreateLeadDialog onCreate={createLead} />
+            <CreateLeadDialog onCreate={createLead} className="col-span-2 w-full sm:col-span-1 sm:w-auto" />
           </div>
         </div>
       </header>

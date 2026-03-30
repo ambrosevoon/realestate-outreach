@@ -55,9 +55,10 @@ interface Props {
   existingLeads: Lead[]
   onImported: (count: number) => void
   bulkCreate: (agents: RawAgent[]) => Promise<{ inserted: number; errors: number }>
+  className?: string
 }
 
-export function CSVImportDialog({ existingLeads, onImported, bulkCreate }: Props) {
+export function CSVImportDialog({ existingLeads, onImported, bulkCreate, className }: Props) {
   const [previewOpen, setPreviewOpen] = useState(false)
   const [parsed, setParsed] = useState<RawAgent[]>([])
   const [importing, setImporting] = useState(false)
@@ -102,10 +103,11 @@ export function CSVImportDialog({ existingLeads, onImported, bulkCreate }: Props
         variant="outline"
         size="sm"
         onClick={() => fileRef.current?.click()}
-        className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white h-8 text-xs cursor-pointer"
+        className={`h-8 justify-center border-slate-700 text-xs text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer ${className ?? ''}`}
       >
         <Upload className="w-3.5 h-3.5 mr-1.5" />
-        Import CSV
+        <span className="sm:hidden">Import</span>
+        <span className="hidden sm:inline">Import CSV</span>
       </Button>
       <input
         ref={fileRef}

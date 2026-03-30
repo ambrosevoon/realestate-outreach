@@ -671,3 +671,35 @@ Additional presentation polish:
 **Evidence**
 - Live verification screenshot:
   - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-30T07-40-03-235Z.png`
+
+### 🔄 Session Update (2026-03-30 #18) — Codex
+
+Mobile dashboard header responsiveness:
+
+- User reported the dashboard action buttons were clipping offscreen on mobile
+- Root cause:
+  - the header action area was still structured like a single desktop toolbar
+  - full desktop button labels were too wide for narrow screens
+
+**Changes made**
+- Updated [app/dashboard/page.tsx](/Users/ambrosevoon/Projects/realestate-outreach/app/dashboard/page.tsx) so mobile now uses:
+  - top row: logo + theme/logout/refresh utility icons
+  - second row: compact action-button grid for import, discover, and add
+- Updated button-trigger components with mobile-friendly labels and width behavior:
+  - [components/dashboard/CSVImportDialog.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/CSVImportDialog.tsx)
+  - [components/dashboard/DiscoverAgentsButton.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/DiscoverAgentsButton.tsx)
+  - [components/dashboard/CreateLeadDialog.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/CreateLeadDialog.tsx)
+
+**Mobile behavior**
+- `Import CSV` becomes `Import` on mobile
+- `Discover Agents` becomes `Discover` on mobile
+- `Add Lead` becomes `Add` on mobile
+- Desktop keeps the original full labels
+
+**Verification**
+- `npm run build` passes after the responsive changes
+- Local browser verification at `390x844` shows the header actions fitting cleanly without clipping
+
+**Evidence**
+- Local mobile verification screenshot:
+  - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-30T07-54-37-118Z.png`

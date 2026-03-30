@@ -19,6 +19,7 @@ type CreateInput = Omit<Lead, 'id' | 'created_at' | 'updated_at' | 'status' | 's
 
 interface Props {
   onCreate: (input: CreateInput) => Promise<{ data: Lead | null; error: unknown }>
+  className?: string
 }
 
 const empty: CreateInput = {
@@ -31,7 +32,7 @@ const empty: CreateInput = {
   owner_notes: '',
 }
 
-export function CreateLeadDialog({ onCreate }: Props) {
+export function CreateLeadDialog({ onCreate, className }: Props) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState<CreateInput>(empty)
@@ -56,9 +57,10 @@ export function CreateLeadDialog({ onCreate }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5 cursor-pointer">
+        <Button size="sm" className={`h-8 justify-center gap-1.5 bg-blue-600 text-white hover:bg-blue-700 cursor-pointer ${className ?? ''}`}>
           <Plus className="w-4 h-4" />
-          Add Lead
+          <span className="sm:hidden">Add</span>
+          <span className="hidden sm:inline">Add Lead</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-lg">

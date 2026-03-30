@@ -29,9 +29,10 @@ interface Props {
   existingLeads: Lead[]
   onImported: (count: number) => void
   bulkCreate: (agents: RawAgent[]) => Promise<{ inserted: number; errors: number }>
+  className?: string
 }
 
-export function DiscoverAgentsButton({ existingLeads, onImported, bulkCreate }: Props) {
+export function DiscoverAgentsButton({ existingLeads, onImported, bulkCreate, className }: Props) {
   const [settings, setSettings] = useState<DiscoverSettings>({ count: 20, location: '' })
   const [discovering, setDiscovering] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
@@ -95,14 +96,15 @@ export function DiscoverAgentsButton({ existingLeads, onImported, bulkCreate }: 
           size="sm"
           onClick={handleDiscover}
           disabled={discovering}
-          className="bg-violet-600 hover:bg-violet-700 text-white h-8 text-xs rounded-r-none cursor-pointer"
+          className={`h-8 min-w-0 flex-1 justify-center rounded-r-none bg-violet-600 text-xs text-white hover:bg-violet-700 cursor-pointer ${className ?? ''}`}
         >
           {discovering ? (
             <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
           ) : (
             <Globe className="w-3.5 h-3.5 mr-1.5" />
           )}
-          Discover Agents
+          <span className="sm:hidden">Discover</span>
+          <span className="hidden sm:inline">Discover Agents</span>
         </Button>
 
         <Popover>
@@ -110,7 +112,7 @@ export function DiscoverAgentsButton({ existingLeads, onImported, bulkCreate }: 
             <Button
               variant="outline"
               size="sm"
-              className="border-slate-700 border-l-0 rounded-l-none text-slate-400 hover:text-white hover:bg-slate-800 h-8 w-8 p-0 cursor-pointer"
+              className="h-8 w-8 shrink-0 rounded-l-none border-slate-700 border-l-0 p-0 text-slate-400 hover:bg-slate-800 hover:text-white cursor-pointer"
             >
               <Settings2 className="w-3.5 h-3.5" />
             </Button>
