@@ -1294,3 +1294,61 @@ AI draft copy polish in the live n8n workflow:
   - deployment id: `dpl_8KwM6eJn3YH49912wDxxYBWrqMtq`
   - production deployment URL: `https://realestate-outreach-50hjnv1be-ambrosevoon-4152s-projects.vercel.app`
   - aliased URL: `https://realestate-outreach-sand.vercel.app`
+
+## 2026-03-31 - Codex session: email-required discovery filter
+
+**User goal**
+- User clarified that if an agent does not have an email address, discovery should skip them for now
+- Rationale: the current system’s outreach path is email-first, so phone-only or agency-only leads are not actionable
+
+**What Codex changed**
+- Updated `app/api/discover-agents/route.ts`
+- Discovery now requires:
+  - a detected email address
+  - a non-generic reachable mailbox prefix
+- Added stricter mailbox filtering so generic inboxes are rejected, including prefixes such as:
+  - `admin`
+  - `info`
+  - `hello`
+  - `contact`
+  - `office`
+  - `reception`
+  - `support`
+  - `marketing`
+- Also added small extra guards for generic role-style names such as `Corporate Head Office`
+
+**Why this matters**
+- Earlier discovery improvements made the dataset more person-first, but many remaining candidates still only exposed:
+  - no email at all
+  - or a generic office inbox
+- Those are weak leads for the current workflow because SmartFlow cannot send a useful personalized outbound email if there is no direct reachable email target
+
+**Verification**
+- `npm run build` passed
+- Live production verification after deploy:
+  - `POST https://realestate-outreach-sand.vercel.app/api/discover-agents`
+  - payload `{"count":12,"location":"Canning Vale"}`
+  - response: HTTP 200
+  - result set narrowed to one directly reachable agent:
+    - Wayne Adlem / `wayne@nakededgerealestate.com.au`
+- Second live check:
+  - `POST https://realestate-outreach-sand.vercel.app/api/discover-agents`
+  - payload `{"count":12,"location":"Perth"}`
+  - response:
+    - `{"error":"No agents found from Tavily search"}`
+
+**Honest quality note**
+- This is a stricter and more honest dataset now
+- It will return fewer leads, sometimes dramatically fewer, because it prefers “contactable now” over “maybe enrich later”
+- So the tradeoff is:
+  - much higher actionability
+  - much lower volume
+- If more volume is needed later, the right next step is not to relax the rule blindly, but to add enrichment sources that can actually surface direct agent emails
+
+**Git / deploy**
+- Pushed to GitHub `main` in commit:
+  - `874ad78` `fix(search): require reachable agent emails`
+- Deployed to Vercel production:
+  - deployment id: `dpl_ADJ2nBQPPtrbeZsoysXwFzJ4xbsa`
+  - production deployment URL: `https://realestate-outreach-hh5b06pdv-ambrosevoon-4152s-projects.vercel.app`
+  - aliased URL: `https://realestate-outreach-sand.vercel.app`

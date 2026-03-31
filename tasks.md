@@ -293,6 +293,13 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Verified locally via `POST http://localhost:3000/api/discover-agents` for `Canning Vale` and `Perth` that the route now returns primarily named agents instead of agency-only rows or obvious directory junk (2026-03-31)
 - [x] Pushed the person-first discovery refinement to GitHub `main` in commit `76b305f` and deployed it to Vercel production (`dpl_8KwM6eJn3YH49912wDxxYBWrqMtq`, production URL `realestate-outreach-50hjnv1be-ambrosevoon-4152s-projects.vercel.app`, aliased to `https://realestate-outreach-sand.vercel.app`) (2026-03-31)
 - [x] Verified live production `POST https://realestate-outreach-sand.vercel.app/api/discover-agents` returns HTTP 200 for both `{"count":12,"location":"Canning Vale"}` and `{"count":12,"location":"Perth"}`, with the returned lists now focused on named agents like Wayne Adlem, Paul Williams, Gurneet Bhatia, John Phillips, and Nadija Begovich rather than agency-only records (2026-03-31)
+- [x] Tightened discovery again so agent records must have a usable email address before they are returned, because agency-only or phone-only leads cannot be reached by the current outbound email workflow (2026-03-31)
+- [x] Added a stricter reachable-email rule that rejects generic mailbox prefixes like `info@`, `admin@`, `hello@`, `contact@`, and similar variants so discovery favors directly usable agent inboxes over office inboxes (2026-03-31)
+- [x] Verified the email-required discovery route still builds successfully with `npm run build` (2026-03-31)
+- [x] Pushed the reachable-email discovery filter to GitHub `main` in commit `874ad78` and deployed it to Vercel production (`dpl_ADJ2nBQPPtrbeZsoysXwFzJ4xbsa`, production URL `realestate-outreach-hh5b06pdv-ambrosevoon-4152s-projects.vercel.app`, aliased to `https://realestate-outreach-sand.vercel.app`) (2026-03-31)
+- [x] Verified live production discovery after the email-required filter:
+  - `POST https://realestate-outreach-sand.vercel.app/api/discover-agents` with `{"count":12,"location":"Canning Vale"}` returns 1 agent with a reachable personal email (`Wayne Adlem`)
+  - `POST https://realestate-outreach-sand.vercel.app/api/discover-agents` with `{"count":12,"location":"Perth"}` currently returns `{"error":"No agents found from Tavily search"}` because the remaining candidate pages do not expose a reachable agent email under the stricter rule (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 
