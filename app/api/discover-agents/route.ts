@@ -13,6 +13,16 @@ type TavilyResponse = {
   error?: string
 }
 
+type CandidateAgent = RawAgent & {
+  source_urls?: string[]
+  source_labels?: string[]
+}
+
+type DiscoveryQuery = {
+  label: string
+  query: string
+}
+
 function clean(text: string) {
   return text.replace(/\s+/g, ' ').trim()
 }
@@ -47,6 +57,11 @@ function extractPhone(text: string) {
   return match?.[0]?.replace(/\s+/g, ' ').trim()
 }
 
+function normalizePhoneDigits(value?: string) {
+  if (!value) return ''
+  return value.replace(/\D/g, '')
+}
+
 function extractSuburb(text: string, location: string) {
   const cleanedLocation = location.trim()
   if (!cleanedLocation) return undefined
@@ -65,25 +80,209 @@ function normalizeWebsite(url?: string) {
   }
 }
 
-function resultToAgent(result: TavilyResult, location: string): RawAgent | null {
+function extractWebsiteHost(url?: string) {
+  if (!url) return ''
+  try {
+    return new URL(url).host.replace(/^www\./, '').toLowerCase()
+  } catch {
+    return ''
+  }
+}
+
+function looksLikeAgencyLabel(value?: string) {
+  const cleaned = clean(value || '').toLowerCase()
+  if (!cleaned) return false
+  return /\b(realty|real estate|property|properties|group|agency|estate|homes|brokers?|team|partners)\b/.test(cleaned)
+}
+
+function looksLikePersonLabel(value?: string) {
+  const cleaned = clean(value || '')
+  if (!cleaned || cleaned.length > 48) return false
+  const words = cleaned.split(/\s+/).filter(Boolean)
+  if (words.length < 2 || words.length > 4) return false
+  return words.every(word => /^[A-Z][a-z'’-]+$/.test(word))
+}
+
+function scoreName(value?: string, agency?: string) {
+  const cleaned = clean(value || '')
+  if (!cleaned) return 0
+  if (looksLikePersonLabel(cleaned)) return 4
+  if (agency && cleaned.toLowerCase() === agency.toLowerCase()) return 1
+  if (looksLikeAgencyLabel(cleaned)) return 1
+  return cleaned.length > 18 ? 2 : 3
+}
+
+function scoreAgency(value?: string) {
+  const cleaned = clean(value || '')
+  if (!cleaned) return 0
+  if (looksLikeAgencyLabel(cleaned)) return 4
+  return cleaned.length > 18 ? 3 : 2
+}
+
+function pickBetterName(current: string | undefined, incoming: string | undefined, agency: string) {
+  const currentScore = scoreName(current, agency)
+  const incomingScore = scoreName(incoming, agency)
+  if (incomingScore > currentScore) return incoming
+  if (incomingScore === currentScore && (incoming || '').length > (current || '').length) return incoming
+  return current
+}
+
+function pickBetterAgency(current?: string, incoming?: string) {
+  const currentScore = scoreAgency(current)
+  const incomingScore = scoreAgency(incoming)
+  if (incomingScore > currentScore) return incoming
+  if (incomingScore === currentScore && (incoming || '').length > (current || '').length) return incoming
+  return current
+}
+
+function deriveAgencyFromHost(host: string) {
+  if (!host) return ''
+  const root = host
+    .replace(/\.(com|com\.au|net|net\.au|org|org\.au|au)$/i, '')
+    .split('.')
+    .filter(Boolean)
+    .pop()
+
+  if (!root) return ''
+
+  const humanized = root
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b[a-z]/g, char => char.toUpperCase())
+
+  return cleanAgencyName(humanized)
+}
+
+function resultToAgent(result: TavilyResult, location: string, label: string): CandidateAgent | null {
   const title = clean(result.title || '')
   const content = clean(result.content || '')
   const url = normalizeWebsite(result.url)
+  const host = extractWebsiteHost(url)
 
   if (!title) return null
 
   const { name, agency_name } = titleToNameAndAgency(title)
+  const derivedAgency = deriveAgencyFromHost(host)
+  const bestAgency = pickBetterAgency(agency_name, derivedAgency) || agency_name
 
-  if (!name || !agency_name) return null
+  if (!name || !bestAgency) return null
 
-  return normalizeRawAgent({
+  const normalized = normalizeRawAgent({
     name,
-    agency_name,
+    agency_name: bestAgency,
     email: extractEmail(content),
     phone: extractPhone(content),
     suburb: extractSuburb(`${title} ${content}`, location),
     website: url,
   })
+
+  return {
+    ...normalized,
+    source_urls: url ? [url] : [],
+    source_labels: [label],
+  }
+}
+
+function mergeAgents(current: CandidateAgent, incoming: CandidateAgent) {
+  const mergedAgency =
+    pickBetterAgency(current.agency_name, incoming.agency_name) ||
+    current.agency_name ||
+    incoming.agency_name ||
+    'Unknown Agency'
+
+  const mergedName =
+    pickBetterName(current.name, incoming.name, mergedAgency) ||
+    current.name ||
+    incoming.name ||
+    mergedAgency
+
+  const source_urls = Array.from(new Set([...(current.source_urls || []), ...(incoming.source_urls || [])]))
+  const source_labels = Array.from(new Set([...(current.source_labels || []), ...(incoming.source_labels || [])]))
+
+  return normalizeRawAgent({
+    name: mergedName,
+    agency_name: mergedAgency,
+    email: current.email || incoming.email,
+    phone: current.phone || incoming.phone,
+    suburb: current.suburb || incoming.suburb,
+    website: current.website || incoming.website,
+    source_urls,
+    source_labels,
+  } as CandidateAgent) as CandidateAgent
+}
+
+function candidateToRawAgent(agent: CandidateAgent): RawAgent {
+  return normalizeRawAgent({
+    name: agent.name,
+    agency_name: agent.agency_name,
+    email: agent.email,
+    phone: agent.phone,
+    suburb: agent.suburb,
+    website: agent.website,
+  })
+}
+
+function completenessScore(agent: CandidateAgent) {
+  return [
+    Boolean(agent.email),
+    Boolean(agent.phone),
+    Boolean(agent.website),
+    Boolean(agent.suburb),
+    Boolean(agent.name && !looksLikeAgencyLabel(agent.name)),
+  ].filter(Boolean).length + (agent.source_labels?.length || 0) * 0.25
+}
+
+function agentKeys(agent: CandidateAgent) {
+  const keys = new Set<string>()
+  const email = clean(agent.email || '').toLowerCase()
+  const phone = normalizePhoneDigits(agent.phone)
+  const websiteHost = extractWebsiteHost(agent.website)
+  const name = clean(agent.name).toLowerCase()
+  const agency = clean(agent.agency_name).toLowerCase()
+  const suburb = clean(agent.suburb || '').toLowerCase()
+
+  if (email) keys.add(`email:${email}`)
+  if (phone) keys.add(`phone:${phone}`)
+  if (websiteHost && name) keys.add(`site-name:${websiteHost}|${name}`)
+  if (websiteHost && agency) keys.add(`site-agency:${websiteHost}|${agency}`)
+  if (name && agency) keys.add(`name-agency:${name}|${agency}`)
+  if (agency && suburb) keys.add(`agency-suburb:${agency}|${suburb}`)
+  return Array.from(keys)
+}
+
+function buildQueries(location: string, desiredCount: number): DiscoveryQuery[] {
+  const normalizedLocation = clean(location || 'Perth')
+  const depthHint = desiredCount > 20 ? 'contact email phone team' : 'contact details'
+
+  return [
+    {
+      label: 'broad_search',
+      query: `real estate agents ${normalizedLocation} ${depthHint}`,
+    },
+    {
+      label: 'agency_websites',
+      query: `site:.com.au ${normalizedLocation} real estate team email phone`,
+    },
+    {
+      label: 'reiwa',
+      query: `site:reiwa.com.au ${normalizedLocation} real estate agent agency`,
+    },
+    {
+      label: 'realestate_com_au',
+      query: `site:realestate.com.au ${normalizedLocation} real estate agent agency profile`,
+    },
+    {
+      label: 'domain',
+      query: `site:domain.com.au ${normalizedLocation} real estate agent agency`,
+    },
+    {
+      label: 'ratemyagent',
+      query: `site:ratemyagent.com.au ${normalizedLocation} real estate agent`,
+    },
+    {
+      label: 'google_business',
+      query: `${normalizedLocation} real estate agency phone website`,
+    },
+  ]
 }
 
 export async function POST(request: Request) {
@@ -96,18 +295,12 @@ export async function POST(request: Request) {
     }
 
     const desiredCount = Math.max(1, Math.min(50, Number(count) || 10))
-    const queries = [
-      `real estate agents ${location} contact email phone agency website`,
-      `property agents ${location} real estate agency contact details`,
-      `realty group ${location} sales agent email phone`,
-      `top real estate agencies ${location} agent profiles`,
-      `independent real estate agent ${location} WA`,
-    ]
-
-    const unique = new Map<string, RawAgent>()
+    const queries = buildQueries(String(location || ''), desiredCount)
+    const unique = new Map<string, CandidateAgent>()
+    const aliases = new Map<string, string>()
     let lastError: string | null = null
 
-    for (const query of queries) {
+    for (const { label, query } of queries) {
       const tavilyRes = await fetch('https://api.tavily.com/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -135,10 +328,28 @@ export async function POST(request: Request) {
       }
 
       for (const result of data.results || []) {
-        const agent = resultToAgent(result, String(location || ''))
+        const agent = resultToAgent(result, String(location || ''), label)
         if (!agent) continue
-        const key = `${agent.name.toLowerCase()}|${agent.agency_name.toLowerCase()}`
-        if (!unique.has(key)) unique.set(key, agent)
+
+        const keys = agentKeys(agent)
+        const matchedPrimaryKey = keys.find(key => aliases.has(key))
+
+        if (matchedPrimaryKey) {
+          const primaryKey = aliases.get(matchedPrimaryKey)!
+          const existing = unique.get(primaryKey)
+          if (existing) {
+            const merged = mergeAgents(existing, agent)
+            unique.set(primaryKey, merged)
+            for (const key of agentKeys(merged)) aliases.set(key, primaryKey)
+          }
+        } else {
+          const primaryKey =
+            keys[0] ||
+            `fallback:${agent.name.toLowerCase()}|${agent.agency_name.toLowerCase()}|${unique.size}`
+          unique.set(primaryKey, agent)
+          for (const key of keys) aliases.set(key, primaryKey)
+        }
+
         if (unique.size >= desiredCount) break
       }
 
@@ -153,9 +364,12 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      agents: Array.from(unique.values()),
+      agents: Array.from(unique.values())
+        .sort((a, b) => completenessScore(b) - completenessScore(a))
+        .slice(0, desiredCount)
+        .map(candidateToRawAgent),
       total: unique.size,
-      source: 'tavily',
+      source: 'tavily_multi_source_merge',
     })
   } catch (error) {
     return NextResponse.json(

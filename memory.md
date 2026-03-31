@@ -1150,3 +1150,44 @@ AI draft copy polish in the live n8n workflow:
 - Deployed to Vercel production:
   - deployment id: `dpl_FMJZTuyXaJVxfMwo2BuJeAaciV18`
   - production alias: `https://realestate-outreach-sand.vercel.app`
+
+## 2026-03-31 - Codex session: Tavily multi-source discovery merge
+
+**User goal**
+- User wanted discovery to pull from more than one source and combine partial details into one richer lead instead of creating duplicate versions of the same agent
+- Example target behavior:
+  - source A has email
+  - source B has phone
+  - source C has website/suburb
+  - system returns one enriched lead instead of multiple partial leads
+
+**What Codex changed**
+- Updated `app/api/discover-agents/route.ts`
+- Discovery now still uses Tavily as the search backend, but searches across multiple source-oriented query types:
+  - broad web search
+  - agency websites
+  - REIWA
+  - realestate.com.au
+  - Domain
+  - RateMyAgent
+  - Google-business-style search
+- Added merge logic that combines candidate records using several matching signals:
+  - exact email
+  - normalized phone
+  - website host + name
+  - website host + agency
+  - exact normalized name + agency
+  - agency + suburb
+- Added completeness ranking so richer merged leads are returned first
+- Internal merge metadata stays server-side only; returned `agents` are stripped back to insert-safe `RawAgent` fields for Supabase
+
+**Why this matters**
+- The original discovery flow only deduped by exact `name|agency`
+- That was too shallow for multi-source enrichment
+- The new route can now enrich a lead across multiple pages instead of simply returning the first partial match it sees
+
+**Verification**
+- `npm run build` passed after the route update
+- Next verification step after deployment:
+  - hit live `POST /api/discover-agents`
+  - inspect returned rows for richer merged details and fewer obvious duplicates
