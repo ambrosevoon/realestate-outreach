@@ -28,6 +28,8 @@ const BLOCKED_HOST_FRAGMENTS = [
   'pagesjaunes',
   'easternontariolocal',
   'top10realestateagent',
+  'oneflare.com.au',
+  'allhomes.com.au',
 ]
 
 const DIRECTORY_TITLE_PATTERNS = [
@@ -47,7 +49,40 @@ const GENERIC_NAME_PATTERNS = [
   /^home$/i,
   /^listings?(?:\s*&\s*more)?$/i,
   /^perth$/i,
+  /^domain$/i,
+  /^reiwa$/i,
 ]
+
+const PORTAL_BRAND_PATTERNS = [/^domain$/i, /^reiwa$/i, /^realestate$/i, /^ratemyagent$/i]
+
+const GENERIC_AGENCY_PATTERNS = [
+  /^real estate$/i,
+  /^property$/i,
+  /^realty$/i,
+  /\breal estate agent\b/i,
+  /\breal estate agency\b/i,
+  /\bsales associate\b/i,
+  /\bsales representative\b/i,
+  /\bproperty consultant\b/i,
+  /\bview listings\b/i,
+  /\blocal real estate agency\b/i,
+  /\bcontact agent\b/i,
+]
+
+const GENERIC_EMAIL_PREFIXES = new Set([
+  'admin',
+  'hello',
+  'info',
+  'sales',
+  'contact',
+  'office',
+  'reception',
+  'enquiries',
+  'enquiry',
+  'support',
+  'team',
+  'marketing',
+])
 
 function clean(text: string) {
   return text.replace(/\s+/g, ' ').trim()
@@ -74,6 +109,13 @@ function titleToNameAndAgency(title: string) {
   }
 }
 
+function splitParts(value: string) {
+  return value
+    .split(/[-|•·:]/)
+    .map(part => clean(part))
+    .filter(Boolean)
+}
+
 function extractEmail(text: string) {
   return text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0]
 }
@@ -90,6 +132,15 @@ function extractPhone(text: string) {
 function normalizePhoneDigits(value?: string) {
   if (!value) return ''
   return value.replace(/\D/g, '')
+}
+
+function normalizeLocalityKey(value?: string) {
+  return clean(value || '')
+    .toLowerCase()
+    .replace(/\b(?:wa|nsw|vic|qld|sa|tas|act|nt)\b/g, '')
+    .replace(/\b\d{4}\b/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function extractSuburb(text: string, location: string) {
@@ -119,6 +170,31 @@ function extractWebsiteHost(url?: string) {
   }
 }
 
+function isPortalHost(host: string) {
+  return ['domain.com.au', 'reiwa.com.au', 'realestate.com.au', 'ratemyagent.com.au'].some(
+    portal => host === portal || host.endsWith(`.${portal}`)
+  )
+}
+
+function hasAgentProfilePath(url?: string) {
+  if (!url) return false
+
+  try {
+    const parsed = new URL(url)
+    const host = parsed.host.replace(/^www\./, '').toLowerCase()
+    const path = parsed.pathname.toLowerCase()
+
+    if (host.includes('domain.com.au')) return path.includes('/real-estate-agent/')
+    if (host.includes('reiwa.com.au')) return path.includes('/real-estate-agent/')
+    if (host.includes('realestate.com.au')) return path.includes('/agent/')
+    if (host.includes('ratemyagent.com.au')) return path.includes('/real-estate-agent/') || path.includes('/agent-profile/')
+
+    return true
+  } catch {
+    return false
+  }
+}
+
 function looksLikeAgencyLabel(value?: string) {
   const cleaned = clean(value || '').toLowerCase()
   if (!cleaned) return false
@@ -133,6 +209,49 @@ function looksLikePersonLabel(value?: string) {
   return words.every(word => /^[A-Z][a-z'’-]+$/.test(word))
 }
 
+function extractNameFromEmail(email?: string) {
+  if (!email) return ''
+  const local = email.split('@')[0]?.toLowerCase() || ''
+  if (!local || GENERIC_EMAIL_PREFIXES.has(local)) return ''
+  const parts = local.split(/[._-]+/).filter(Boolean)
+  if (parts.length < 2 || parts.length > 3) return ''
+  const candidate = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ')
+  return looksLikePersonLabel(candidate) ? candidate : ''
+}
+
+function buildLocationTokenSet(location: string) {
+  return new Set(
+    clean(location)
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(Boolean)
+  )
+}
+
+function isLocationLikeName(value: string, location: string) {
+  const tokens = value.toLowerCase().split(/\s+/).filter(Boolean)
+  const locationTokens = buildLocationTokenSet(location)
+  if (tokens.length === 0) return false
+  return tokens.every(token => locationTokens.has(token) || ['wa', 'nsw', 'vic', 'qld', 'sa', 'tas', 'act', 'nt', 'perth', 'south', 'north', 'east', 'west', 'canning', 'vale', 'scarborough', 'thornlie', 'maylands', 'fremantle', 'tuart', 'hill'].includes(token))
+}
+
+function resolvePersonName(result: TavilyResult, location: string, agencyName: string, email?: string) {
+  const title = clean(result.title || '')
+
+  for (const part of splitParts(title)) {
+    if (!looksLikePersonLabel(part)) continue
+    if (looksLikeAgencyLabel(part)) continue
+    if (isLocationLikeName(part, location)) continue
+    if (part.toLowerCase() === agencyName.toLowerCase()) continue
+    return part
+  }
+
+  const emailName = extractNameFromEmail(email)
+  if (emailName && emailName.toLowerCase() !== agencyName.toLowerCase()) return emailName
+
+  return ''
+}
+
 function scoreName(value?: string, agency?: string) {
   const cleaned = clean(value || '')
   if (!cleaned) return 0
@@ -145,6 +264,8 @@ function scoreName(value?: string, agency?: string) {
 function scoreAgency(value?: string) {
   const cleaned = clean(value || '')
   if (!cleaned) return 0
+  if (PORTAL_BRAND_PATTERNS.some(pattern => pattern.test(cleaned))) return 0
+  if (GENERIC_AGENCY_PATTERNS.some(pattern => pattern.test(cleaned))) return 1
   if (looksLikeAgencyLabel(cleaned)) return 4
   return cleaned.length > 18 ? 3 : 2
 }
@@ -176,10 +297,61 @@ function deriveAgencyFromHost(host: string) {
   if (!root) return ''
 
   const humanized = root
+    .replace(/realestate/gi, ' real estate ')
+    .replace(/realty/gi, ' realty ')
+    .replace(/properties/gi, ' properties ')
+    .replace(/property/gi, ' property ')
+    .replace(/group/gi, ' group ')
+    .replace(/agency/gi, ' agency ')
     .replace(/[-_]+/g, ' ')
     .replace(/\b[a-z]/g, char => char.toUpperCase())
 
   return cleanAgencyName(humanized)
+}
+
+function deriveAgencyFromEmail(email?: string) {
+  const domain = email?.split('@')[1]?.toLowerCase()
+  if (!domain) return ''
+  return deriveAgencyFromHost(domain)
+}
+
+function extractAgencyFromContent(content: string) {
+  const patterns = [
+    /part of the team at\s+([A-Z][A-Za-z0-9&' -]{2,60})/i,
+    /from\s+([A-Z][A-Za-z0-9&' -]{2,60})\s+has sold/i,
+    /located at .*?\b([A-Z][A-Za-z0-9&' -]{2,60})\b/i,
+  ]
+
+  for (const pattern of patterns) {
+    const match = content.match(pattern)?.[1]
+    const cleaned = cleanAgencyName(match)
+    if (!cleaned) continue
+    if (PORTAL_BRAND_PATTERNS.some(portal => portal.test(cleaned))) continue
+    if (GENERIC_AGENCY_PATTERNS.some(generic => generic.test(cleaned))) continue
+    return cleaned
+  }
+
+  return ''
+}
+
+function resolveAgencyName(result: TavilyResult, personName: string, fallbackAgency: string) {
+  const titleParts = splitParts(result.title || '')
+  const content = clean(result.content || '')
+
+  for (const part of titleParts) {
+    if (!part || part.toLowerCase() === personName.toLowerCase()) continue
+    if (PORTAL_BRAND_PATTERNS.some(pattern => pattern.test(part))) continue
+    if (GENERIC_AGENCY_PATTERNS.some(pattern => pattern.test(part))) continue
+    if (looksLikePersonLabel(part)) continue
+    return cleanAgencyName(part)
+  }
+
+  const contentAgency = extractAgencyFromContent(content)
+  if (contentAgency) return contentAgency
+
+  if (PORTAL_BRAND_PATTERNS.some(pattern => pattern.test(fallbackAgency))) return ''
+  if (GENERIC_AGENCY_PATTERNS.some(pattern => pattern.test(fallbackAgency))) return ''
+  return fallbackAgency
 }
 
 function isAustralianHost(host: string) {
@@ -193,6 +365,7 @@ function shouldSkipResult(result: TavilyResult) {
 
   if (!title || !host) return false
   if (BLOCKED_HOST_FRAGMENTS.some(fragment => host.includes(fragment))) return true
+  if (isPortalHost(host) && !hasAgentProfilePath(result.url)) return true
   if (!isAustralianHost(host) && !host.includes('reiwa.com.au') && !host.includes('domain.com.au') && !host.includes('realestate.com.au') && !host.includes('ratemyagent.com.au')) {
     return true
   }
@@ -220,18 +393,37 @@ function resultToAgent(result: TavilyResult, location: string, label: string): C
 
   const { name, agency_name } = titleToNameAndAgency(title)
   const derivedAgency = deriveAgencyFromHost(host)
-  const bestAgency = pickBetterAgency(agency_name, derivedAgency) || agency_name
+  const email = extractEmail(content)
+  const emailAgency = deriveAgencyFromEmail(email)
+  const provisionalAgency =
+    pickBetterAgency(pickBetterAgency(agency_name, derivedAgency), emailAgency) ||
+    agency_name
+  const personName = resolvePersonName(result, location, provisionalAgency, email)
+  const resolvedAgency = personName ? resolveAgencyName(result, personName, provisionalAgency) : ''
+  const bestAgency = pickBetterAgency(provisionalAgency, resolvedAgency) || resolvedAgency || provisionalAgency
 
-  if (!name || !bestAgency) return null
+  if (!personName || !bestAgency) return null
 
   const normalized = normalizeRawAgent({
-    name: GENERIC_NAME_PATTERNS.some(pattern => pattern.test(name)) ? bestAgency : sanitizeLeadName(name),
+    name: sanitizeLeadName(personName),
     agency_name: bestAgency,
-    email: extractEmail(content),
+    email,
     phone: extractPhone(content),
     suburb: extractSuburb(`${title} ${content}`, location),
     website: url,
   })
+
+  if (!looksLikePersonLabel(normalized.name) || normalized.name === 'Unknown Agency') return null
+  if (GENERIC_NAME_PATTERNS.some(pattern => pattern.test(normalized.name))) return null
+  const fallbackAgency =
+    normalized.agency_name === 'Unknown Agency'
+      ? pickBetterAgency(emailAgency, derivedAgency) || emailAgency || derivedAgency || normalized.agency_name
+      : normalized.agency_name
+
+  if (!fallbackAgency || fallbackAgency === 'Unknown Agency') return null
+  if (PORTAL_BRAND_PATTERNS.some(pattern => pattern.test(fallbackAgency))) return null
+
+  if (normalized.name.toLowerCase() === fallbackAgency.toLowerCase()) return null
 
   const normalizedLocation = clean(location || '')
   const cleanedSuburb =
@@ -241,6 +433,7 @@ function resultToAgent(result: TavilyResult, location: string, label: string): C
 
   return {
     ...normalized,
+    agency_name: fallbackAgency,
     suburb: cleanedSuburb,
     source_urls: url ? [url] : [],
     source_labels: [label],
@@ -303,49 +496,51 @@ function agentKeys(agent: CandidateAgent) {
   const websiteHost = extractWebsiteHost(agent.website)
   const name = clean(agent.name).toLowerCase()
   const agency = clean(agent.agency_name).toLowerCase()
-  const suburb = clean(agent.suburb || '').toLowerCase()
+  const suburb = normalizeLocalityKey(agent.suburb)
 
   if (email) keys.add(`email:${email}`)
   if (phone) keys.add(`phone:${phone}`)
+  if (name) keys.add(`name:${name}`)
   if (websiteHost && name) keys.add(`site-name:${websiteHost}|${name}`)
   if (websiteHost && agency) keys.add(`site-agency:${websiteHost}|${agency}`)
   if (name && agency) keys.add(`name-agency:${name}|${agency}`)
+  if (name && suburb) keys.add(`name-suburb:${name}|${suburb}`)
   if (agency && suburb) keys.add(`agency-suburb:${agency}|${suburb}`)
   return Array.from(keys)
 }
 
 function buildQueries(location: string, desiredCount: number): DiscoveryQuery[] {
   const normalizedLocation = clean(location || 'Perth')
-  const depthHint = desiredCount > 20 ? 'contact email phone team' : 'contact details'
+  const depthHint = desiredCount > 20 ? 'agent profile email phone team' : 'agent contact details'
 
   return [
     {
-      label: 'broad_search',
-      query: `real estate agents ${normalizedLocation} ${depthHint}`,
+      label: 'agent_profiles',
+      query: `real estate agent ${normalizedLocation} ${depthHint}`,
     },
     {
       label: 'agency_websites',
-      query: `site:.com.au ${normalizedLocation} real estate team email phone`,
+      query: `site:.com.au ${normalizedLocation} real estate agent profile email phone`,
     },
     {
       label: 'reiwa',
-      query: `site:reiwa.com.au ${normalizedLocation} real estate agent agency`,
+      query: `site:reiwa.com.au ${normalizedLocation} real estate agent profile`,
     },
     {
       label: 'realestate_com_au',
-      query: `site:realestate.com.au ${normalizedLocation} real estate agent agency profile`,
+      query: `site:realestate.com.au ${normalizedLocation} real estate agent profile`,
     },
     {
       label: 'domain',
-      query: `site:domain.com.au ${normalizedLocation} real estate agent agency`,
+      query: `site:domain.com.au ${normalizedLocation} real estate agent profile`,
     },
     {
       label: 'ratemyagent',
-      query: `site:ratemyagent.com.au ${normalizedLocation} real estate agent`,
+      query: `site:ratemyagent.com.au ${normalizedLocation} real estate agent profile`,
     },
     {
-      label: 'google_business',
-      query: `${normalizedLocation} real estate agency phone website`,
+      label: 'broad_search',
+      query: `${normalizedLocation} property consultant sales representative real estate`,
     },
   ]
 }
