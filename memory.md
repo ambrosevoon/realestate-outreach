@@ -1024,3 +1024,15 @@ AI draft copy polish in the live n8n workflow:
 **Verification**
 - `npm run build` passed after the spacing adjustment
 - This change affects both the in-app preview and the real sent email body because both now use the shared rendered HTML template in `lib/emailTemplate.ts`
+
+**Git / deploy / visual check**
+- Pushed to GitHub `main` in commit `eebb1d2` with message:
+  - `fix(email): improve pain box spacing`
+- Deployed to Vercel production:
+  - deployment id: `dpl_6Ln7G4wSqRvW3kFdaVmU87tizVFE`
+  - production alias: `https://realestate-outreach-sand.vercel.app`
+- Rendered the updated email HTML locally in a browser and captured a visual verification screenshot:
+  - `.playwright-cli/page-2026-03-31T07-02-37-027Z.png`
+- Result:
+  - the pain-point box now has visibly more separation between the bullet dot and the copy
+  - the stacked pain-point rows also have more breathing room vertically

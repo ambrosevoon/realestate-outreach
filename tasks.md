@@ -267,6 +267,7 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Pushed the send-path fix to GitHub `main` in commit `bac2b66` and deployed it to Vercel production (`dpl_ySZUQeoqqzjDkSZuFxFkiKgPkQY9`), aliased at `https://realestate-outreach-sand.vercel.app` (2026-03-31)
 - [x] Increased the pain-point bullet spacing in `lib/emailTemplate.ts` so the highlighted box has more separation between the bullet dot and the copy, plus slightly more vertical breathing room between rows (2026-03-31)
 - [x] Verified the pain-point spacing update still builds successfully with `npm run build` (2026-03-31)
+- [x] Pushed the pain-point spacing polish to GitHub `main` in commit `eebb1d2`, deployed it to Vercel production (`dpl_6Ln7G4wSqRvW3kFdaVmU87tizVFE`), and visually verified the rendered email HTML now shows a wider bullet-to-text gap inside the highlighted pain-point box (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 
