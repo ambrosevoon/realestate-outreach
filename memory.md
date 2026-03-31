@@ -938,3 +938,17 @@ AI draft copy polish in the live n8n workflow:
   - blunter problem framing
   - more realistic pain-box copy
   - cleaner CTA
+
+**Scene-based hook refinement**
+- User wanted the opening hook to stop sounding like commentary about the market and instead feel like a lived moment from an agent’s week
+- Codex updated the live `Generate Draft` prompt again with a hook-specific override:
+  - force scene-based openings
+  - start from a recognisable moment in time
+  - add visible tension such as stacked enquiries or trying to switch off while replies are still waiting
+  - explicitly ban commentary-led openings such as “In today’s market...” or “Response time matters...”
+- Re-verified the live webhook after the hook override
+
+**Latest live hook result**
+- Latest verified sample opened with:
+  - `It's Sunday evening after a full day of opens, and you've still got a stack of new enquiries waiting for replies while you're trying to switch off.`
+- This is materially closer to the requested “snapshot / lived moment” style than the earlier abstract openings
