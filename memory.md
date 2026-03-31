@@ -916,3 +916,25 @@ AI draft copy polish in the live n8n workflow:
   - stronger pain-box heading style
   - cleaner CTA
 - The model can still occasionally choose specific numbers in hooks on some generations, but the social-proof phrasing was successfully removed in the latest verified sample
+
+**Additional realism pass**
+- User wanted one more reduction in polished SaaS tone:
+  - identity delayed further and made softer
+  - problem paragraph made more blunt
+  - pain points rewritten to feel more like lived day-to-day agent pressure
+  - solution paragraph stripped back from feature-sales phrasing toward outcome language only
+- Codex updated the live `Generate Draft` prompt again to explicitly steer toward:
+  - softer identity lines like “This is something I’ve been helping agents deal with...”
+  - more direct consequence language around leads going cold and first-responder advantage
+  - operational pain points like weekend stack-up, late-night replies, leads slipping through, and enquiries across multiple channels
+  - a shorter CTA in the exact “Open to a quick 10-minute look…” style
+
+**Latest verification**
+- Re-tested live webhook:
+  - `POST https://n8n.srv823907.hstgr.cloud/webhook/generate-draft`
+  - response still returned HTTP 200 and valid JSON
+- Latest verified sample showed:
+  - softer intro line
+  - blunter problem framing
+  - more realistic pain-box copy
+  - cleaner CTA
