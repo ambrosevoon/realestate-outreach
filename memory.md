@@ -802,3 +802,28 @@ Day-mode polish for buttons and popup surfaces:
 **Intent of this pass**
 - Day-mode buttons should still feel premium, but with a light glass surface and dark readable text
 - Drawers/popups should inherit the light theme rather than sitting as dark islands on a bright dashboard
+
+**Verification**
+- `npm run build` passes after the light-mode button/popup styling pass
+- Local production-browser verification confirms:
+  - dashboard action buttons render with light-compatible surfaces and readable dark text in day mode
+  - the lead drawer opens with a bright card surface, readable labels, and day-mode-compatible action controls
+
+**Production verification**
+- Pushed commit:
+  - `3214f40` — `fix(ui): improve light mode buttons and popups`
+- Deployed production build:
+  - `dpl_8HMUegRWfbKSYs6njGyBvTzk7xfY`
+- Verified live on:
+  - `https://realestate-outreach-sand.vercel.app/dashboard`
+
+**Live result**
+- Day-mode header buttons no longer look like night-mode controls on a bright page
+- The lead drawer now reads as a proper light-theme popup rather than a dark overlay island
+- Button labels, drawer labels, notes/status fields, and action controls are readable in day mode
+
+**Live evidence**
+- Production light-mode header verification screenshot:
+  - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-31T04-29-44-818Z.png`
+- Production light-mode lead drawer verification screenshot:
+  - `/Users/ambrosevoon/Projects/.playwright-cli/live-drawer-daymode-2026-03-31-vicky.png`
