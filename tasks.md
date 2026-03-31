@@ -254,6 +254,8 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Added a local backup snapshot of the pre-edit Generate Draft workflow at `docs/n8n-generate-draft-workflow-backup-2026-03-31.json` for traceability (2026-03-31)
 - [x] Verified the live `/webhook/generate-draft` endpoint returns HTTP 200 with the new structured draft content mapped back into `{ subject, body, content }` response shape (2026-03-31)
 - [x] Confirmed important architecture caveat: the AI Draft workflow currently improves the preview draft copy and draft subject generation, but the live send-email body is still produced by the separate `[Realestate Outreach] Send Email` workflow template and only reuses the draft subject (2026-03-31)
+- [x] Tightened the live Generate Draft prompt again to push more scenario-based hooks, blunter problem framing, sharper uppercase pain-box headings, and one-line low-friction CTAs while further banning social-proof language and made-up enquiry counts (2026-03-31)
+- [x] Re-verified the live `/webhook/generate-draft` endpoint returns HTTP 200 after the second prompt polish pass and produces stronger output without the earlier “agents using this” phrasing (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

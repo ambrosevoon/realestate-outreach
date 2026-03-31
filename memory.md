@@ -892,3 +892,27 @@ AI draft copy polish in the live n8n workflow:
 
 **Important next-step caveat**
 - If the goal is for the final sent outreach email body to match the polished AI draft copy as well, the next change must be made in `[Realestate Outreach] Send Email` (`gkDnKkwCC4YEPoyu`), because that workflow still builds its own HTML body independently and currently only reuses the draft subject
+
+**Follow-up polish in the same session**
+- User asked for one more pass with an even stricter copy brief:
+  - scenario-based hook first
+  - delayed identity
+  - blunt problem framing with consequence
+  - tighter pain-box items
+  - outcome-first solution
+  - low-friction slightly assumptive CTA
+- Codex updated the live `Generate Draft` system prompt again to reinforce:
+  - no social proof
+  - no fabricated exact enquiry counts unless provided
+  - no casual headings like `Sound familiar?`
+  - sharper uppercase-style pain-box headings
+  - CTA kept to one sentence
+- Re-verified the live webhook after the prompt adjustment
+
+**Latest live draft result**
+- Output now trends closer to the desired tone benchmark:
+  - more operational pressure in the hook
+  - clearer commercial consequence in the problem paragraph
+  - stronger pain-box heading style
+  - cleaner CTA
+- The model can still occasionally choose specific numbers in hooks on some generations, but the social-proof phrasing was successfully removed in the latest verified sample
