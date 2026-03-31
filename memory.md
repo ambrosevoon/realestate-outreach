@@ -997,3 +997,10 @@ AI draft copy polish in the live n8n workflow:
     - `This email came from the provided body_html, not the fallback workflow template.`
     - `Marker: 2026-03-31-1433-awst`
 - This confirms the real send path now uses the provided rendered body content instead of regenerating the stale fallback email copy
+
+**Git / deploy**
+- App + documentation changes pushed to GitHub `main` in commit `bac2b66` with message:
+  - `fix(email): send generated draft html`
+- Deployed to Vercel production:
+  - deployment id: `dpl_ySZUQeoqqzjDkSZuFxFkiKgPkQY9`
+  - production alias: `https://realestate-outreach-sand.vercel.app`

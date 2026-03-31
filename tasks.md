@@ -264,6 +264,7 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Updated the live n8n workflow `[Realestate Outreach] Send Email` (`gkDnKkwCC4YEPoyu`) so the `Build Email` node now uses incoming `body_html` when provided and only falls back to the older hardcoded template if no rendered draft HTML is supplied (2026-03-31)
 - [x] Verified the app-side send-path fix still builds successfully with `npm run build` (2026-03-31)
 - [x] Verified the live send-email webhook with a real Gmail delivery using a unique marker subject/body: the delivered message body matched the provided `body_html` instead of the stale fallback template, confirming the actual sent email path now honors the generated content (2026-03-31)
+- [x] Pushed the send-path fix to GitHub `main` in commit `bac2b66` and deployed it to Vercel production (`dpl_ySZUQeoqqzjDkSZuFxFkiKgPkQY9`), aliased at `https://realestate-outreach-sand.vercel.app` (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 
