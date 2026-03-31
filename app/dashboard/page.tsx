@@ -112,11 +112,11 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-page relative min-h-screen overflow-hidden bg-[#02040a] text-white">
-      <ShaderBackdrop variant="full" className="fixed inset-0" />
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_20%),linear-gradient(180deg,rgba(0,0,0,0.14),rgba(0,0,0,0.58)_46%,rgba(2,4,10,0.88)_100%)]" />
+      <ShaderBackdrop variant="full" className="dashboard-backdrop fixed inset-0" />
+      <div className="dashboard-overlay pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_20%),linear-gradient(180deg,rgba(0,0,0,0.14),rgba(0,0,0,0.58)_46%,rgba(2,4,10,0.88)_100%)]" />
 
       {/* Top Bar */}
-      <header className="sticky top-0 z-40 border-b border-white/6 bg-black/10 backdrop-blur-md">
+      <header className="dashboard-header sticky top-0 z-40 border-b border-white/6 bg-black/10 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:h-14 sm:py-0">
           <div className="flex items-start justify-between gap-3 sm:items-center">
             <SmartFlowLogo size="sm" className="min-w-0 shrink" />
@@ -184,19 +184,19 @@ export default function DashboardPage() {
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-8 pt-10 md:pt-12 space-y-6">
         <section className="space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.22em] text-stone-200 backdrop-blur-sm">
+          <div className="dashboard-eyebrow inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.22em] text-stone-200 backdrop-blur-sm">
             <Sparkles className="h-3.5 w-3.5 text-amber-300" />
             Premium outbound system
           </div>
           <div className="max-w-5xl">
-            <h1 className="text-5xl font-semibold leading-[0.92] tracking-[-0.06em] text-white md:text-7xl lg:text-[6.2rem]">
+            <h1 className="dashboard-hero-title text-5xl font-semibold leading-[0.92] tracking-[-0.06em] text-white md:text-7xl lg:text-[6.2rem]">
               <span className="block bg-[linear-gradient(135deg,#f8edd4_0%,#92edf0_28%,#d6a15c_72%,#ffffff_100%)] bg-[length:180%_180%] bg-clip-text text-transparent">
                 SmartFlow
               </span>
               <span className="block font-black text-white">Outreach</span>
               <span className="block font-light italic text-white/78">Command Center</span>
             </h1>
-            <p className="mt-5 max-w-2xl text-lg font-light leading-relaxed text-stone-200/88 md:text-xl">
+            <p className="dashboard-hero-copy mt-5 max-w-2xl text-lg font-light leading-relaxed text-stone-200/88 md:text-xl">
               Discover agents, launch AI-assisted email campaigns, and manage follow-up from a single premium operating layer built to sell automation before the first demo.
             </p>
           </div>
@@ -211,7 +211,7 @@ export default function DashboardPage() {
         <AnalyticsSection leads={leads} />
 
         {/* Toolbar */}
-        <div id="pipeline" className="flex flex-col sm:flex-row gap-3 items-start sm:items-center rounded-[1.75rem] border border-white/8 bg-white/[0.05] px-4 py-4 backdrop-blur-md shadow-[0_30px_80px_-52px_rgba(0,0,0,0.95)]">
+        <div id="pipeline" className="dashboard-toolbar flex flex-col sm:flex-row gap-3 items-start sm:items-center rounded-[1.75rem] border border-white/8 bg-white/[0.05] px-4 py-4 backdrop-blur-md shadow-[0_30px_80px_-52px_rgba(0,0,0,0.95)]">
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
             <Input
@@ -264,7 +264,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Table */}
-        <div className="rounded-[2rem] border border-white/6 bg-black/8 backdrop-blur-[2px]">
+        <div className="dashboard-panel rounded-[2rem] border border-white/6 bg-black/8 backdrop-blur-[2px]">
           <LeadsTable
             leads={paginated}
             loading={loading}

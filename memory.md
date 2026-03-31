@@ -722,3 +722,43 @@ Mobile dashboard header responsiveness:
 **Live evidence**
 - Production mobile verification screenshot:
   - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-30T07-59-13-088Z.png`
+
+### 🔄 Session Update (2026-03-31 #19) — Codex
+
+Day mode redesign for the dashboard:
+
+- User reported that toggling day/night mode barely changed the visual design and that the current dashboard still felt like a night-mode surface
+- Goal: make light mode genuinely bright while preserving text readability and keeping dark mode visually strong
+
+**Changes made**
+- Updated [app/dashboard/page.tsx](/Users/ambrosevoon/Projects/realestate-outreach/app/dashboard/page.tsx) to add stable hook classes for theme-aware dashboard surfaces:
+  - `dashboard-backdrop`
+  - `dashboard-overlay`
+  - `dashboard-header`
+  - `dashboard-eyebrow`
+  - `dashboard-hero-title`
+  - `dashboard-hero-copy`
+  - `dashboard-toolbar`
+  - `dashboard-panel`
+- Updated dashboard components with reusable theme-aware surface/text hooks:
+  - [components/dashboard/StatsCards.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/StatsCards.tsx)
+  - [components/dashboard/AnalyticsSection.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/AnalyticsSection.tsx)
+  - [components/dashboard/LeadsTable.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/dashboard/LeadsTable.tsx)
+  - [components/ThemeToggle.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ThemeToggle.tsx)
+- Added dashboard-specific light-mode CSS in [app/globals.css](/Users/ambrosevoon/Projects/realestate-outreach/app/globals.css) for:
+  - brighter shader treatment
+  - pale atmospheric overlay
+  - white/soft-slate glass surfaces
+  - dark readable text values in cards, table, and hero copy
+
+**Verification**
+- `npm run build` passes
+- Local light-mode verification screenshot:
+  - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-31T04-04-06-051Z.png`
+- Local dark-mode sanity-check screenshot:
+  - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-31T04-05-19-307Z.png`
+
+**Result**
+- Light mode now reads as a true day surface
+- Dark mode still preserves the premium shader atmosphere
+- Text contrast is materially better in day mode across the hero, cards, analytics, and table

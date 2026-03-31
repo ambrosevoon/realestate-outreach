@@ -125,22 +125,22 @@ export function AnalyticsSection({ leads }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
+      <div className="dashboard-section-heading flex items-center gap-2">
         <TrendingUp className="w-4 h-4 text-amber-300" />
         <h2 className="text-sm font-medium text-stone-300 uppercase tracking-[0.22em]">Analytics</h2>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Email Activity Chart */}
-        <div className="lg:col-span-2 rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 backdrop-blur-sm">
+        <div className="dashboard-panel lg:col-span-2 rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 backdrop-blur-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">Emails Sent</p>
-              <p className="text-lg font-semibold text-white mt-0.5">
+              <p className="dashboard-panel-label text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">Emails Sent</p>
+              <p className="dashboard-panel-value text-lg font-semibold text-white mt-0.5">
                 {activities.filter(a => a.type === 'email_sent').length} total
               </p>
             </div>
-            <span className="text-xs text-stone-500">Last 14 days</span>
+            <span className="dashboard-panel-muted text-xs text-stone-500">Last 14 days</span>
           </div>
           <ResponsiveContainer width="100%" height={120}>
             <BarChart data={emailChartData} barSize={14} margin={{ top: 4, right: 0, bottom: 0, left: -20 }}>
@@ -174,15 +174,15 @@ export function AnalyticsSection({ leads }: Props) {
         {/* Pace Tracker + Reply Rate */}
         <div className="flex flex-col gap-4">
           {/* Pace Tracker */}
-          <div className="flex-1 rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 backdrop-blur-sm">
+          <div className="dashboard-panel flex-1 rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 backdrop-blur-sm">
             <div className="flex items-center gap-1.5 mb-3">
               <Zap className="w-3.5 h-3.5 text-amber-400" />
-              <p className="text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">Pace Tracker</p>
+              <p className="dashboard-panel-label text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">Pace Tracker</p>
             </div>
             {pace ? (
               <div className="space-y-3">
                 <div>
-                  <div className="mb-1 flex justify-between text-xs text-stone-500">
+                  <div className="dashboard-panel-muted mb-1 flex justify-between text-xs text-stone-500">
                     <span>{pace.contacted} contacted</span>
                     <span>{pace.remaining} left</span>
                   </div>
@@ -194,15 +194,15 @@ export function AnalyticsSection({ leads }: Props) {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-center">
-                  <div className="rounded-2xl border border-white/8 bg-black/20 p-2">
-                    <p className="text-base font-semibold text-white">{pace.dailyRate}</p>
-                    <p className="text-xs text-stone-500">per day</p>
+                  <div className="dashboard-panel-inset rounded-2xl border border-white/8 bg-black/20 p-2">
+                    <p className="dashboard-panel-value text-base font-semibold text-white">{pace.dailyRate}</p>
+                    <p className="dashboard-panel-muted text-xs text-stone-500">per day</p>
                   </div>
-                  <div className="rounded-2xl border border-white/8 bg-black/20 p-2">
-                    <p className="text-base font-semibold text-white">
+                  <div className="dashboard-panel-inset rounded-2xl border border-white/8 bg-black/20 p-2">
+                    <p className="dashboard-panel-value text-base font-semibold text-white">
                       {pace.daysLeft !== null ? `${pace.daysLeft}d` : '—'}
                     </p>
-                    <p className="text-xs text-stone-500">days left</p>
+                    <p className="dashboard-panel-muted text-xs text-stone-500">days left</p>
                   </div>
                 </div>
               </div>
@@ -212,11 +212,11 @@ export function AnalyticsSection({ leads }: Props) {
           </div>
 
           {/* Reply Rate */}
-          <div className="rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 backdrop-blur-sm">
-            <p className="mb-3 text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">Reply Rate</p>
+          <div className="dashboard-panel rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 backdrop-blur-sm">
+            <p className="dashboard-panel-label mb-3 text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">Reply Rate</p>
             <div className="flex items-end gap-2">
-              <p className="text-3xl font-semibold text-white">{replyRate}%</p>
-              <p className="mb-1 text-xs text-stone-500">of contacted</p>
+              <p className="dashboard-panel-value text-3xl font-semibold text-white">{replyRate}%</p>
+              <p className="dashboard-panel-muted mb-1 text-xs text-stone-500">of contacted</p>
             </div>
             <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-900/80">
               <div
@@ -229,8 +229,8 @@ export function AnalyticsSection({ leads }: Props) {
       </div>
 
       {/* Status Breakdown */}
-      <div className="rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 backdrop-blur-sm">
-        <p className="mb-4 text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">Status Breakdown</p>
+      <div className="dashboard-panel rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 backdrop-blur-sm">
+        <p className="dashboard-panel-label mb-4 text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">Status Breakdown</p>
         {statusData.length === 0 ? (
           <p className="text-sm text-stone-500">No leads yet</p>
         ) : (

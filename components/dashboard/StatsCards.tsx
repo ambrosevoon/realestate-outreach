@@ -62,17 +62,17 @@ export function StatsCards({ leads }: Props) {
       {stats.map(({ label, value, sub, icon: Icon, color, bg, border }) => (
         <div
           key={label}
-          className={`rounded-[1.6rem] border ${border} ${bg} p-5 flex flex-col gap-3 backdrop-blur-sm shadow-[0_24px_80px_-48px_rgba(0,0,0,0.9)]`}
+          className={`dashboard-card rounded-[1.6rem] border ${border} ${bg} p-5 flex flex-col gap-3 backdrop-blur-sm shadow-[0_24px_80px_-48px_rgba(0,0,0,0.9)]`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">
+            <span className="dashboard-card-label text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">
               {label}
             </span>
             <Icon className={`w-4 h-4 ${color}`} />
           </div>
           <div>
-            <p className="text-2xl font-semibold text-white">{value}</p>
-            <p className="mt-0.5 text-xs text-stone-500">{sub}</p>
+            <p className="dashboard-card-value text-2xl font-semibold text-white">{value}</p>
+            <p className="dashboard-card-sub mt-0.5 text-xs text-stone-500">{sub}</p>
           </div>
         </div>
       ))}

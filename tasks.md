@@ -239,6 +239,10 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Added shorter mobile button labels for Import / Discover / Add while preserving the full desktop labels (2026-03-30)
 - [x] Verified the responsive header changes build successfully with `npm run build` and visually fit at a 390px-wide viewport in local browser verification (2026-03-30)
 - [x] Pushed the mobile header fix to GitHub `main`, deployed it to Vercel production (`dpl_Bh14rposBH94t2TzXohgrQnCaGTM`), and verified live at a 390px-wide viewport that the action buttons no longer clip off the right edge (2026-03-30)
+- [x] Reworked dashboard light mode so day mode uses a genuinely bright visual treatment instead of reusing the dark shader surface with minimal text overrides (2026-03-31)
+- [x] Added dashboard-specific light theme surfaces for the backdrop, overlay, header, hero, cards, analytics panels, toolbar, and leads table to improve readability in day mode (2026-03-31)
+- [x] Verified locally that the light-mode dashboard is bright and readable while dark mode still preserves the existing premium shader look (2026-03-31)
+- [x] Verified the day-mode redesign still builds successfully with `npm run build` (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

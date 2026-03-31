@@ -70,7 +70,7 @@ export function LeadsTable({ leads, loading, onRowClick, sortBy, setSortBy, sele
   }
 
   return (
-    <div className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] backdrop-blur-sm">
+    <div className="dashboard-table overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] backdrop-blur-sm">
       <Table>
         <TableHeader>
           <TableRow className="border-white/8 hover:bg-transparent">
