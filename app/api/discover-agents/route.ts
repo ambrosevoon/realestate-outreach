@@ -33,8 +33,11 @@ const BLOCKED_HOST_FRAGMENTS = [
 const DIRECTORY_TITLE_PATTERNS = [
   /\bfind a real estate agent\b/i,
   /\btop\s+\d+\s+real estate agents?\b/i,
+  /\btop\s+[a-z]+\s+real estate agencies\b/i,
   /\b\d+\s+real estate agencies active\b/i,
+  /\breal estate agencies in [a-z ,0-9]+\b/i,
   /\blocal business\b/i,
+  /\blistings?\s*&\s*more\b/i,
 ]
 
 const GENERIC_NAME_PATTERNS = [
@@ -197,6 +200,15 @@ function shouldSkipResult(result: TavilyResult) {
   return DIRECTORY_TITLE_PATTERNS.some(pattern => pattern.test(title) || pattern.test(content))
 }
 
+function sanitizeLeadName(value: string) {
+  return clean(
+    value
+      .replace(/\b(?:WA|NSW|VIC|QLD|SA|TAS|ACT|NT)\b$/i, '')
+      .replace(/\b(?:real estate agent|real estate agency|agency|agent)\b$/i, '')
+      .replace(/\s{2,}/g, ' ')
+  )
+}
+
 function resultToAgent(result: TavilyResult, location: string, label: string): CandidateAgent | null {
   const title = clean(result.title || '')
   const content = clean(result.content || '')
@@ -213,7 +225,7 @@ function resultToAgent(result: TavilyResult, location: string, label: string): C
   if (!name || !bestAgency) return null
 
   const normalized = normalizeRawAgent({
-    name: GENERIC_NAME_PATTERNS.some(pattern => pattern.test(name)) ? bestAgency : name,
+    name: GENERIC_NAME_PATTERNS.some(pattern => pattern.test(name)) ? bestAgency : sanitizeLeadName(name),
     agency_name: bestAgency,
     email: extractEmail(content),
     phone: extractPhone(content),
@@ -221,8 +233,15 @@ function resultToAgent(result: TavilyResult, location: string, label: string): C
     website: url,
   })
 
+  const normalizedLocation = clean(location || '')
+  const cleanedSuburb =
+    normalized.suburb && normalized.name && normalized.suburb.toLowerCase().includes(normalized.name.toLowerCase())
+      ? normalizedLocation || normalized.suburb
+      : normalized.suburb
+
   return {
     ...normalized,
+    suburb: cleanedSuburb,
     source_urls: url ? [url] : [],
     source_labels: [label],
   }
