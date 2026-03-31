@@ -1103,3 +1103,11 @@ AI draft copy polish in the live n8n workflow:
   - restrained dark-mode glow buttons
   - bright readable light-mode buttons
   - bright readable popup buttons in day mode
+
+**Top-level reusable export**
+- User wanted a copy accessible from a top-level GitHub path for reuse in future projects
+- Codex added:
+  - `design-system/buttons/glow-button/GlowButton.tsx`
+  - `design-system/buttons/glow-button/README.md`
+  - `design-system/buttons/glow-button/glow-button-style.md`
+- This gives the project a stable root-level reuse location separate from app-specific docs
