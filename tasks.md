@@ -273,6 +273,9 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Pushed the popup button readability fix to GitHub `main` in commit `60224f4`, deployed it to Vercel production (`dpl_ALoQxqAFyoLSo5yXitvGbhohdNfE`), and visually verified live on the Scarborough lead drawer that `Save Notes`, `Send Email`, `AI Draft`, `Schedule Follow-up`, `Mark Won`, and `Mark Lost` are now clearly readable in day mode (2026-03-31)
 - [x] Reorganized the glow button style guide under `docs/design/buttons/glow-button-style.md` and updated it to explicitly document both dark-mode and light-mode approved states, including popup/drawer behavior for portal-rendered buttons (2026-03-31)
 - [x] Added a top-level reusable export for the glow button under `design-system/buttons/glow-button/`, including a reusable component copy, reuse README, and a lightweight copy of the button style guide so future projects can pull it directly from a stable root GitHub path (2026-03-31)
+- [x] Fixed the actual sent email pain-point bullet spacing by replacing the preview-only `flex + gap` markup in `lib/emailTemplate.ts` with email-safe table-cell spacing, so Gmail-rendered messages preserve bullet-to-text separation (2026-03-31)
+- [x] Verified the email spacing fix still builds successfully with `npm run build` (2026-03-31)
+- [x] Verified the live send-email webhook with a real delivery using subject `Codex Bullet Spacing Verify 2026-03-31 15:00 AWST`, confirming the send path accepts the updated email-safe pain-point markup (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

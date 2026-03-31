@@ -32,10 +32,16 @@ export function buildEmailHtml(_lead: Lead, body: string) {
       const beforeClose = line === ']]' ? '' : line.slice(0, -2).trim()
       if (beforeClose) {
         const text = beforeClose.startsWith('•') ? beforeClose.slice(1).trim() : beforeClose
-        segments.push(`<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">
-        <div style="width:8px;height:8px;background:#6366f1;border-radius:50%;margin-top:7px;flex-shrink:0;"></div>
-        <p style="margin:0;font-size:14px;color:#374151;line-height:1.6;font-weight:500;">${escapeHtml(text)}</p>
-      </div>`)
+        segments.push(`<table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 14px;">
+        <tr>
+          <td width="20" valign="top" style="padding:7px 12px 0 0;">
+            <div style="width:8px;height:8px;background:#6366f1;border-radius:50%;"></div>
+          </td>
+          <td valign="top">
+            <p style="margin:0;font-size:14px;color:#374151;line-height:1.6;font-weight:500;">${escapeHtml(text)}</p>
+          </td>
+        </tr>
+      </table>`)
       }
       inBox = false
       segments.push(`</td></tr></table>`)
@@ -44,10 +50,16 @@ export function buildEmailHtml(_lead: Lead, body: string) {
 
     if (inBox) {
       const text = line.startsWith('•') ? line.slice(1).trim() : line
-      segments.push(`<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">
-        <div style="width:8px;height:8px;background:#6366f1;border-radius:50%;margin-top:7px;flex-shrink:0;"></div>
-        <p style="margin:0;font-size:14px;color:#374151;line-height:1.6;font-weight:500;">${escapeHtml(text)}</p>
-      </div>`)
+      segments.push(`<table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 14px;">
+        <tr>
+          <td width="20" valign="top" style="padding:7px 12px 0 0;">
+            <div style="width:8px;height:8px;background:#6366f1;border-radius:50%;"></div>
+          </td>
+          <td valign="top">
+            <p style="margin:0;font-size:14px;color:#374151;line-height:1.6;font-weight:500;">${escapeHtml(text)}</p>
+          </td>
+        </tr>
+      </table>`)
       continue
     }
 

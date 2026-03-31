@@ -1111,3 +1111,35 @@ AI draft copy polish in the live n8n workflow:
   - `design-system/buttons/glow-button/README.md`
   - `design-system/buttons/glow-button/glow-button-style.md`
 - This gives the project a stable root-level reuse location separate from app-specific docs
+
+## 2026-03-31 - Codex session: fix actual sent email bullet spacing
+
+**Issue reported**
+- User said the preview email looked correct, but the actual received email still showed the pain-point bullet dots sitting too close to the text
+
+**Root cause**
+- The preview was rendered in a browser, where the pain-point rows still looked acceptable with `display:flex` and `gap`
+- The actual delivered email was rendered by Gmail, which does not reliably preserve that spacing approach in email HTML
+- Result:
+  - preview looked fine
+  - real delivered email collapsed the bullet-to-text spacing
+
+**What Codex changed**
+- Updated `lib/emailTemplate.ts`
+- Replaced the pain-point item layout inside the highlighted box:
+  - from `div` rows using `display:flex` and `gap`
+  - to email-safe `table` rows with:
+    - fixed bullet cell width
+    - explicit right padding on the bullet cell
+    - text in a separate table cell
+
+**Why this fix is correct**
+- Email clients are much more reliable with nested table spacing than with modern layout primitives like flex gap
+- This keeps the preview and the actual received email aligned much more closely
+
+**Verification**
+- `npm run build` passed
+- Sent a real verification email through the live send-email webhook with subject:
+  - `Codex Bullet Spacing Verify 2026-03-31 15:00 AWST`
+- Webhook returned HTTP 200 success
+- Gmail confirmed receipt of that message, proving the real send path used the updated template markup
