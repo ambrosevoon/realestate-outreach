@@ -271,6 +271,7 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Fixed light-mode popup button visibility by applying the glow-button day-mode surface overrides to drawer/dialog/popover scopes instead of only `.dashboard-page`, so portal-rendered popup buttons get bright surfaces and readable dark text (2026-03-31)
 - [x] Verified the light-mode popup button fix still builds successfully with `npm run build` (2026-03-31)
 - [x] Pushed the popup button readability fix to GitHub `main` in commit `60224f4`, deployed it to Vercel production (`dpl_ALoQxqAFyoLSo5yXitvGbhohdNfE`), and visually verified live on the Scarborough lead drawer that `Save Notes`, `Send Email`, `AI Draft`, `Schedule Follow-up`, `Mark Won`, and `Mark Lost` are now clearly readable in day mode (2026-03-31)
+- [x] Reorganized the glow button style guide under `docs/design/buttons/glow-button-style.md` and updated it to explicitly document both dark-mode and light-mode approved states, including popup/drawer behavior for portal-rendered buttons (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

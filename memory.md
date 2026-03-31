@@ -1073,3 +1073,33 @@ AI draft copy polish in the live n8n workflow:
   - visually confirmed that `Save Notes`, `Send Email`, `AI Draft`, `Schedule Follow-up (3 days)`, `Mark Won`, and `Mark Lost` now render with readable contrast on bright popup surfaces
 - Verification screenshot captured at:
   - `.playwright-cli/page-2026-03-31T07-41-45-650Z.png`
+
+## 2026-03-31 - Codex session: reorganize glow button design docs
+
+**User request**
+- User asked for the glow button documentation to be pushed to GitHub under a better-organized design folder, with a subfolder for buttons
+- User also wanted the guide to explicitly cover both day mode and night mode button behavior
+
+**What Codex changed**
+- Moved the old top-level guide:
+  - from `docs/glow-button-style.md`
+  - to `docs/design/buttons/glow-button-style.md`
+- Rewrote the guide so it now documents:
+  - source-of-truth files
+  - design intent
+  - why the repo version differs from the original 21st.dev reference
+  - approved dark-mode behavior
+  - approved light-mode behavior
+  - popup/drawer rule for portal-rendered buttons
+  - supported variants and usage guidance
+  - verification screenshots for both dark and light states
+
+**Structure now**
+- `docs/design/buttons/glow-button-style.md`
+
+**Why this matters**
+- The old doc mostly captured the dark-mode edge-glow state
+- The updated guide now reflects the actual approved system as it exists today:
+  - restrained dark-mode glow buttons
+  - bright readable light-mode buttons
+  - bright readable popup buttons in day mode
