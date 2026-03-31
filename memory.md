@@ -1004,3 +1004,23 @@ AI draft copy polish in the live n8n workflow:
 - Deployed to Vercel production:
   - deployment id: `dpl_ySZUQeoqqzjDkSZuFxFkiKgPkQY9`
   - production alias: `https://realestate-outreach-sand.vercel.app`
+
+## 2026-03-31 - Codex session: pain-point box spacing polish
+
+**User feedback**
+- User liked the email content but pointed out the highlighted pain-point box still felt cramped because the bullet dots sat too close to the text
+
+**What Codex changed**
+- Updated `lib/emailTemplate.ts`
+- Increased bullet-to-text gap inside the highlighted pain-point box:
+  - `gap: 10px` → `14px`
+- Increased bullet size slightly:
+  - `6px` → `8px`
+- Nudged bullet vertical alignment:
+  - `margin-top: 6px` → `7px`
+- Increased row spacing between pain-point items:
+  - `margin-bottom: 10px` → `14px`
+
+**Verification**
+- `npm run build` passed after the spacing adjustment
+- This change affects both the in-app preview and the real sent email body because both now use the shared rendered HTML template in `lib/emailTemplate.ts`
