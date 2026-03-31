@@ -248,6 +248,12 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Added day-mode-compatible styling for popup surfaces including the lead drawer, popover panels, and dialog shells so overlays no longer stay visually locked to the night theme (2026-03-31)
 - [x] Verified locally that the light-mode button and popup refresh still builds successfully with `npm run build` (2026-03-31)
 - [x] Pushed the light-mode button/popup refresh to GitHub `main`, deployed it to Vercel production (`dpl_8HMUegRWfbKSYs6njGyBvTzk7xfY`), and verified live that the dashboard header buttons and lead drawer both render as bright readable day-mode surfaces (2026-03-31)
+- [x] Updated the live n8n workflow `[Realestate Outreach] Generate AI Draft` (`QKSf9yZfaB3nTmXx`) so draft generation now follows a stricter structured copy brief: hook, intro, problem paragraph, pain-box points, solution paragraph, and low-friction CTA (2026-03-31)
+- [x] Changed the AI draft workflow to prompt for structured JSON content fields, then parse those fields back into the existing plain-text draft format expected by the app preview (2026-03-31)
+- [x] Tightened the draft prompt to avoid generic greetings, feature-dumping, SaaS buzzwords, fabricated overpersonalisation, and brand-heavy language while keeping the tone commercially sharp for real estate outreach (2026-03-31)
+- [x] Added a local backup snapshot of the pre-edit Generate Draft workflow at `docs/n8n-generate-draft-workflow-backup-2026-03-31.json` for traceability (2026-03-31)
+- [x] Verified the live `/webhook/generate-draft` endpoint returns HTTP 200 with the new structured draft content mapped back into `{ subject, body, content }` response shape (2026-03-31)
+- [x] Confirmed important architecture caveat: the AI Draft workflow currently improves the preview draft copy and draft subject generation, but the live send-email body is still produced by the separate `[Realestate Outreach] Send Email` workflow template and only reuses the draft subject (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

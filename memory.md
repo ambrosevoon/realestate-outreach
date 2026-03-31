@@ -827,3 +827,68 @@ Day-mode polish for buttons and popup surfaces:
   - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-31T04-29-44-818Z.png`
 - Production light-mode lead drawer verification screenshot:
   - `/Users/ambrosevoon/Projects/.playwright-cli/live-drawer-daymode-2026-03-31-vicky.png`
+
+### 🔄 Session Update (2026-03-31 #21) — Codex
+
+AI draft copy polish in the live n8n workflow:
+
+- User supplied a new outbound cold-email copy brief focused on keeping the existing template/layout untouched while improving only the generated content
+- Important constraint discovered during implementation:
+  - the app-side AI draft preview comes from live n8n workflow `[Realestate Outreach] Generate AI Draft` (`QKSf9yZfaB3nTmXx`)
+  - the actual sent email body still comes from the separate live n8n workflow `[Realestate Outreach] Send Email` (`gkDnKkwCC4YEPoyu`)
+  - today’s change improves AI draft preview copy and draft subject generation, but does not yet make the sent email body match the AI draft body
+
+**What Codex changed live in n8n**
+- Updated the `Generate Draft` agent prompt in workflow `QKSf9yZfaB3nTmXx`
+  - replaced the older freeform subject/body prompt with the new structured copy brief
+  - prompt now asks for:
+    - `hook`
+    - `intro`
+    - `problem_paragraph`
+    - `pain_box_heading`
+    - `pain_points`
+    - `solution_paragraph`
+    - `cta`
+- Tightened prompt rules to better fit the user brief:
+  - stronger operational hook instead of generic openers
+  - concise Ambrose positioning line
+  - sharper problem framing around follow-up speed and missed opportunities
+  - 4–6 concrete pain points for the highlighted box
+  - shorter outcome-focused solution paragraph
+  - lower-friction CTA
+  - explicit bans on HTML output, template changes, product-name dumping, and generic SaaS copy
+- Added prompt constraints after sample review:
+  - write from Ambrose in first-person singular
+  - avoid social-proof claims about other agents already using it
+  - avoid overpersonalised or fabricated local observations
+  - avoid generic greetings and weak intros
+- Updated the `Parse Draft` code node so the structured JSON is converted back into the app’s expected draft response shape:
+  - returns `subject`
+  - returns plain-text `body`
+  - preserves the `[[ ... ]]` highlighted pain-box delimiters for the existing preview renderer
+  - includes a `content` object carrying the structured fields for inspection/debugging
+
+**Repo-side traceability**
+- Saved a local pre-edit workflow backup:
+  - [n8n-generate-draft-workflow-backup-2026-03-31.json](/Users/ambrosevoon/Projects/realestate-outreach/docs/n8n-generate-draft-workflow-backup-2026-03-31.json)
+
+**Verification**
+- Verified live draft webhook before changes to capture baseline output
+- Verified live draft webhook after prompt/parser update:
+  - `POST https://n8n.srv823907.hstgr.cloud/webhook/generate-draft`
+  - response shape confirmed as `{ subject, body, content }`
+  - structured sections now appear in the response payload and the `body` is assembled in the required sequence
+- Caught and fixed one regression during the session:
+  - an attempted parser hardening step introduced a JavaScript syntax error in the n8n Code node
+  - Codex reverted to the last known-good parser immediately and re-verified the webhook response
+
+**Current result**
+- AI draft output is now noticeably closer to the requested style:
+  - stronger hooks
+  - more commercially aware problem framing
+  - more concrete pain-box content
+  - cleaner CTA structure
+- The draft system is now structured enough to support future template insertion work if the send-email workflow is later aligned to the same content fields
+
+**Important next-step caveat**
+- If the goal is for the final sent outreach email body to match the polished AI draft copy as well, the next change must be made in `[Realestate Outreach] Send Email` (`gkDnKkwCC4YEPoyu`), because that workflow still builds its own HTML body independently and currently only reuses the draft subject
