@@ -1036,3 +1036,40 @@ AI draft copy polish in the live n8n workflow:
 - Result:
   - the pain-point box now has visibly more separation between the bullet dot and the copy
   - the stacked pain-point rows also have more breathing room vertically
+
+## 2026-03-31 - Codex session: fix day-mode popup button readability
+
+**Issue reported**
+- User pointed out that buttons inside the lead popup/drawer were not clearly visible in day mode
+- The popup background had switched to a bright light theme, but the glow buttons inside the drawer were still rendering with the darker night-style surface treatment, making text and icons too low-contrast
+
+**Root cause**
+- Light-mode glow-button overrides had been scoped to `.dashboard-page`
+- The lead drawer is rendered through a portal, so its button DOM sits outside `.dashboard-page`
+- Result:
+  - dashboard buttons looked correct in day mode
+  - portal-rendered popup buttons missed the light-mode surface override and stayed visually too dark
+
+**What Codex changed**
+- Updated `app/globals.css`
+- Added light-mode glow-button overrides for:
+  - `.lead-drawer .glow-button-*`
+  - `.app-dialog-content .glow-button-*`
+  - `.app-popover .glow-button-*`
+- These overrides now give popup buttons:
+  - brighter surface fills
+  - darker readable text/icons
+  - softer edge glow tuned for light backgrounds
+
+**Verification**
+- `npm run build` passed
+- Pushed to GitHub `main` in commit `60224f4` with message:
+  - `fix(ui): improve light mode drawer buttons`
+- Deployed to Vercel production:
+  - deployment id: `dpl_ALoQxqAFyoLSo5yXitvGbhohdNfE`
+  - production alias: `https://realestate-outreach-sand.vercel.app`
+- Live browser verification passed:
+  - opened the Scarborough lead drawer in day mode
+  - visually confirmed that `Save Notes`, `Send Email`, `AI Draft`, `Schedule Follow-up (3 days)`, `Mark Won`, and `Mark Lost` now render with readable contrast on bright popup surfaces
+- Verification screenshot captured at:
+  - `.playwright-cli/page-2026-03-31T07-41-45-650Z.png`
