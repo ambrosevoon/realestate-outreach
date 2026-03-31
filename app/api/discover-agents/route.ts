@@ -51,6 +51,8 @@ const GENERIC_NAME_PATTERNS = [
   /^perth$/i,
   /^domain$/i,
   /^reiwa$/i,
+  /^corporate head office$/i,
+  /^head office$/i,
 ]
 
 const PORTAL_BRAND_PATTERNS = [/^domain$/i, /^reiwa$/i, /^realestate$/i, /^ratemyagent$/i]
@@ -212,11 +214,17 @@ function looksLikePersonLabel(value?: string) {
 function extractNameFromEmail(email?: string) {
   if (!email) return ''
   const local = email.split('@')[0]?.toLowerCase() || ''
-  if (!local || GENERIC_EMAIL_PREFIXES.has(local)) return ''
+  if (!local || GENERIC_EMAIL_PREFIXES.has(local) || Array.from(GENERIC_EMAIL_PREFIXES).some(prefix => local.startsWith(prefix))) return ''
   const parts = local.split(/[._-]+/).filter(Boolean)
   if (parts.length < 2 || parts.length > 3) return ''
   const candidate = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ')
   return looksLikePersonLabel(candidate) ? candidate : ''
+}
+
+function isReachableAgentEmail(email?: string) {
+  if (!email) return false
+  const local = email.split('@')[0]?.toLowerCase() || ''
+  return Boolean(local) && !GENERIC_EMAIL_PREFIXES.has(local) && !Array.from(GENERIC_EMAIL_PREFIXES).some(prefix => local.startsWith(prefix))
 }
 
 function buildLocationTokenSet(location: string) {
@@ -402,7 +410,7 @@ function resultToAgent(result: TavilyResult, location: string, label: string): C
   const resolvedAgency = personName ? resolveAgencyName(result, personName, provisionalAgency) : ''
   const bestAgency = pickBetterAgency(provisionalAgency, resolvedAgency) || resolvedAgency || provisionalAgency
 
-  if (!personName || !bestAgency) return null
+  if (!email || !isReachableAgentEmail(email) || !personName || !bestAgency) return null
 
   const normalized = normalizeRawAgent({
     name: sanitizeLeadName(personName),
