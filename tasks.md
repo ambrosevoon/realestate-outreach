@@ -244,6 +244,8 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Verified locally that the light-mode dashboard is bright and readable while dark mode still preserves the existing premium shader look (2026-03-31)
 - [x] Verified the day-mode redesign still builds successfully with `npm run build` (2026-03-31)
 - [x] Pushed the day-mode redesign to GitHub `main`, deployed it to Vercel production (`dpl_7jQvRxtEYC2Q8wWYVJVLv1Lwq7ft`), and verified live that the dashboard now renders as a bright readable surface in light mode while dark mode remains available (2026-03-31)
+- [x] Refined the shared glow-button system so day mode buttons use a light-compatible surface treatment instead of keeping the dark/night button fill on bright backgrounds (2026-03-31)
+- [x] Added day-mode-compatible styling for popup surfaces including the lead drawer, popover panels, and dialog shells so overlays no longer stay visually locked to the night theme (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

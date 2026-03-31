@@ -779,3 +779,26 @@ Day mode redesign for the dashboard:
 **Live evidence**
 - Production light-mode verification screenshot:
   - `/Users/ambrosevoon/Projects/.playwright-cli/page-2026-03-31T04-10-48-054Z.png`
+
+### 🔄 Session Update (2026-03-31 #20) — Codex
+
+Day-mode polish for buttons and popup surfaces:
+
+- User reported that even after the bright dashboard redesign:
+  - action buttons still looked like dark/night controls in day mode
+  - popup surfaces such as the lead drawer were still visually stuck in the dark theme
+
+**Changes made**
+- Added explicit light-mode hooks to the shared glow button implementation:
+  - [components/ui/shiny-button-1.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/shiny-button-1.tsx)
+- Added light-mode styling hooks for custom overlay/popup UI:
+  - [components/lead/LeadDrawer.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/lead/LeadDrawer.tsx)
+  - [components/lead/ActionButtons.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/lead/ActionButtons.tsx)
+  - [components/ui/popover.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/popover.tsx)
+  - [components/ui/dialog.tsx](/Users/ambrosevoon/Projects/realestate-outreach/components/ui/dialog.tsx)
+- Added corresponding day-mode CSS overrides in:
+  - [app/globals.css](/Users/ambrosevoon/Projects/realestate-outreach/app/globals.css)
+
+**Intent of this pass**
+- Day-mode buttons should still feel premium, but with a light glass surface and dark readable text
+- Drawers/popups should inherit the light theme rather than sitting as dark islands on a bright dashboard

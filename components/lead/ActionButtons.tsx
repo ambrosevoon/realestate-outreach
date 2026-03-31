@@ -172,7 +172,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onRefreshAc
         body={draft.body}
       />
     )}
-    <div className="space-y-3">
+    <div className="lead-actions space-y-3">
       {/* Primary action buttons */}
       <div className="grid grid-cols-2 gap-2">
         <Button
@@ -202,7 +202,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onRefreshAc
             transform: draft || draftLoading ? 'translateY(0)' : 'translateY(-6px)',
             transition: 'opacity 200ms ease, transform 200ms ease',
           }}
-          className="rounded-xl border border-violet-700/30 bg-violet-950/20 overflow-hidden"
+          className="lead-drawer-draft rounded-xl border border-violet-700/30 bg-violet-950/20 overflow-hidden"
         >
           {/* Draft header */}
           <div className="flex items-center justify-between px-3 py-2 border-b border-violet-700/20">
@@ -262,7 +262,7 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onRefreshAc
               onChange={e => setCustomInstructions(e.target.value)}
               placeholder="e.g. focus on their suburban market, mention our 30-day free trial..."
               rows={2}
-              className="bg-slate-900/80 border-slate-700 text-white placeholder:text-slate-600 focus-visible:ring-violet-500 resize-none text-xs"
+              className="lead-drawer-field bg-slate-900/80 border-slate-700 text-white placeholder:text-slate-600 focus-visible:ring-violet-500 resize-none text-xs"
             />
             <Button
               size="sm"

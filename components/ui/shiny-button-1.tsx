@@ -3,7 +3,7 @@ import { useId } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
-const shinyButtonVariants = cva('group relative isolate inline-flex shrink-0 cursor-pointer select-none rounded-[1.1rem]', {
+const shinyButtonVariants = cva('glow-button group relative isolate inline-flex shrink-0 cursor-pointer select-none rounded-[1.1rem]', {
   variants: {
     variant: {
       default: '',
@@ -25,7 +25,7 @@ const shinyButtonVariants = cva('group relative isolate inline-flex shrink-0 cur
 })
 
 const surfaceVariants = cva(
-  'relative z-10 flex h-full w-full items-center justify-center gap-2 overflow-hidden rounded-[1.05rem] border px-4 font-semibold text-white transition-transform duration-300 group-hover:scale-[1.01] group-active:scale-[0.985] disabled:opacity-50',
+  'glow-button-surface relative z-10 flex h-full w-full items-center justify-center gap-2 overflow-hidden rounded-[1.05rem] border px-4 font-semibold text-white transition-transform duration-300 group-hover:scale-[1.01] group-active:scale-[0.985] disabled:opacity-50',
   {
     variants: {
       variant: {
@@ -52,7 +52,7 @@ const surfaceVariants = cva(
   }
 )
 
-const borderVariants = cva('rounded-[1.1rem] p-[1px]', {
+const borderVariants = cva('glow-button-border rounded-[1.1rem] p-[1px]', {
   variants: {
     variant: {
       default: 'bg-[linear-gradient(135deg,rgba(255,212,145,0.42),rgba(0,0,0,0.25)_35%,rgba(128,236,255,0.52))]',
@@ -66,7 +66,7 @@ const borderVariants = cva('rounded-[1.1rem] p-[1px]', {
   },
 })
 
-const glowVariants = cva('absolute inset-0 -z-10 opacity-60 transition-opacity duration-300 group-hover:opacity-90 group-active:opacity-100', {
+const glowVariants = cva('glow-button-glow absolute inset-0 -z-10 opacity-60 transition-opacity duration-300 group-hover:opacity-90 group-active:opacity-100', {
   variants: {
     variant: {
       default: '',
@@ -143,7 +143,7 @@ export const GlowButton = React.forwardRef<HTMLButtonElement, GlowButtonProps>(
         <div className={cn(borderVariants({ variant: resolvedVariant }), size === 'icon' ? 'rounded-[1rem]' : '', surfaceClassName)}>
           <div className="relative">
             <div
-              className="pointer-events-none absolute inset-[-1px] -z-10 overflow-hidden rounded-[1.15rem] opacity-38 transition-opacity duration-300 group-hover:opacity-62"
+              className="glow-button-inner-edge pointer-events-none absolute inset-[-1px] -z-10 overflow-hidden rounded-[1.15rem] opacity-38 transition-opacity duration-300 group-hover:opacity-62"
               style={{ filter: `blur(2px) url(#${filters.unopaq3})` }}
             >
               <div
