@@ -1191,3 +1191,34 @@ AI draft copy polish in the live n8n workflow:
 - Next verification step after deployment:
   - hit live `POST /api/discover-agents`
   - inspect returned rows for richer merged details and fewer obvious duplicates
+
+**Follow-up quality pass**
+- After live verification, Codex added an extra cleanup layer to reduce obvious junk:
+  - blocked non-Australian / clearly irrelevant hosts
+  - filtered some directory-style title patterns
+  - rejected weak phone extractions with too few digits
+  - cleaned some malformed agent names such as trailing state abbreviations
+  - prevented suburbs from echoing the full cleaned lead name in some bad title cases
+
+**Git / deploy / live verification**
+- Pushed implementation in three commits:
+  - `f258e12` `feat(search): merge tavily discovery sources`
+  - `baee7d7` `fix(search): filter noisy discovery results`
+  - `4cfd1c4` `fix(search): improve discovery result quality`
+- Final refined deployment:
+  - deployment id: `dpl_9v3c12nFuUyukkVrV5EuaaVtm9Ri`
+  - production alias: `https://realestate-outreach-sand.vercel.app`
+- Live production verification:
+  - `POST https://realestate-outreach-sand.vercel.app/api/discover-agents`
+  - payload: `{"count":10,"location":"Perth"}`
+  - response: HTTP 200
+  - response source: `tavily_multi_source_merge`
+
+**Honest quality note**
+- The first merged-source version is working and does return richer combined leads than the old single-pass route
+- But it is not yet “clean dataset” quality
+- Some returned candidates are still portal-style or weakly parsed records, so the next pass should tighten:
+  - person-vs-agency detection
+  - directory rejection
+  - portal result downranking/exclusion
+  - suburb/name parsing quality

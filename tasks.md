@@ -281,6 +281,9 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Added enrichment-aware merge logic so discovery can combine partial records from different result pages into one canonical lead with more complete email / phone / website / suburb coverage instead of returning duplicate agent entries (2026-03-31)
 - [x] Ranked merged discovery candidates by completeness before returning them, while keeping the API response insert-safe for Supabase by stripping internal merge metadata before returning `agents` (2026-03-31)
 - [x] Verified the multi-source discovery merge changes still build successfully with `npm run build` (2026-03-31)
+- [x] Added an additional quality pass on discovery results to filter obvious non-Australian / directory-style noise, reject weak phone matches, and clean malformed agent names/suburbs before returning merged leads (2026-03-31)
+- [x] Pushed the multi-source merge implementation to GitHub `main` in commits `f258e12`, `baee7d7`, and `4cfd1c4`, then deployed the refined discovery route to Vercel production (`dpl_9v3c12nFuUyukkVrV5EuaaVtm9Ri`) (2026-03-31)
+- [x] Verified live production `POST /api/discover-agents` returns HTTP 200 with `source: tavily_multi_source_merge` after deployment; result quality is improved but still has some noisy portal-style candidates that should be tightened further in a later pass (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 
