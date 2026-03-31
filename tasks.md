@@ -260,6 +260,10 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Verified the live `/webhook/generate-draft` endpoint returns HTTP 200 after the latest realism pass and now produces softer identity lines, sharper consequence framing, stronger pain-box copy, and a short clean CTA (2026-03-31)
 - [x] Added a scene-based hook override to the live Generate Draft prompt so openings start from a recognisable moment in an agent’s week instead of abstract market commentary or generic business observations (2026-03-31)
 - [x] Verified the live `/webhook/generate-draft` endpoint returns HTTP 200 after the hook override and now produces a more visual time-based opening such as “It’s Sunday evening after a full day of opens...” rather than commentary-led hooks (2026-03-31)
+- [x] Fixed the email-send mismatch so the app now passes the generated draft body and fully rendered `body_html` into the send-email webhook instead of only sending the subject (2026-03-31)
+- [x] Updated the live n8n workflow `[Realestate Outreach] Send Email` (`gkDnKkwCC4YEPoyu`) so the `Build Email` node now uses incoming `body_html` when provided and only falls back to the older hardcoded template if no rendered draft HTML is supplied (2026-03-31)
+- [x] Verified the app-side send-path fix still builds successfully with `npm run build` (2026-03-31)
+- [x] Verified the live send-email webhook with a real Gmail delivery using a unique marker subject/body: the delivered message body matched the provided `body_html` instead of the stale fallback template, confirming the actual sent email path now honors the generated content (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 

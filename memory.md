@@ -952,3 +952,48 @@ AI draft copy polish in the live n8n workflow:
 - Latest verified sample opened with:
   - `It's Sunday evening after a full day of opens, and you've still got a stack of new enquiries waiting for replies while you're trying to switch off.`
 - This is materially closer to the requested “snapshot / lived moment” style than the earlier abstract openings
+
+## 2026-03-31 - Codex session: fix actual sent email not matching preview draft
+
+**Issue reported**
+- User noticed the actual delivered email body was not the same as the generated draft shown in the app preview
+- Screenshot comparison confirmed the preview showed the newer scene-based copy, while the delivered Gmail email still used the older hardcoded intro/body copy
+
+**Root cause**
+- The app preview path and send path had diverged
+- Preview path:
+  - `EmailPreviewModal` renders `draft.body` through `buildEmailHtml()` in `lib/emailTemplate.ts`
+- Send path:
+  - `ActionButtons` only sent `subject` into `sendEmail()`
+  - the live n8n workflow `[Realestate Outreach] Send Email` (`gkDnKkwCC4YEPoyu`) rebuilt its own old hardcoded `bodyHtml` inside the `Build Email` code node
+- Result:
+  - preview showed the new generated copy
+  - actual Gmail send still delivered the stale fallback template body
+
+**What Codex changed**
+- App-side:
+  - updated `components/lead/ActionButtons.tsx` to pass:
+    - `body`
+    - `body_html: buildEmailHtml(lead, draft.body)`
+  - updated `lib/n8n.ts` sendEmail typing to accept `body` and `body_html`
+- Workflow-side:
+  - updated live n8n workflow `[Realestate Outreach] Send Email` (`gkDnKkwCC4YEPoyu`)
+  - `Build Email` now:
+    - keeps subject uniqueness logic
+    - uses incoming `body_html` when present
+    - only falls back to the old hardcoded HTML template if `body_html` is missing
+
+**Verification**
+- Local:
+  - `npm run build` passed after the app-side change
+- Live send-path verification:
+  - posted directly to `POST https://n8n.srv823907.hstgr.cloud/webhook/send-email`
+  - used a unique verification subject:
+    - `Codex Send Path Verification 2026-03-31 14:33 AWST`
+  - supplied explicit marker HTML in `body_html`
+  - webhook returned HTTP 200 with success
+  - verified delivered Gmail message body/snippet contained:
+    - `SEND PATH VERIFIED`
+    - `This email came from the provided body_html, not the fallback workflow template.`
+    - `Marker: 2026-03-31-1433-awst`
+- This confirms the real send path now uses the provided rendered body content instead of regenerating the stale fallback email copy

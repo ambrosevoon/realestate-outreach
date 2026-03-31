@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import { sendEmail, scheduleFollowup, updateLeadStatus, generateDraft } from '@/lib/n8n'
+import { buildEmailHtml } from '@/lib/emailTemplate'
 import { EmailPreviewModal } from './EmailPreviewModal'
 import type { Lead } from '@/types'
 
@@ -93,6 +94,8 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onRefreshAc
       name: lead.name,
       agency_name: lead.agency_name,
       subject: draft?.subject,
+      body: draft?.body,
+      body_html: draft ? buildEmailHtml(lead, draft.body) : undefined,
     })
     setSending(false)
     if (error) {

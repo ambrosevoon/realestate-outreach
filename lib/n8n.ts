@@ -23,6 +23,8 @@ export function sendEmail(lead: {
   name: string
   agency_name: string
   subject?: string
+  body?: string
+  body_html?: string
 }) {
   return call('/send-email', { ...lead, email: TEST_EMAIL })
 }
