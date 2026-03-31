@@ -1222,3 +1222,75 @@ AI draft copy polish in the live n8n workflow:
   - directory rejection
   - portal result downranking/exclusion
   - suburb/name parsing quality
+
+## 2026-03-31 - Codex session: person-first discovery quality pass
+
+**User goal**
+- User wanted discovery quality to improve further because agency-only rows are not useful for outreach
+- Priority shifted from “more records” to “better person-level records” so the import list is mostly named agents, not agencies
+
+**What Codex changed**
+- Updated `app/api/discover-agents/route.ts`
+- Tightened portal handling so results from:
+  - Domain
+  - REIWA
+  - realestate.com.au
+  - RateMyAgent
+  now need to look like real agent-profile URLs instead of agency pages, suburb directories, or listing indexes
+- Removed the free-form capitalized-text person extraction fallback that was producing junk names like street names, suburb phrases, or content fragments
+- Person matching now prefers:
+  - title-derived person names
+  - personal-email-derived names
+- Added stronger quality filters to reject:
+  - portal brand names as agencies
+  - generic agency labels like `Real Estate`
+  - `Unknown Agency` fallback rows
+  - name/agency collisions
+- Added better agency recovery from:
+  - title parts
+  - content phrases like “part of the team at…”
+  - website domains
+  - email domains
+- Added extra merge keys using normalized locality and plain normalized names so same-person portal rows merge more often across sources
+
+**Why this matters**
+- Earlier discovery was richer than before, but still returned too many agency records or weakly parsed entries
+- The new pass makes discovery meaningfully more usable for outreach because the returned records are mostly real people that can actually be addressed in cold email
+
+**Verification**
+- `npm run build` passed
+- Local route verification on the running app:
+  - `POST http://localhost:3000/api/discover-agents`
+  - payloads tested:
+    - `{"count":12,"location":"Canning Vale"}`
+    - `{"count":12,"location":"Perth"}`
+- Local results shifted toward named people such as:
+  - Wayne Adlem
+  - Paul Williams
+  - Sharni Batley
+  - Gurneet Bhatia
+  - John Phillips
+  - Nadija Begovich
+- Live production verification after deploy:
+  - `POST https://realestate-outreach-sand.vercel.app/api/discover-agents`
+  - payloads tested:
+    - `{"count":12,"location":"Canning Vale"}`
+    - `{"count":12,"location":"Perth"}`
+  - both returned HTTP 200
+  - response source remained: `tavily_multi_source_merge`
+
+**Honest quality note**
+- This is materially better than the previous state: the results are now primarily person-first
+- It is still not perfect:
+  - some agencies remain a bit generic on portal-derived profiles
+  - some suburbs are still inherited broadly from the search location
+  - there can still be occasional portal-profile quirks
+- But the big failure mode the user flagged, “agency-only records with nobody to address,” is now substantially reduced
+
+**Git / deploy**
+- Pushed to GitHub `main` in commit:
+  - `76b305f` `fix(search): prioritize person-level discovery`
+- Deployed to Vercel production:
+  - deployment id: `dpl_8KwM6eJn3YH49912wDxxYBWrqMtq`
+  - production deployment URL: `https://realestate-outreach-50hjnv1be-ambrosevoon-4152s-projects.vercel.app`
+  - aliased URL: `https://realestate-outreach-sand.vercel.app`
