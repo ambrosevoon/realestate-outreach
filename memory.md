@@ -1143,3 +1143,10 @@ AI draft copy polish in the live n8n workflow:
   - `Codex Bullet Spacing Verify 2026-03-31 15:00 AWST`
 - Webhook returned HTTP 200 success
 - Gmail confirmed receipt of that message, proving the real send path used the updated template markup
+
+**Git / deploy**
+- Pushed to GitHub `main` in commit `5463bfb` with message:
+  - `fix(email): use table spacing for pain bullets`
+- Deployed to Vercel production:
+  - deployment id: `dpl_FMJZTuyXaJVxfMwo2BuJeAaciV18`
+  - production alias: `https://realestate-outreach-sand.vercel.app`

@@ -276,6 +276,7 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Fixed the actual sent email pain-point bullet spacing by replacing the preview-only `flex + gap` markup in `lib/emailTemplate.ts` with email-safe table-cell spacing, so Gmail-rendered messages preserve bullet-to-text separation (2026-03-31)
 - [x] Verified the email spacing fix still builds successfully with `npm run build` (2026-03-31)
 - [x] Verified the live send-email webhook with a real delivery using subject `Codex Bullet Spacing Verify 2026-03-31 15:00 AWST`, confirming the send path accepts the updated email-safe pain-point markup (2026-03-31)
+- [x] Pushed the Gmail-safe bullet-spacing fix to GitHub `main` in commit `5463bfb` and deployed it to Vercel production (`dpl_FMJZTuyXaJVxfMwo2BuJeAaciV18`), aliased at `https://realestate-outreach-sand.vercel.app` (2026-03-31)
 
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 
