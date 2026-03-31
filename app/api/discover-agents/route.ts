@@ -23,6 +23,29 @@ type DiscoveryQuery = {
   query: string
 }
 
+const BLOCKED_HOST_FRAGMENTS = [
+  'realtor.com',
+  'pagesjaunes',
+  'easternontariolocal',
+  'top10realestateagent',
+]
+
+const DIRECTORY_TITLE_PATTERNS = [
+  /\bfind a real estate agent\b/i,
+  /\btop\s+\d+\s+real estate agents?\b/i,
+  /\b\d+\s+real estate agencies active\b/i,
+  /\blocal business\b/i,
+]
+
+const GENERIC_NAME_PATTERNS = [
+  /^buy$/i,
+  /^sell$/i,
+  /^rent$/i,
+  /^home$/i,
+  /^listings?(?:\s*&\s*more)?$/i,
+  /^perth$/i,
+]
+
 function clean(text: string) {
   return text.replace(/\s+/g, ' ').trim()
 }
@@ -54,7 +77,11 @@ function extractEmail(text: string) {
 
 function extractPhone(text: string) {
   const match = text.match(/(?:\+?61|0)[\s()\-]*\d[\d\s()\-]{7,}\d/)
-  return match?.[0]?.replace(/\s+/g, ' ').trim()
+  const phone = match?.[0]?.replace(/\s+/g, ' ').trim()
+  if (!phone) return undefined
+  const digits = normalizePhoneDigits(phone)
+  if (digits.length < 8 || digits.length > 12) return undefined
+  return phone
 }
 
 function normalizePhoneDigits(value?: string) {
@@ -152,6 +179,24 @@ function deriveAgencyFromHost(host: string) {
   return cleanAgencyName(humanized)
 }
 
+function isAustralianHost(host: string) {
+  return /\.au$/i.test(host) || host.endsWith('.com.au')
+}
+
+function shouldSkipResult(result: TavilyResult) {
+  const title = clean(result.title || '')
+  const content = clean(result.content || '')
+  const host = extractWebsiteHost(normalizeWebsite(result.url))
+
+  if (!title || !host) return false
+  if (BLOCKED_HOST_FRAGMENTS.some(fragment => host.includes(fragment))) return true
+  if (!isAustralianHost(host) && !host.includes('reiwa.com.au') && !host.includes('domain.com.au') && !host.includes('realestate.com.au') && !host.includes('ratemyagent.com.au')) {
+    return true
+  }
+
+  return DIRECTORY_TITLE_PATTERNS.some(pattern => pattern.test(title) || pattern.test(content))
+}
+
 function resultToAgent(result: TavilyResult, location: string, label: string): CandidateAgent | null {
   const title = clean(result.title || '')
   const content = clean(result.content || '')
@@ -159,6 +204,7 @@ function resultToAgent(result: TavilyResult, location: string, label: string): C
   const host = extractWebsiteHost(url)
 
   if (!title) return null
+  if (shouldSkipResult(result)) return null
 
   const { name, agency_name } = titleToNameAndAgency(title)
   const derivedAgency = deriveAgencyFromHost(host)
@@ -167,7 +213,7 @@ function resultToAgent(result: TavilyResult, location: string, label: string): C
   if (!name || !bestAgency) return null
 
   const normalized = normalizeRawAgent({
-    name,
+    name: GENERIC_NAME_PATTERNS.some(pattern => pattern.test(name)) ? bestAgency : name,
     agency_name: bestAgency,
     email: extractEmail(content),
     phone: extractPhone(content),
