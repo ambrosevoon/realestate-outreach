@@ -319,3 +319,6 @@ Manual deploy required after every push to GitHub. Steps:
 > **Codex handoff note:** the remote Supabase demo table was not created from this workspace because only anon/browser credentials were available. The app currently falls back to seeded fake leads in Demo Mode if `re_outreach_demo_leads` does not exist, and `docs/sql/2026-04-01-demo-mode.sql` contains the ready-to-run table creation + seed SQL.
 
 - [x] Changed the Demo Mode unlock password from the placeholder to `ambrose1` in the local example env, updated the Vercel environment variable, redeployed production, and re-verified the live `/api/demo-mode/verify` route with the new password (2026-04-01)
+- [x] Changed the AI Draft preview pane from read-only to editable so owners can manually tweak both the generated subject and body before sending, without needing to click `Re-generate` and lose the current draft (2026-04-01)
+- [x] Kept the existing preview/send pipeline intact while ensuring Preview and `Send Email` now both use the current edited draft text from the drawer state rather than only the originally generated content (2026-04-01)
+- [x] Verified the editable draft update still builds successfully with `npm run build` before pushing and deploying (2026-04-01)

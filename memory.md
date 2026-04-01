@@ -1466,3 +1466,36 @@ AI draft copy polish in the live n8n workflow:
 **Updated reminder**
 - The current live Demo Mode password is `ambrose1`
 - Change it again if the dashboard is going to be shared more broadly
+
+## 2026-04-01 - Codex session: editable AI draft subject and body
+
+**User goal**
+- After clicking `AI Draft`, the generated subject and email body should be editable directly in the drawer preview pane
+- Owners should be able to tweak the draft slightly and send that exact edited version without having to click `Re-generate`
+- The same applies to the subject line
+- `Send Email` must use the edited content if it has been modified
+
+**What Codex changed**
+- Updated `components/lead/ActionButtons.tsx`
+- Replaced the read-only draft subject text with an editable `Input`
+- Replaced the read-only rendered draft body block with an editable `Textarea`
+- Added a small helper note clarifying that Preview and `Send Email` use the latest edited text
+- Kept the existing draft state structure (`{ subject, body }`) so the rest of the send/preview flow continues to work without backend changes
+
+**Why this works cleanly**
+- The existing send path already uses:
+  - `draft.subject`
+  - `draft.body`
+  - `buildEmailHtml(lead, draft.body)`
+- The preview modal already receives:
+  - `subject={draft.subject}`
+  - `body={draft.body}`
+- So once the drawer fields became editable, both preview and send automatically started using the edited content instead of the originally generated text
+
+**Verification**
+- `npm run build` passed
+- No n8n workflow changes were required because the edited draft still flows through the existing frontend send payload
+
+**Git / deploy**
+- Pushed to GitHub `main` after implementation and docs update
+- Production deployment updated after the push so the live dashboard uses the editable draft flow
