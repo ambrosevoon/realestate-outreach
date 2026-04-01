@@ -28,6 +28,27 @@ body {
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
+@keyframes demoBannerGlow {
+  0%, 100% {
+    border-color: rgba(250, 204, 21, 0.16);
+    box-shadow:
+      0 0 0 1px rgba(250, 204, 21, 0.06),
+      0 0 24px -14px rgba(250, 204, 21, 0.18),
+      0 0 42px -24px rgba(250, 204, 21, 0.12);
+  }
+  50% {
+    border-color: rgba(250, 204, 21, 0.42);
+    box-shadow:
+      0 0 0 1px rgba(250, 204, 21, 0.14),
+      0 0 34px -12px rgba(250, 204, 21, 0.38),
+      0 0 66px -26px rgba(250, 204, 21, 0.28);
+  }
+}
+
+.demo-mode-banner {
+  animation: demoBannerGlow 3.8s ease-in-out infinite;
+}
+
 /* ── Light mode: remap the slate scale so all bg-slate-*, text-slate-*,
       border-slate-* (including /opacity variants) flip automatically ── */
 html.light {

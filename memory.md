@@ -1600,3 +1600,29 @@ AI draft copy polish in the live n8n workflow:
 **Git / deploy**
 - Pushed to GitHub `main` after implementation and docs update
 - Production deployment updated so Demo Mode AI Draft works on the live dashboard
+
+## 2026-04-01 - Codex session: demo mode banner pulse and wording polish
+
+**User request**
+- Make the Demo Mode box use a slow-rate golden yellow blinking outer edge
+- Replace the word `fake` with `simulated`
+
+**What Codex changed**
+- Updated `components/dashboard/DemoModeControl.tsx`
+  - changed banner copy from `fake Perth agent data` to `simulated Perth agent data`
+  - changed the unlock dialog description from `fake demo leads` to `simulated demo leads`
+- Updated `app/globals.css`
+  - added `@keyframes demoBannerGlow`
+  - applied a slow gold pulse effect to `.demo-mode-banner`
+  - effect focuses on border + outer glow rather than a full-surface flash
+
+**Visual intent**
+- Make Demo Mode more obvious at a glance
+- Keep the motion slow and restrained so it feels premium rather than alarming
+
+**Verification**
+- `npm run build` passed after the banner styling update
+
+**Git / deploy**
+- Pushed to GitHub `main` after implementation and docs update
+- Production deployment updated so the live dashboard shows the new Demo Mode pulse and wording

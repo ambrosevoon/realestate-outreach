@@ -71,7 +71,11 @@ export function DemoModeControl({ mode, onModeChange, seededFallback = false }: 
 
   return (
     <>
-      <div className="flex flex-col items-start gap-2 rounded-2xl border border-white/8 bg-white/[0.045] px-4 py-3 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
+      <div
+        className={`flex flex-col items-start gap-2 rounded-2xl border border-white/8 bg-white/[0.045] px-4 py-3 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between ${
+          mode === 'demo' ? 'demo-mode-banner' : ''
+        }`}
+      >
         <div className="flex items-start gap-3">
           <div
             className={`mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl border ${
@@ -99,7 +103,7 @@ export function DemoModeControl({ mode, onModeChange, seededFallback = false }: 
             </div>
             <p className="max-w-2xl text-sm text-stone-300">
               {mode === 'demo'
-                ? 'Dashboard is using fake Perth agent data. Send Email is locked while Demo Mode is on.'
+                ? 'Dashboard is using simulated Perth agent data. Send Email is locked while Demo Mode is on.'
                 : 'Dashboard is using the real Supabase leads table. Live email sending is available.'}
             </p>
           </div>
@@ -130,7 +134,7 @@ export function DemoModeControl({ mode, onModeChange, seededFallback = false }: 
           <DialogHeader>
             <DialogTitle className="text-white">Unlock Live Mode</DialogTitle>
             <DialogDescription className="text-stone-400">
-              Enter the demo password to switch from fake demo leads to the real Supabase leads table.
+              Enter the demo password to switch from simulated demo leads to the real Supabase leads table.
             </DialogDescription>
           </DialogHeader>
 
@@ -167,4 +171,3 @@ export function DemoModeControl({ mode, onModeChange, seededFallback = false }: 
     </>
   )
 }
-

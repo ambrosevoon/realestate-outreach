@@ -332,3 +332,6 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Fixed Demo Mode AI Draft so seeded fake leads can still generate an email draft even when the live n8n draft webhook returns HTTP 200 with an empty body for demo-only IDs/emails (2026-04-01)
 - [x] Added a frontend-safe demo draft fallback in `lib/n8n.ts` that detects demo leads by `demo-` IDs or `.example` emails and returns a realistic local draft without touching the live workflow path for real leads (2026-04-01)
 - [x] Verified the demo draft fallback by direct call for `demo-sarah-chen` and confirmed it now returns a valid `{ subject, body }`, and re-verified `npm run build` passes before pushing and deploying (2026-04-01)
+- [x] Updated the Demo Mode banner copy to use `simulated` instead of `fake` for the demo dataset wording, including the unlock modal description (2026-04-01)
+- [x] Added a slow golden-yellow blinking outer-edge effect to the Demo Mode banner so the state is more visually obvious without becoming aggressive (2026-04-01)
+- [x] Verified the Demo Mode banner styling update still builds successfully with `npm run build` before pushing and deploying (2026-04-01)
