@@ -1558,3 +1558,45 @@ AI draft copy polish in the live n8n workflow:
 **Git / deploy**
 - Pushed to GitHub `main` after implementation and docs update
 - Production deployment updated so the live app and shared email template use the simplified drawer and cleaned footer
+
+## 2026-04-01 - Codex session: demo mode AI draft fallback
+
+**User issue**
+- In Demo Mode, clicking `AI Draft` on seeded fake leads showed `Failed to generate draft`
+
+**What Codex found**
+- The live `generate-draft` webhook was returning HTTP 200 but with an empty response body for demo-style payloads
+- Seeded demo leads use:
+  - IDs like `demo-sarah-chen`
+  - non-deliverable `.example` email domains
+- The frontend expected a normal JSON draft response with `subject` and `body`, so an empty body looked like a failure
+
+**What Codex changed**
+- Updated `lib/n8n.ts`
+- Added demo-lead detection for AI Draft requests:
+  - `lead_id` starting with `demo-`
+  - or email ending in `.example`
+- If the live draft webhook does not return a valid `{ subject, body }` payload for a demo lead, the app now falls back to a locally generated demo draft
+- The fallback draft:
+  - keeps the same plain-text draft structure used elsewhere
+  - includes the `[[ ... ]]` pain-point box markers so preview/send rendering still works
+  - stays limited to demo/fake leads only
+
+**Important scope**
+- This does not change the live draft workflow for real leads
+- Real leads still use the live n8n draft generation path as before
+- The fallback only exists to keep Demo Mode functional when fake seeded leads do not round-trip through the workflow correctly
+
+**Verification**
+- `npm run build` passed
+- Direct verification using the app-side `generateDraft()` helper for:
+  - `lead_id: demo-sarah-chen`
+  - `email: sarah.chen@perthproperty-demo.example`
+- Confirmed result now returns:
+  - valid `subject`
+  - valid `body`
+  - `error: null`
+
+**Git / deploy**
+- Pushed to GitHub `main` after implementation and docs update
+- Production deployment updated so Demo Mode AI Draft works on the live dashboard

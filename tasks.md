@@ -329,3 +329,6 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Updated the shared HTML email footer so the role line now reads `SmartFlow Automation` instead of `Real Estate Tech Advisor` (2026-04-01)
 - [x] Removed the footer sentence beginning `You're receiving this because your agency was...` from the shared email template so it no longer appears in preview or sent emails (2026-04-01)
 - [x] Verified the drawer rollback and footer cleanup still build successfully with `npm run build` before pushing and deploying (2026-04-01)
+- [x] Fixed Demo Mode AI Draft so seeded fake leads can still generate an email draft even when the live n8n draft webhook returns HTTP 200 with an empty body for demo-only IDs/emails (2026-04-01)
+- [x] Added a frontend-safe demo draft fallback in `lib/n8n.ts` that detects demo leads by `demo-` IDs or `.example` emails and returns a realistic local draft without touching the live workflow path for real leads (2026-04-01)
+- [x] Verified the demo draft fallback by direct call for `demo-sarah-chen` and confirmed it now returns a valid `{ subject, body }`, and re-verified `npm run build` passes before pushing and deploying (2026-04-01)
