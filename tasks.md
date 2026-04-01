@@ -317,3 +317,5 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Verified the live dashboard flow after deploy: page loads in Demo Mode by default, Live Mode can be unlocked with the configured password, and no persistence keeps the mode reset back to Demo on refresh (2026-04-01)
 
 > **Codex handoff note:** the remote Supabase demo table was not created from this workspace because only anon/browser credentials were available. The app currently falls back to seeded fake leads in Demo Mode if `re_outreach_demo_leads` does not exist, and `docs/sql/2026-04-01-demo-mode.sql` contains the ready-to-run table creation + seed SQL.
+
+- [x] Changed the Demo Mode unlock password from the placeholder to `ambrose1` in the local example env, updated the Vercel environment variable, redeployed production, and re-verified the live `/api/demo-mode/verify` route with the new password (2026-04-01)

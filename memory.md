@@ -1455,5 +1455,14 @@ AI draft copy polish in the live n8n workflow:
 - There is also a browser-console 404 from the initial failed attempt to query the missing demo table before the hook falls back to seeded data
 - Functionally the experience works; the remaining cleanup is to actually create the remote demo table using the SQL file once admin-level Supabase access is available
 
-**Reminder**
-- Change `DEMO_MODE_PASSWORD` from `change-me-before-sharing` before sharing the dashboard with anyone externally
+**Follow-up change**
+- User requested the Demo Mode unlock password be changed to `ambrose1`
+- Codex updated:
+  - `.env.local.example`
+  - local `.env.local`
+  - Vercel `DEMO_MODE_PASSWORD` for Production and Development
+- Codex then redeployed production and re-verified the live password route using the new value
+
+**Updated reminder**
+- The current live Demo Mode password is `ambrose1`
+- Change it again if the dashboard is going to be shared more broadly
