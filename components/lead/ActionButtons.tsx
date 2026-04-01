@@ -25,77 +25,6 @@ interface Draft {
   body: string
 }
 
-function DraftBodyPreview({ body }: { body: string }) {
-  const lines = body.split('\n')
-  const elements: React.ReactNode[] = []
-  let inBox = false
-  const boxLines: string[] = []
-
-  const flushBox = () => {
-    if (boxLines.length === 0) return
-    elements.push(
-      <div
-        key={`box-${elements.length}`}
-        className="my-3 rounded-lg border border-violet-500/30 bg-violet-950/30 px-3 py-3 space-y-2"
-      >
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-violet-400">
-          What most agents deal with
-        </p>
-        {boxLines.map((line, index) => {
-          const text = line.replace(/^[•*-]\s*/, '').trim()
-          if (!text) return null
-          return (
-            <div key={index} className="flex items-start gap-2.5">
-              <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-violet-400" />
-              <p className="text-xs leading-relaxed text-violet-100">{text}</p>
-            </div>
-          )
-        })}
-      </div>
-    )
-    boxLines.length = 0
-  }
-
-  lines.forEach((raw, index) => {
-    const line = raw.trim()
-
-    if (line.startsWith('[[')) {
-      inBox = true
-      const rest = line.slice(2).trim()
-      if (rest) boxLines.push(rest)
-      return
-    }
-
-    if (line === ']]' || line.endsWith(']]')) {
-      const beforeClose = line === ']]' ? '' : line.slice(0, -2).trim()
-      if (beforeClose) boxLines.push(beforeClose)
-      inBox = false
-      flushBox()
-      return
-    }
-
-    if (inBox) {
-      boxLines.push(line)
-      return
-    }
-
-    if (line === '') {
-      elements.push(<div key={`spacer-${index}`} className="h-2" />)
-      return
-    }
-
-    elements.push(
-      <p key={index} className="text-sm leading-relaxed text-slate-200">
-        {line}
-      </p>
-    )
-  })
-
-  if (boxLines.length > 0) flushBox()
-
-  return <div className="space-y-1">{elements}</div>
-}
-
 export function ActionButtons({
   lead,
   onLeadUpdate,
@@ -305,12 +234,6 @@ export function ActionButtons({
                   rows={20}
                   className="lead-drawer-field min-h-[448px] border-slate-700 bg-slate-900/80 text-sm leading-relaxed text-slate-100 placeholder:text-slate-500 focus-visible:ring-violet-500 resize-y"
                 />
-                <div className="rounded-xl border border-violet-700/25 bg-slate-950/40 px-3 py-3">
-                  <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.22em] text-violet-300/90">
-                    Live formatted preview
-                  </div>
-                  <DraftBodyPreview body={draft.body} />
-                </div>
                 <p className="text-[11px] leading-relaxed text-slate-500">
                   You can edit the AI draft here before sending. Preview and Send Email will use your latest text changes.
                 </p>

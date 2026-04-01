@@ -124,13 +124,12 @@ export function buildEmailHtml(_lead: Lead, body: string) {
         <tr>
           <td style="padding:24px 40px 36px;">
             <p style="margin:0;font-size:14px;font-weight:600;color:#1f2937;">Ambrose Voon</p>
-            <p style="margin:4px 0 0;font-size:13px;color:#6b7280;">Real Estate Tech Advisor</p>
+            <p style="margin:4px 0 0;font-size:13px;color:#6b7280;">SmartFlow Automation</p>
             <p style="margin:8px 0 0;font-size:13px;color:#6b7280;">
               <a href="tel:0478495661" style="color:#6366f1;text-decoration:none;">0478 495 661</a>
               &nbsp;·&nbsp;
               <a href="mailto:ambrosevoon@gmail.com" style="color:#6366f1;text-decoration:none;">ambrosevoon@gmail.com</a>
             </p>
-            <p style="margin:16px 0 0;font-size:12px;color:#9ca3af;line-height:1.6;">You're receiving this because your agency was suggested as a great fit for smarter outreach. No hard feelings if it's not for you. Just reply "unsubscribe" and I'll remove you immediately.</p>
           </td>
         </tr>
 

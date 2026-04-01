@@ -1527,3 +1527,34 @@ AI draft copy polish in the live n8n workflow:
 **Git / deploy**
 - Pushed to GitHub `main` after implementation and docs update
 - Production deployment updated so the live AI Draft drawer uses the larger editor and formatted preview block
+
+## 2026-04-01 - Codex session: simplify editable draft pane and clean email footer
+
+**User feedback**
+- The added live formatted preview inside the editable draft drawer felt too complicated
+- User preferred to rely on the existing `Preview` button instead
+- User also requested HTML email footer cleanup:
+  - change `Real Estate Tech Advisor` to `SmartFlow Automation`
+  - remove the sentence starting `You're receiving this because your agency was...`
+
+**What Codex changed**
+- Updated `components/lead/ActionButtons.tsx`
+  - removed the extra in-drawer live formatted preview block
+  - kept the larger textarea height from the previous pass
+- Updated `lib/emailTemplate.ts`
+  - changed footer role text from `Real Estate Tech Advisor` to `SmartFlow Automation`
+  - removed the unsubscribe-style explanatory footer sentence entirely
+
+**Result**
+- The drawer is simpler again:
+  - editable subject
+  - larger editable body textarea
+  - single `Preview` button for formatted email rendering
+- The shared HTML email template is cleaner and more brand-consistent in both preview and actual sent emails
+
+**Verification**
+- `npm run build` passed after the rollback and footer cleanup
+
+**Git / deploy**
+- Pushed to GitHub `main` after implementation and docs update
+- Production deployment updated so the live app and shared email template use the simplified drawer and cleaned footer

@@ -325,3 +325,7 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Improved the editable AI Draft drawer so the pain-point section is shown in a properly formatted live preview instead of exposing raw `[[ ... ]]` markers inside the editor workflow, making it easier to tweak copy without losing template structure (2026-04-01)
 - [x] Increased the body editor height by roughly 40% so longer drafts are easier to edit in place inside the drawer (2026-04-01)
 - [x] Verified the draft-formatting polish still builds successfully with `npm run build` before pushing and deploying (2026-04-01)
+- [x] Rolled back the extra in-drawer live formatted preview after user feedback that it overcomplicated the editing experience; the Preview button remains the single formatted preview surface while the larger editable textarea stays in place (2026-04-01)
+- [x] Updated the shared HTML email footer so the role line now reads `SmartFlow Automation` instead of `Real Estate Tech Advisor` (2026-04-01)
+- [x] Removed the footer sentence beginning `You're receiving this because your agency was...` from the shared email template so it no longer appears in preview or sent emails (2026-04-01)
+- [x] Verified the drawer rollback and footer cleanup still build successfully with `npm run build` before pushing and deploying (2026-04-01)
