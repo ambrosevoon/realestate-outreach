@@ -1352,3 +1352,108 @@ AI draft copy polish in the live n8n workflow:
   - deployment id: `dpl_ADJ2nBQPPtrbeZsoysXwFzJ4xbsa`
   - production deployment URL: `https://realestate-outreach-hh5b06pdv-ambrosevoon-4152s-projects.vercel.app`
   - aliased URL: `https://realestate-outreach-sand.vercel.app`
+
+## 2026-04-01 - Codex session: demo mode toggle with password-gated live unlock
+
+**User goal**
+- Add a Demo Mode toggle to SmartFlow Outreach so the dashboard always opens in Demo Mode first
+- Demo Mode should use fake leads from a separate demo source, visibly show that the app is in demo state, and disable `Send Email`
+- Unlocking Live Mode should require a password read from environment variables, not hardcoded source
+- Switching back from Live to Demo should not require a password
+- Do not change the real leads table or existing live workflow logic
+
+**What Codex changed**
+- Added `lib/demoLeads.ts`
+  - `DEMO_LEADS_TABLE = 're_outreach_demo_leads'`
+  - `LIVE_LEADS_TABLE = 're_outreach_leads'`
+  - `SEEDED_DEMO_LEADS` with 7 realistic fake Perth-area agent leads using non-deliverable `.example` email domains
+- Added `app/api/demo-mode/verify/route.ts`
+  - server-side password verification against `process.env.DEMO_MODE_PASSWORD`
+  - returns a clean 401 error message for wrong passwords
+- Added `components/dashboard/DemoModeControl.tsx`
+  - visible mode banner / badge
+  - `Unlock Live Mode` action
+  - password dialog with inline error state
+  - `Switch Back To Demo` action with no password requirement
+- Updated `hooks/useLeads.ts`
+  - accepts `mode: 'demo' | 'live'`
+  - queries `re_outreach_demo_leads` in demo and `re_outreach_leads` in live
+  - if the demo table does not exist, falls back to local seeded fake leads so Demo Mode remains usable
+  - supports local create/update/delete/import against the seeded fallback state
+- Updated `components/lead/ActionButtons.tsx`
+  - added `emailEnabled` support
+  - `Send Email` is disabled and greyed out in Demo Mode
+  - helper text explains why send is locked
+- Updated `components/lead/LeadDrawer.tsx`
+  - passes `emailEnabled` through to action buttons
+- Updated `app/dashboard/page.tsx`
+  - added mode state defaulting to `demo`
+  - no persistence, so every refresh resets to Demo Mode
+  - wires the mode banner and lead source switching into the dashboard
+- Added SQL setup file at `docs/sql/2026-04-01-demo-mode.sql`
+  - creates `public.re_outreach_demo_leads`
+  - seeds the same fake demo leads used by the local fallback
+- Updated `.env.local.example`
+  - added `DEMO_MODE_PASSWORD=change-me-before-sharing`
+
+**Important implementation detail**
+- The app currently uses `DEMO_MODE_PASSWORD` rather than a public client-prefixed env var because password comparison happens server-side in `/api/demo-mode/verify`
+- This keeps the password out of client source bundles
+
+**Supabase table status**
+- Confirmed from the anon-accessible API that:
+  - `re_outreach_leads` exists
+  - `re_outreach_demo_leads` does not currently exist in the remote project
+- Because this workspace did not have admin/service-role credentials, Codex could not create the remote demo table directly
+- To avoid blocking the feature:
+  - Demo Mode now falls back to seeded fake leads if the demo table is missing
+  - `docs/sql/2026-04-01-demo-mode.sql` is ready to run later against Supabase to create the real demo table
+
+**Local verification**
+- `npm run build` passed
+- Verified locally:
+  - dashboard loads in Demo Mode by default
+  - seeded fake leads render
+  - `Send Email` is disabled in Demo Mode
+  - wrong password shows inline modal error and stays in Demo Mode
+  - correct password unlocks Live Mode and loads real lead counts
+
+**Production env / deploy**
+- Pushed code to GitHub `main`:
+  - `e81700a` `feat(demo): add password-gated demo mode`
+- Added `DEMO_MODE_PASSWORD` to Vercel for:
+  - Production
+  - Development
+- Preview env could not be added generically because this project's Vercel setup expected branch-specific preview handling
+- First production deploy exposed an env-value mismatch:
+  - wrong password correctly returned HTTP 401
+  - intended placeholder password also returned HTTP 401
+- Fixed by:
+  - removing the Vercel env var
+  - re-adding it cleanly as `change-me-before-sharing`
+  - redeploying production
+
+**Live verification**
+- Production deploy after env fix:
+  - deployment id: `dpl_aH6HbUQ5Ho7fwmxn4xMK6dDJnm3N`
+  - production deployment URL: `https://realestate-outreach-hxu60a9ps-ambrosevoon-4152s-projects.vercel.app`
+  - aliased URL: `https://realestate-outreach-sand.vercel.app`
+- Live API verification:
+  - `POST https://realestate-outreach-sand.vercel.app/api/demo-mode/verify`
+  - payload `{"password":"wrong"}`
+  - response: HTTP 401
+  - payload `{"password":"change-me-before-sharing"}`
+  - response: HTTP 200
+- Live dashboard verification:
+  - dashboard opens in Demo Mode by default on refresh
+  - wrong password keeps Demo Mode locked
+  - correct password unlocks Live Mode
+  - switching mode does not persist across refresh, so the page resets to Demo Mode as intended
+
+**Honest caveat**
+- The deployed Demo Mode is ready for demos today, but it is currently using the seeded fallback dataset rather than the remote Supabase demo table because `re_outreach_demo_leads` has not been provisioned yet
+- There is also a browser-console 404 from the initial failed attempt to query the missing demo table before the hook falls back to seeded data
+- Functionally the experience works; the remaining cleanup is to actually create the remote demo table using the SQL file once admin-level Supabase access is available
+
+**Reminder**
+- Change `DEMO_MODE_PASSWORD` from `change-me-before-sharing` before sharing the dashboard with anyone externally

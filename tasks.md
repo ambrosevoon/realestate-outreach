@@ -304,3 +304,16 @@ Manual deploy required after every push to GitHub. Steps:
 > **Codex handoff note:** user asked to “change all the button to this style.” Codex applied the glow treatment at the shared button primitive level for primary/outline/secondary/destructive actions, while intentionally leaving `ghost`/`link` utility controls plain to avoid breaking tiny icon buttons and low-emphasis controls.
 
 > **Codex handoff note:** Tavily discovery is now app-side via Next.js route. Existing n8n discovery workflow may still exist remotely, but the frontend no longer depends on it.
+
+- [x] Added a password-gated Demo Mode toggle to the dashboard with Demo Mode defaulting to ON on every page refresh, no persistence in localStorage/cookies, and a visible mode banner plus unlock/switch controls (2026-04-01)
+- [x] Updated lead loading so Demo Mode reads from a dedicated demo table name (`re_outreach_demo_leads`) while Live Mode continues using the existing real table (`re_outreach_leads`) without modifying live workflow logic (2026-04-01)
+- [x] Added a server-side `/api/demo-mode/verify` route that validates the entered password against `DEMO_MODE_PASSWORD` from environment variables and returns inline-safe errors for wrong passwords (2026-04-01)
+- [x] Disabled and greyed out the `Send Email` button in Demo Mode, including helper text in the lead drawer so demo users can see that outbound email is intentionally locked until Live Mode is unlocked (2026-04-01)
+- [x] Added seeded fake Perth leads in `lib/demoLeads.ts` and a SQL setup file at `docs/sql/2026-04-01-demo-mode.sql` so the app has realistic non-deliverable demo data now and a ready migration path for creating the real Supabase demo table later (2026-04-01)
+- [x] Added `DEMO_MODE_PASSWORD=change-me-before-sharing` to `.env.local.example` and local `.env.local`, with the explicit requirement that the placeholder password must be changed before sharing the dashboard externally (2026-04-01)
+- [x] Verified locally that `npm run build` passes, the dashboard opens in Demo Mode by default, the seeded fake leads load, `Send Email` is disabled in Demo Mode, wrong passwords are rejected, and the correct password unlocks Live Mode (2026-04-01)
+- [x] Pushed the Demo Mode feature to GitHub `main` in commit `e81700a` and deployed it to Vercel production (`dpl_aH6HbUQ5Ho7fwmxn4xMK6dDJnm3N`, aliased to `https://realestate-outreach-sand.vercel.app`) (2026-04-01)
+- [x] Fixed the Vercel production `DEMO_MODE_PASSWORD` environment value after the first deploy rejected the placeholder password; removed/re-added the env var cleanly, redeployed production, and re-verified that wrong password returns HTTP 401 while `change-me-before-sharing` returns HTTP 200 on `/api/demo-mode/verify` (2026-04-01)
+- [x] Verified the live dashboard flow after deploy: page loads in Demo Mode by default, Live Mode can be unlocked with the configured password, and no persistence keeps the mode reset back to Demo on refresh (2026-04-01)
+
+> **Codex handoff note:** the remote Supabase demo table was not created from this workspace because only anon/browser credentials were available. The app currently falls back to seeded fake leads in Demo Mode if `re_outreach_demo_leads` does not exist, and `docs/sql/2026-04-01-demo-mode.sql` contains the ready-to-run table creation + seed SQL.
