@@ -322,3 +322,6 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Changed the AI Draft preview pane from read-only to editable so owners can manually tweak both the generated subject and body before sending, without needing to click `Re-generate` and lose the current draft (2026-04-01)
 - [x] Kept the existing preview/send pipeline intact while ensuring Preview and `Send Email` now both use the current edited draft text from the drawer state rather than only the originally generated content (2026-04-01)
 - [x] Verified the editable draft update still builds successfully with `npm run build` before pushing and deploying (2026-04-01)
+- [x] Improved the editable AI Draft drawer so the pain-point section is shown in a properly formatted live preview instead of exposing raw `[[ ... ]]` markers inside the editor workflow, making it easier to tweak copy without losing template structure (2026-04-01)
+- [x] Increased the body editor height by roughly 40% so longer drafts are easier to edit in place inside the drawer (2026-04-01)
+- [x] Verified the draft-formatting polish still builds successfully with `npm run build` before pushing and deploying (2026-04-01)

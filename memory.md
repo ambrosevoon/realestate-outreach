@@ -1499,3 +1499,31 @@ AI draft copy polish in the live n8n workflow:
 **Git / deploy**
 - Pushed to GitHub `main` after implementation and docs update
 - Production deployment updated after the push so the live dashboard uses the editable draft flow
+
+## 2026-04-01 - Codex session: AI draft pane formatting polish
+
+**User feedback**
+- The editable draft flow was correct functionally, but the body editor exposed raw pain-box markers like `[[` and `]]`, which made the draft pane feel visually broken
+- User also wanted the body editor to be noticeably taller
+
+**What Codex changed**
+- Updated `components/lead/ActionButtons.tsx`
+- Added a `DraftBodyPreview` helper that renders the draft body into a live formatted preview block underneath the editable textarea
+- The preview now:
+  - keeps normal paragraphs readable
+  - converts the special `[[ ... ]]` pain-point block into a styled highlighted box
+  - renders each bullet with clean spacing instead of raw marker text
+- Increased the body textarea from `min-h-[320px]` / `rows={14}` to `min-h-[448px]` / `rows={20}`
+  - roughly a 40% height increase
+
+**Why this approach**
+- The textarea remains fully editable, which preserves the user's ability to tweak the exact outgoing content
+- The added live formatted preview gives immediate visual feedback on how the edited copy will be interpreted inside the SmartFlow template structure
+- This avoids forcing a fully structured block editor while still keeping the editing workflow flexible
+
+**Verification**
+- `npm run build` passed after the formatting polish
+
+**Git / deploy**
+- Pushed to GitHub `main` after implementation and docs update
+- Production deployment updated so the live AI Draft drawer uses the larger editor and formatted preview block
