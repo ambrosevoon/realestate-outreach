@@ -1626,3 +1626,32 @@ AI draft copy polish in the live n8n workflow:
 **Git / deploy**
 - Pushed to GitHub `main` after implementation and docs update
 - Production deployment updated so the live dashboard shows the new Demo Mode pulse and wording
+
+## 2026-04-01 - Codex session: demo mode animated status breakdown
+
+**User request**
+- Polish the `Status Breakdown` section in Demo Mode
+- Add an animation effect that suits the section well
+
+**What Codex changed**
+- Updated `components/dashboard/AnalyticsSection.tsx`
+- Added an optional `mode` prop and passed the dashboard mode through from `app/dashboard/page.tsx`
+- In Demo Mode only:
+  - each status row now enters with a subtle stagger
+  - each progress fill animates in from zero
+  - each bar gets a soft repeating glow pulse
+  - a restrained shimmer sweep passes across the bar surface
+- In Live Mode:
+  - the section stays static and stable
+
+**Why this effect**
+- The status breakdown is already a compact progress-based summary
+- A gentle pulse + shimmer reinforces that it is a demo showcase section without overwhelming the rest of the page
+- The motion is data-shaped and purposeful, rather than decorative page-wide animation
+
+**Verification**
+- `npm run build` passed after the analytics animation update
+
+**Git / deploy**
+- Pushed to GitHub `main` after implementation and docs update
+- Production deployment updated so the live demo dashboard includes the animated status breakdown

@@ -335,3 +335,6 @@ Manual deploy required after every push to GitHub. Steps:
 - [x] Updated the Demo Mode banner copy to use `simulated` instead of `fake` for the demo dataset wording, including the unlock modal description (2026-04-01)
 - [x] Added a slow golden-yellow blinking outer-edge effect to the Demo Mode banner so the state is more visually obvious without becoming aggressive (2026-04-01)
 - [x] Verified the Demo Mode banner styling update still builds successfully with `npm run build` before pushing and deploying (2026-04-01)
+- [x] Polished the Demo Mode `Status Breakdown` section with a demo-only animation treatment: staggered row entrance, softly pulsing progress fills, and a restrained shimmer pass across each status bar (2026-04-01)
+- [x] Scoped the motion treatment to Demo Mode only so Live Mode analytics remain steady and less theatrical (2026-04-01)
+- [x] Verified the animated Demo Mode status-breakdown update still builds successfully with `npm run build` before pushing and deploying (2026-04-01)

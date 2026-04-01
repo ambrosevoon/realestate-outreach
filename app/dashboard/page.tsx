@@ -213,7 +213,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Analytics */}
-        <AnalyticsSection leads={leads} />
+        <AnalyticsSection leads={leads} mode={mode} />
 
         {/* Toolbar */}
         <div id="pipeline" className="dashboard-toolbar flex flex-col sm:flex-row gap-3 items-start sm:items-center rounded-[1.75rem] border border-white/8 bg-white/[0.05] px-4 py-4 backdrop-blur-md shadow-[0_30px_80px_-52px_rgba(0,0,0,0.95)]">

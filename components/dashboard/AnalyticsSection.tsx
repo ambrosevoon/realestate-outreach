@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import {
   BarChart,
   Bar,
@@ -17,6 +18,7 @@ import type { Lead } from '@/types'
 
 interface Props {
   leads: Lead[]
+  mode?: 'demo' | 'live'
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -52,8 +54,9 @@ function CustomTooltip({ active, payload, label }: any) {
   )
 }
 
-export function AnalyticsSection({ leads }: Props) {
+export function AnalyticsSection({ leads, mode = 'live' }: Props) {
   const { activities, fetchAll } = useAllActivities()
+  const isDemoMode = mode === 'demo'
 
   useEffect(() => {
     fetchAll()
@@ -230,25 +233,72 @@ export function AnalyticsSection({ leads }: Props) {
 
       {/* Status Breakdown */}
       <div className="dashboard-panel rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 backdrop-blur-sm">
-        <p className="dashboard-panel-label mb-4 text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">Status Breakdown</p>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <p className="dashboard-panel-label text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">Status Breakdown</p>
+          {isDemoMode ? (
+            <span className="inline-flex items-center rounded-full border border-amber-300/20 bg-amber-300/8 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-amber-200/85">
+              Demo pulse
+            </span>
+          ) : null}
+        </div>
         {statusData.length === 0 ? (
           <p className="text-sm text-stone-500">No leads yet</p>
         ) : (
           <div className="space-y-2">
-            {statusData.map(({ status, label, count, color }) => (
-              <div key={status} className="flex items-center gap-3">
+            {statusData.map(({ status, label, count, color }, index) => (
+              <motion.div
+                key={status}
+                className="relative flex items-center gap-3 rounded-2xl px-2 py-2"
+                initial={isDemoMode ? { opacity: 0, y: 8 } : false}
+                animate={isDemoMode ? { opacity: 1, y: 0 } : undefined}
+                transition={isDemoMode ? { duration: 0.35, delay: index * 0.08, ease: 'easeOut' } : undefined}
+              >
                 <span className="w-20 shrink-0 text-xs text-stone-300">{label}</span>
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-900/80">
-                  <div
-                    className="h-full rounded-full transition-all"
+                <div className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-slate-900/80">
+                  <motion.div
+                    className="absolute inset-y-0 left-0 rounded-full transition-all"
                     style={{
                       width: `${leads.length > 0 ? (count / leads.length) * 100 : 0}%`,
-                      backgroundColor: color,
+                      background: isDemoMode
+                        ? `linear-gradient(90deg, ${color} 0%, ${color}cc 58%, rgba(255,255,255,0.95) 100%)`
+                        : color,
                     }}
+                    initial={isDemoMode ? { width: 0 } : false}
+                    animate={
+                      isDemoMode
+                        ? {
+                            width: `${leads.length > 0 ? (count / leads.length) * 100 : 0}%`,
+                            boxShadow: [
+                              `0 0 0 rgba(255,255,255,0)`,
+                              `0 0 16px ${color}66`,
+                              `0 0 0 rgba(255,255,255,0)`,
+                            ],
+                          }
+                        : undefined
+                    }
+                    transition={
+                      isDemoMode
+                        ? {
+                            width: { duration: 0.8, delay: index * 0.08, ease: 'easeOut' },
+                            boxShadow: { duration: 2.8, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut', delay: index * 0.12 },
+                          }
+                        : undefined
+                    }
                   />
+                  {isDemoMode ? (
+                    <motion.div
+                      className="absolute inset-y-0 w-14 rounded-full"
+                      style={{
+                        background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,248,220,0.45) 50%, rgba(255,255,255,0) 100%)',
+                        mixBlendMode: 'screen',
+                      }}
+                      animate={{ x: ['-40%', '140%'] }}
+                      transition={{ duration: 3.8, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut', delay: index * 0.18 }}
+                    />
+                  ) : null}
                 </div>
                 <span className="w-8 shrink-0 text-right text-xs text-stone-500">{count}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
