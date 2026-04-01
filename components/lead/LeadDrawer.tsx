@@ -45,9 +45,10 @@ interface Props {
   open: boolean
   onClose: () => void
   onUpdate: (id: string, patch: Partial<Lead>) => Promise<{ data: Lead | null; error: unknown }>
+  emailEnabled?: boolean
 }
 
-export function LeadDrawer({ lead, open, onClose, onUpdate }: Props) {
+export function LeadDrawer({ lead, open, onClose, onUpdate, emailEnabled = true }: Props) {
   const [notes, setNotes] = useState('')
   const [status, setStatus] = useState<LeadStatus>('new')
   const [savingNotes, setSavingNotes] = useState(false)
@@ -274,13 +275,14 @@ export function LeadDrawer({ lead, open, onClose, onUpdate }: Props) {
             <label className="lead-drawer-label text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">
               Actions
             </label>
-            <ActionButtons
-              lead={lead}
-              onLeadUpdate={handleLeadUpdate}
-              onActivityAdded={handleActivityAdded}
-              onRefreshActivities={() => fetchActivities(lead.id)}
-              onClose={onClose}
-            />
+          <ActionButtons
+            lead={lead}
+            onLeadUpdate={handleLeadUpdate}
+            onActivityAdded={handleActivityAdded}
+            onRefreshActivities={() => fetchActivities(lead.id)}
+            onClose={onClose}
+            emailEnabled={emailEnabled}
+          />
           </div>
 
           <Separator className="lead-drawer-separator bg-white/8" />

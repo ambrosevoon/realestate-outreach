@@ -18,6 +18,7 @@ import {
 import { StatsCards } from '@/components/dashboard/StatsCards'
 import { AnalyticsSection } from '@/components/dashboard/AnalyticsSection'
 import { LeadsTable } from '@/components/dashboard/LeadsTable'
+import { DemoModeControl } from '@/components/dashboard/DemoModeControl'
 import { CreateLeadDialog } from '@/components/dashboard/CreateLeadDialog'
 import { CSVImportDialog } from '@/components/dashboard/CSVImportDialog'
 import { DiscoverAgentsButton } from '@/components/dashboard/DiscoverAgentsButton'
@@ -36,6 +37,7 @@ const STATUS_FILTERS: { value: LeadStatus | 'all'; label: string }[] = [
 ]
 
 export default function DashboardPage() {
+  const [mode, setMode] = useState<'demo' | 'live'>('demo')
   const {
     leads,
     filtered,
@@ -55,7 +57,8 @@ export default function DashboardPage() {
     setPage,
     totalPages,
     paginated,
-  } = useLeads()
+    usingSeededDemoFallback,
+  } = useLeads(mode)
 
   const router = useRouter()
 
@@ -202,6 +205,8 @@ export default function DashboardPage() {
           </div>
         </section>
 
+        <DemoModeControl mode={mode} onModeChange={setMode} seededFallback={usingSeededDemoFallback} />
+
         {/* Stats */}
         <div id="analytics">
           <StatsCards leads={leads} />
@@ -311,6 +316,7 @@ export default function DashboardPage() {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onUpdate={handleLeadUpdate}
+        emailEnabled={mode === 'live'}
       />
     </div>
   )

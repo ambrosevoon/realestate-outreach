@@ -16,6 +16,7 @@ interface Props {
   onActivityAdded: (type: 'email_sent' | 'followup_sent', subject: string) => void
   onRefreshActivities?: () => void
   onClose?: () => void
+  emailEnabled?: boolean
 }
 
 interface Draft {
@@ -74,7 +75,14 @@ function DraftBody({ body }: { body: string }) {
   return <div className="space-y-0.5">{elements}</div>
 }
 
-export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onRefreshActivities, onClose }: Props) {
+export function ActionButtons({
+  lead,
+  onLeadUpdate,
+  onActivityAdded,
+  onRefreshActivities,
+  onClose,
+  emailEnabled = true,
+}: Props) {
   const [sending, setSending] = useState(false)
   const [scheduling, setScheduling] = useState(false)
   const [marking, setMarking] = useState<'won' | 'lost' | null>(null)
@@ -180,8 +188,12 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onRefreshAc
       <div className="grid grid-cols-2 gap-2">
         <Button
           onClick={handleSendEmail}
-          disabled={sending}
-          className="bg-blue-600 hover:bg-blue-700 text-white text-sm cursor-pointer w-full active:scale-[0.96] transition-transform duration-100"
+          disabled={sending || !emailEnabled}
+          className={`text-sm w-full active:scale-[0.96] transition-transform duration-100 ${
+            emailEnabled
+              ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
+              : 'cursor-not-allowed border border-white/10 bg-slate-800 text-slate-500 hover:bg-slate-800 hover:text-slate-500'
+          }`}
         >
           {sending ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Mail className="w-4 h-4 mr-1.5" />}
           Send Email
@@ -196,6 +208,12 @@ export function ActionButtons({ lead, onLeadUpdate, onActivityAdded, onRefreshAc
           AI Draft
         </Button>
       </div>
+
+      {!emailEnabled ? (
+        <p className="text-xs text-stone-500">
+          Send Email is disabled while Demo Mode is active.
+        </p>
+      ) : null}
 
       {/* AI Draft preview pane — appears after first generation */}
       {(draft || draftLoading) && (
