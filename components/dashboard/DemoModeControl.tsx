@@ -78,8 +78,6 @@ export function DemoModeControl({
   }
 
   const modeLabel = mode === 'demo' ? 'Demo Mode' : 'Live Mode'
-  const liveToggleDisabled = mode !== 'live'
-
   return (
     <>
       <div
@@ -121,50 +119,46 @@ export function DemoModeControl({
         </div>
 
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-          <button
-            type="button"
-            onClick={() => {
-              if (liveToggleDisabled) return
-              onSendRealEmailChange?.(!sendRealEmail)
-            }}
-            disabled={liveToggleDisabled}
-            className={`flex min-w-[280px] items-center justify-between rounded-2xl border px-3 py-2.5 text-left transition-colors ${
-              liveToggleDisabled
-                ? 'cursor-not-allowed border-white/8 bg-white/[0.03] opacity-60'
-                : sendRealEmail
+          {mode === 'live' ? (
+            <button
+              type="button"
+              onClick={() => onSendRealEmailChange?.(!sendRealEmail)}
+              className={`flex min-w-[280px] items-center justify-between rounded-2xl border px-3 py-2.5 text-left transition-colors ${
+                sendRealEmail
                   ? 'border-red-500/40 bg-red-500/10'
                   : 'border-cyan-400/25 bg-cyan-400/8'
-            }`}
-          >
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-white/90">Send Real Email</span>
-                <span
-                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.22em] ${
-                    sendRealEmail
-                      ? 'bg-red-500/20 text-red-200 animate-[pulse_0.55s_ease-in-out_infinite]'
-                      : 'bg-amber-400/15 text-amber-200'
-                  }`}
-                >
-                  {sendRealEmail ? 'LIVE' : 'TEST'}
-                </span>
-              </div>
-              <p className="mt-1 text-xs text-stone-300">
-                {sendRealEmail ? 'Fast blinking LIVE. Emails go to the real agent inbox.' : `TEST to Safe Email. Sends route to ${safeEmail}.`}
-              </p>
-            </div>
-            <div
-              className={`relative ml-3 h-7 w-12 rounded-full border transition-colors ${
-                sendRealEmail ? 'border-red-400/50 bg-red-500/30' : 'border-white/10 bg-slate-800'
               }`}
             >
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold uppercase tracking-[0.22em] text-white/90">Send Real Email</span>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.22em] ${
+                      sendRealEmail
+                        ? 'bg-red-500/20 text-red-200 animate-[pulse_0.55s_ease-in-out_infinite]'
+                        : 'bg-amber-400/15 text-amber-200'
+                    }`}
+                  >
+                    {sendRealEmail ? 'LIVE' : 'TEST'}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-stone-300">
+                  {sendRealEmail ? 'Fast blinking LIVE. Emails go to the real agent inbox.' : `TEST to Safe Email. Sends route to ${safeEmail}.`}
+                </p>
+              </div>
               <div
-                className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform ${
-                  sendRealEmail ? 'translate-x-5' : 'translate-x-0'
+                className={`relative ml-3 h-7 w-12 rounded-full border transition-colors ${
+                  sendRealEmail ? 'border-red-400/50 bg-red-500/30' : 'border-white/10 bg-slate-800'
                 }`}
-              />
-            </div>
-          </button>
+              >
+                <div
+                  className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform ${
+                    sendRealEmail ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </div>
+            </button>
+          ) : null}
 
           <Button
             type="button"
