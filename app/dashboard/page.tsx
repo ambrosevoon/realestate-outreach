@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, SlidersHorizontal, RefreshCw, LogOut, Trash2, Sparkles } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle'
@@ -24,6 +24,7 @@ import { CSVImportDialog } from '@/components/dashboard/CSVImportDialog'
 import { DiscoverAgentsButton } from '@/components/dashboard/DiscoverAgentsButton'
 import { LeadDrawer } from '@/components/lead/LeadDrawer'
 import { useLeads } from '@/hooks/useLeads'
+import { SAFE_TEST_EMAIL } from '@/lib/n8n'
 import type { Lead, LeadStatus } from '@/types'
 
 const STATUS_FILTERS: { value: LeadStatus | 'all'; label: string }[] = [
@@ -38,9 +39,14 @@ const STATUS_FILTERS: { value: LeadStatus | 'all'; label: string }[] = [
 
 export default function DashboardPage() {
   const [mode, setMode] = useState<'demo' | 'live'>('demo')
+  const [sendRealEmail, setSendRealEmail] = useState(false)
   const {
     leads,
     filtered,
+    datasetOptions,
+    selectedDatasetKey,
+    setSelectedDatasetKey,
+    activeDataset,
     loading,
     search,
     setSearch,
@@ -67,6 +73,12 @@ export default function DashboardPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [deleting, setDeleting] = useState(false)
 
+  useEffect(() => {
+    if (mode !== 'live') {
+      setSendRealEmail(false)
+    }
+  }, [mode])
+
   const handleRowClick = (lead: Lead) => {
     setSelectedLead(lead)
     setDrawerOpen(true)
@@ -83,7 +95,8 @@ export default function DashboardPage() {
   const handleToggle = (id: string) => {
     setSelectedIds(prev => {
       const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
       return next
     })
   }
@@ -104,7 +117,7 @@ export default function DashboardPage() {
     setDeleting(false)
   }
 
-  const handleImported = (_count: number) => {
+  const handleImported = () => {
     fetchLeads()
   }
 
@@ -172,15 +185,23 @@ export default function DashboardPage() {
               existingLeads={leads}
               onImported={handleImported}
               bulkCreate={bulkCreateLeads}
+              datasetLabel={activeDataset.label}
               className="w-full sm:w-auto"
             />
             <DiscoverAgentsButton
               existingLeads={leads}
               onImported={handleImported}
               bulkCreate={bulkCreateLeads}
+              defaultLocation={activeDataset.location}
+              datasetLabel={activeDataset.label}
               className="w-full sm:w-auto"
             />
-            <CreateLeadDialog onCreate={createLead} className="col-span-2 w-full sm:col-span-1 sm:w-auto" />
+            <CreateLeadDialog
+              onCreate={createLead}
+              datasetLabel={activeDataset.label}
+              defaultSuburb={activeDataset.location}
+              className="col-span-2 w-full sm:col-span-1 sm:w-auto"
+            />
           </div>
         </div>
       </header>
@@ -205,7 +226,14 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <DemoModeControl mode={mode} onModeChange={setMode} seededFallback={usingSeededDemoFallback} />
+        <DemoModeControl
+          mode={mode}
+          onModeChange={setMode}
+          seededFallback={usingSeededDemoFallback}
+          sendRealEmail={sendRealEmail}
+          onSendRealEmailChange={setSendRealEmail}
+          safeEmail={SAFE_TEST_EMAIL}
+        />
 
         {/* Stats */}
         <div id="analytics">
@@ -228,6 +256,22 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4 text-stone-500" />
+            <Select value={selectedDatasetKey} onValueChange={setSelectedDatasetKey}>
+              <SelectTrigger className="h-10 w-44 rounded-xl border-white/10 bg-slate-950/55 text-stone-200 focus:ring-amber-500">
+                <SelectValue placeholder="Data source" />
+              </SelectTrigger>
+              <SelectContent className="border-white/10 bg-slate-900/95 backdrop-blur-xl">
+                {datasetOptions.map(option => (
+                  <SelectItem
+                    key={option.key}
+                    value={option.key}
+                    className="cursor-pointer text-stone-300 focus:bg-white/8 focus:text-white"
+                  >
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select
               value={statusFilter}
               onValueChange={v => setStatusFilter(v as LeadStatus | 'all')}
@@ -263,7 +307,7 @@ export default function DashboardPage() {
               </Button>
             )}
             <span className="text-xs uppercase tracking-[0.18em] text-stone-500">
-              {filtered.length} of {leads.length} leads
+              {activeDataset.label} · {filtered.length} of {leads.length} leads
             </span>
           </div>
         </div>
@@ -317,6 +361,7 @@ export default function DashboardPage() {
         onClose={() => setDrawerOpen(false)}
         onUpdate={handleLeadUpdate}
         emailEnabled={mode === 'live'}
+        sendRealEmail={sendRealEmail}
       />
     </div>
   )

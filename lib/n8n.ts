@@ -13,31 +13,90 @@ function isDemoDraftLead(lead: DraftPayload) {
   return lead.lead_id?.startsWith('demo-') || lead.email?.endsWith('.example')
 }
 
+function pickOne<T>(items: T[]) {
+  return items[Math.floor(Math.random() * items.length)]
+}
+
 function buildDemoDraft(lead: DraftPayload) {
   const locality = lead.suburb?.replace(/\s+WA$/i, '').trim() || 'Perth'
-  const subject = `${locality} enquiries should not go cold`
-  const introLine = lead.suburb
-    ? `This is something I've been helping ${locality} agents deal with - keeping enquiry follow-up tight without having to constantly monitor email.`
-    : `This is something I've been helping Perth agents deal with - keeping enquiry follow-up tight without having to constantly monitor email.`
+  const subject = pickOne([
+    `${locality} enquiries should not go cold`,
+    `Still following up leads by hand?`,
+    `What happens after hours in ${locality}?`,
+    `How many enquiries cooled off today?`,
+    `A better follow up rhythm for ${locality}`,
+    `The reply delay costing inspections`,
+  ])
+
+  const hook = pickOne([
+    `It is Sunday evening after a full day of opens, and there are still fresh enquiries waiting for a reply.`,
+    `Monday starts with a weekend backlog, and some buyer enquiries are already cooling off.`,
+    `You finish the last open home, check your phone, and there are still leads waiting.`,
+    `It is late in the day, and new enquiries are still landing while you are trying to switch off.`,
+  ])
+
+  const introLine = pickOne([
+    `I have been helping ${locality} agents keep follow up tighter without being stuck in their inbox.`,
+    `This is something I have been helping ${locality} agents deal with when enquiry flow gets patchy.`,
+    `I have been helping agents around ${locality} keep response times tighter without adding more admin.`,
+  ])
+
+  const problemLine = pickOne([
+    `The problem is not replying. It is replying before the lead goes cold. The first agent to respond usually gets the momentum.`,
+    `The issue is not effort. It is speed. When follow up drifts, good enquiries lose heat fast.`,
+    `Most leads are not lost because nobody replies. They are lost because the reply comes too late.`,
+  ])
+
+  const painSets = [
+    [
+      `• Weekend enquiries stack up. Monday starts behind before the day even settles.`,
+      `• Late replies drag on. Good buyers move faster than the inbox does.`,
+      `• Follow ups get scattered. Some sit in portals. Others sit in email.`,
+      `• Hot leads cool off. Interest fades between contact attempts.`,
+      `• Too much manual chasing. Too much time spent checking what still needs action.`,
+    ],
+    [
+      `• After hours messages pile up. The catch up never really finishes.`,
+      `• Inspection days get busy. Follow up slips while everything else moves.`,
+      `• Buyer intent changes quickly. Delay costs attention.`,
+      `• Enquiries arrive in different places. Nothing feels fully under control.`,
+      `• Time goes into admin. Less time goes into real conversations.`,
+    ],
+    [
+      `• Weekend demand rolls into Monday. The inbox already feels heavy.`,
+      `• Slower replies lose urgency. Buyers keep moving.`,
+      `• Manual follow up is easy to miss when the day gets noisy.`,
+      `• New leads and old leads compete for attention.`,
+      `• Response pressure stays high long after business hours.`,
+    ],
+  ]
+
+  const solutionLine = pickOne([
+    `What I put in place keeps responses moving and follow up organised, so fewer good opportunities slip away.`,
+    `The result is a steadier follow up rhythm, faster replies, and less need to keep checking every channel.`,
+    `It helps keep enquiry flow under control, so the week feels tighter and less reactive.`,
+  ])
+
+  const cta = pickOne([
+    `Open to a quick 10 minute look at how this works?`,
+    `Would you be open to a quick 10 minute walkthrough?`,
+    `Open to seeing what this could look like for your workflow?`,
+  ])
 
   const body = [
-    `It's Sunday evening after a full day of opens, and you've still got a stack of new enquiries waiting while you're trying to switch off for the night.`,
+    hook,
     '',
     introLine,
     '',
-    `The problem isn't replying. It's replying before the lead goes cold. In most cases, the first agent to respond gets the momentum, but staying on top of every enquiry while managing everything else becomes a juggling act.`,
+    problemLine,
     '',
     `[[`,
-    `• Weekend enquiries stack up. Monday inbox already feels behind before the week starts.`,
-    `• Late-night replies. Trying to stay responsive without burning out completely.`,
-    `• Hot leads cooling. Buyers lose interest faster than expected between contact attempts.`,
-    `• Leads slipping through. No consistent way to track every follow-up that needs doing.`,
-    `• Different platforms. Enquiries scattered across multiple channels and portals.`,
+    ...pickOne(painSets),
     `]]`,
     '',
-    `What I've put together keeps enquiries organised and responses moving quickly, so fewer opportunities slip through while you stay focused on listings and clients.`,
+    solutionLine,
     '',
-    `Open to a quick 10-minute look at how this works in practice?`,
+    cta,
   ].join('\n')
 
   return { subject, body }
@@ -60,6 +119,8 @@ async function call(path: string, body?: object) {
 // TESTING PHASE: destination email hardcoded — remove before going live
 const TEST_EMAIL = 'ambrosevoon@gmail.com'
 
+export const SAFE_TEST_EMAIL = TEST_EMAIL
+
 export function sendEmail(lead: {
   lead_id: string
   email: string
@@ -68,8 +129,10 @@ export function sendEmail(lead: {
   subject?: string
   body?: string
   body_html?: string
+  send_real_email?: boolean
 }) {
-  return call('/send-email', { ...lead, email: TEST_EMAIL })
+  const recipient = lead.send_real_email ? lead.email : TEST_EMAIL
+  return call('/send-email', { ...lead, email: recipient })
 }
 
 export function updateLeadStatus(lead_id: string, status: string, notes?: string) {

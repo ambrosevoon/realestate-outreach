@@ -19,6 +19,7 @@ interface Props {
   existingLeads: Lead[]
   onConfirm: (newAgents: RawAgent[]) => void
   importing: boolean
+  datasetLabel: string
 }
 
 function normalizePhone(p?: string): string {
@@ -54,6 +55,7 @@ export function ImportPreviewDialog({
   existingLeads,
   onConfirm,
   importing,
+  datasetLabel,
 }: Props) {
   const { newAgents, duplicates } = useMemo(() => {
     const newAgents: RawAgent[] = []
@@ -75,6 +77,7 @@ export function ImportPreviewDialog({
       <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-white">Import Preview</DialogTitle>
+          <p className="text-sm text-slate-400">New agents will be saved to {datasetLabel}.</p>
         </DialogHeader>
 
         <div className="space-y-3">

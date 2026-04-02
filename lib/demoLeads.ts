@@ -1,4 +1,5 @@
 import type { Lead } from '@/types'
+import { DEMO_DATASET_KEY, DEMO_DATASET_LABEL } from '@/lib/leadDatasets'
 
 const now = '2026-04-01T08:00:00.000Z'
 
@@ -17,6 +18,9 @@ export const SEEDED_DEMO_LEADS: Lead[] = [
     status: 'new',
     score: 82,
     owner_notes: 'Demo lead for product walkthroughs. Fake contact details only.',
+    dataset_key: DEMO_DATASET_KEY,
+    dataset_label: DEMO_DATASET_LABEL,
+    location: 'Mount Lawley',
     created_at: now,
     updated_at: now,
   },
@@ -32,6 +36,9 @@ export const SEEDED_DEMO_LEADS: Lead[] = [
     score: 74,
     last_contacted_at: '2026-03-29T03:30:00.000Z',
     owner_notes: 'Use this row to demo contacted-state filtering.',
+    dataset_key: DEMO_DATASET_KEY,
+    dataset_label: DEMO_DATASET_LABEL,
+    location: 'South Perth',
     created_at: now,
     updated_at: now,
   },
@@ -47,6 +54,9 @@ export const SEEDED_DEMO_LEADS: Lead[] = [
     score: 88,
     last_contacted_at: '2026-03-30T05:00:00.000Z',
     owner_notes: 'Demo lead with reply history.',
+    dataset_key: DEMO_DATASET_KEY,
+    dataset_label: DEMO_DATASET_LABEL,
+    location: 'Subiaco',
     created_at: now,
     updated_at: now,
   },
@@ -63,6 +73,9 @@ export const SEEDED_DEMO_LEADS: Lead[] = [
     last_contacted_at: '2026-03-31T01:15:00.000Z',
     next_followup_at: '2026-04-04T02:00:00.000Z',
     owner_notes: 'Useful for demoing post-demo workflow states.',
+    dataset_key: DEMO_DATASET_KEY,
+    dataset_label: DEMO_DATASET_LABEL,
+    location: 'Scarborough',
     created_at: now,
     updated_at: now,
   },
@@ -77,6 +90,9 @@ export const SEEDED_DEMO_LEADS: Lead[] = [
     status: 'new',
     score: 69,
     owner_notes: 'Great example for AI draft demos.',
+    dataset_key: DEMO_DATASET_KEY,
+    dataset_label: DEMO_DATASET_LABEL,
+    location: 'Leederville',
     created_at: now,
     updated_at: now,
   },
@@ -92,6 +108,9 @@ export const SEEDED_DEMO_LEADS: Lead[] = [
     score: 95,
     last_contacted_at: '2026-03-27T06:20:00.000Z',
     owner_notes: 'Demo closed-won example.',
+    dataset_key: DEMO_DATASET_KEY,
+    dataset_label: DEMO_DATASET_LABEL,
+    location: 'Victoria Park',
     created_at: now,
     updated_at: now,
   },
@@ -106,8 +125,10 @@ export const SEEDED_DEMO_LEADS: Lead[] = [
     status: 'lost',
     score: 57,
     owner_notes: 'Demo closed-lost example.',
+    dataset_key: DEMO_DATASET_KEY,
+    dataset_label: DEMO_DATASET_LABEL,
+    location: 'Kalamunda',
     created_at: now,
     updated_at: now,
   },
 ]
-

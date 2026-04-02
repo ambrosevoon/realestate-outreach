@@ -55,10 +55,11 @@ interface Props {
   existingLeads: Lead[]
   onImported: (count: number) => void
   bulkCreate: (agents: RawAgent[]) => Promise<{ inserted: number; errors: number }>
+  datasetLabel: string
   className?: string
 }
 
-export function CSVImportDialog({ existingLeads, onImported, bulkCreate, className }: Props) {
+export function CSVImportDialog({ existingLeads, onImported, bulkCreate, datasetLabel, className }: Props) {
   const [previewOpen, setPreviewOpen] = useState(false)
   const [parsed, setParsed] = useState<RawAgent[]>([])
   const [importing, setImporting] = useState(false)
@@ -88,7 +89,7 @@ export function CSVImportDialog({ existingLeads, onImported, bulkCreate, classNa
       const { inserted, errors } = await bulkCreate(newAgents)
       setPreviewOpen(false)
       if (inserted > 0) {
-        toast.success(`Imported ${inserted} agent${inserted !== 1 ? 's' : ''}.`)
+        toast.success(`Imported ${inserted} agent${inserted !== 1 ? 's' : ''} into ${datasetLabel}.`)
         onImported(inserted)
       }
       if (errors > 0) toast.error(`${errors} agent${errors !== 1 ? 's' : ''} failed to import.`)
@@ -124,6 +125,7 @@ export function CSVImportDialog({ existingLeads, onImported, bulkCreate, classNa
         existingLeads={existingLeads}
         onConfirm={handleConfirm}
         importing={importing}
+        datasetLabel={datasetLabel}
       />
     </>
   )

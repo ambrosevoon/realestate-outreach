@@ -19,6 +19,8 @@ type CreateInput = Omit<Lead, 'id' | 'created_at' | 'updated_at' | 'status' | 's
 
 interface Props {
   onCreate: (input: CreateInput) => Promise<{ data: Lead | null; error: unknown }>
+  datasetLabel: string
+  defaultSuburb?: string
   className?: string
 }
 
@@ -32,10 +34,16 @@ const empty: CreateInput = {
   owner_notes: '',
 }
 
-export function CreateLeadDialog({ onCreate, className }: Props) {
+export function CreateLeadDialog({ onCreate, datasetLabel, defaultSuburb, className }: Props) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState<CreateInput>(empty)
+
+  const resetForm = () =>
+    setForm({
+      ...empty,
+      suburb: defaultSuburb || '',
+    })
 
   const set = (k: keyof CreateInput, v: string) => setForm(p => ({ ...p, [k]: v }))
 
@@ -48,14 +56,20 @@ export function CreateLeadDialog({ onCreate, className }: Props) {
     if (error) {
       toast.error('Failed to create lead.')
     } else {
-      toast.success(`${form.name} added to leads.`)
-      setForm(empty)
+      toast.success(`${form.name} added to ${datasetLabel}.`)
+      resetForm()
       setOpen(false)
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={nextOpen => {
+        setOpen(nextOpen)
+        if (nextOpen) resetForm()
+      }}
+    >
       <DialogTrigger asChild>
         <Button size="sm" className={`h-8 justify-center gap-1.5 bg-blue-600 text-white hover:bg-blue-700 cursor-pointer ${className ?? ''}`}>
           <Plus className="w-4 h-4" />
@@ -66,6 +80,7 @@ export function CreateLeadDialog({ onCreate, className }: Props) {
       <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-white">Add New Lead</DialogTitle>
+          <p className="text-sm text-slate-400">This lead will be saved to {datasetLabel}.</p>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           <div className="grid grid-cols-2 gap-3">

@@ -1,5 +1,12 @@
 export type LeadStatus = 'new' | 'contacted' | 'replied' | 'demo_booked' | 'won' | 'lost'
 
+export interface LeadDatasetOption {
+  key: string
+  label: string
+  location?: string
+  isLegacy?: boolean
+}
+
 export interface Lead {
   id: string
   name: string
@@ -13,6 +20,9 @@ export interface Lead {
   last_contacted_at?: string
   next_followup_at?: string
   owner_notes?: string
+  dataset_key?: string
+  dataset_label?: string
+  location?: string
   created_at: string
   updated_at: string
 }
@@ -24,6 +34,9 @@ export interface RawAgent {
   email?: string
   suburb?: string
   website?: string
+  dataset_key?: string
+  dataset_label?: string
+  location?: string
 }
 
 export type ActivityType = 'email_sent' | 'followup_sent' | 'reply_received' | 'call_made' | 'note'

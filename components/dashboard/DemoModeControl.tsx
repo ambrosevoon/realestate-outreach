@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ShieldCheck, Lock, FlaskConical, Radio } from 'lucide-react'
+import { ShieldCheck, Lock, FlaskConical, Radio, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -19,9 +19,19 @@ interface Props {
   mode: Mode
   onModeChange: (mode: Mode) => void
   seededFallback?: boolean
+  sendRealEmail?: boolean
+  onSendRealEmailChange?: (value: boolean) => void
+  safeEmail?: string
 }
 
-export function DemoModeControl({ mode, onModeChange, seededFallback = false }: Props) {
+export function DemoModeControl({
+  mode,
+  onModeChange,
+  seededFallback = false,
+  sendRealEmail = false,
+  onSendRealEmailChange,
+  safeEmail = 'ambrosevoon@gmail.com',
+}: Props) {
   const [open, setOpen] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -68,6 +78,7 @@ export function DemoModeControl({ mode, onModeChange, seededFallback = false }: 
   }
 
   const modeLabel = mode === 'demo' ? 'Demo Mode' : 'Live Mode'
+  const liveToggleDisabled = mode !== 'live'
 
   return (
     <>
@@ -109,25 +120,84 @@ export function DemoModeControl({ mode, onModeChange, seededFallback = false }: 
           </div>
         </div>
 
-        <Button
-          type="button"
-          variant={mode === 'demo' ? 'outline' : 'secondary'}
-          onClick={handlePrimaryClick}
-          className="w-full sm:w-auto"
-        >
-          {mode === 'demo' ? (
-            <>
-              <Lock className="mr-1.5 h-4 w-4" />
-              Unlock Live Mode
-            </>
-          ) : (
-            <>
-              <ShieldCheck className="mr-1.5 h-4 w-4" />
-              Switch Back To Demo
-            </>
-          )}
-        </Button>
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+          <button
+            type="button"
+            onClick={() => {
+              if (liveToggleDisabled) return
+              onSendRealEmailChange?.(!sendRealEmail)
+            }}
+            disabled={liveToggleDisabled}
+            className={`flex min-w-[280px] items-center justify-between rounded-2xl border px-3 py-2.5 text-left transition-colors ${
+              liveToggleDisabled
+                ? 'cursor-not-allowed border-white/8 bg-white/[0.03] opacity-60'
+                : sendRealEmail
+                  ? 'border-red-500/40 bg-red-500/10'
+                  : 'border-cyan-400/25 bg-cyan-400/8'
+            }`}
+          >
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-white/90">Send Real Email</span>
+                <span
+                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.22em] ${
+                    sendRealEmail
+                      ? 'bg-red-500/20 text-red-200 animate-[pulse_0.55s_ease-in-out_infinite]'
+                      : 'bg-amber-400/15 text-amber-200'
+                  }`}
+                >
+                  {sendRealEmail ? 'LIVE' : 'TEST'}
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-stone-300">
+                {sendRealEmail ? 'Fast blinking LIVE. Emails go to the real agent inbox.' : `TEST to Safe Email. Sends route to ${safeEmail}.`}
+              </p>
+            </div>
+            <div
+              className={`relative ml-3 h-7 w-12 rounded-full border transition-colors ${
+                sendRealEmail ? 'border-red-400/50 bg-red-500/30' : 'border-white/10 bg-slate-800'
+              }`}
+            >
+              <div
+                className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform ${
+                  sendRealEmail ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </div>
+          </button>
+
+          <Button
+            type="button"
+            variant={mode === 'demo' ? 'outline' : 'secondary'}
+            onClick={handlePrimaryClick}
+            className="w-full sm:w-auto"
+          >
+            {mode === 'demo' ? (
+              <>
+                <Lock className="mr-1.5 h-4 w-4" />
+                Unlock Live Mode
+              </>
+            ) : (
+              <>
+                <ShieldCheck className="mr-1.5 h-4 w-4" />
+                Switch Back To Demo
+              </>
+            )}
+          </Button>
+        </div>
       </div>
+
+      {mode === 'live' ? (
+        <div className={`mt-3 flex items-center gap-2 text-xs ${sendRealEmail ? 'text-red-300' : 'text-cyan-300'}`}>
+          <Zap className={`h-3.5 w-3.5 ${sendRealEmail ? 'animate-[pulse_0.55s_ease-in-out_infinite]' : ''}`} />
+          <span className="uppercase tracking-[0.24em]">
+            {sendRealEmail ? 'LIVE' : 'TEST'}
+          </span>
+          <span className="text-stone-400">
+            {sendRealEmail ? 'Real lead emails are enabled right now.' : `Safe route is active. All sends go to ${safeEmail}.`}
+          </span>
+        </div>
+      ) : null}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="border-white/10 bg-slate-950 text-white sm:max-w-md">

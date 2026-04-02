@@ -13,9 +13,11 @@ interface Props {
   lead: Lead
   subject: string
   body: string
+  recipientEmail: string
+  recipientLabel?: string
 }
 
-export function EmailPreviewModal({ open, onClose, lead, subject, body }: Props) {
+export function EmailPreviewModal({ open, onClose, lead, subject, body, recipientEmail, recipientLabel }: Props) {
   const [mounted, setMounted] = useState(false)
   const [visible, setVisible] = useState(false)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -66,15 +68,16 @@ export function EmailPreviewModal({ open, onClose, lead, subject, body }: Props)
           <div className="min-w-0">
             <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Email Preview</p>
             <p className="text-sm font-medium text-slate-200 mt-0.5 truncate">
-              <span className="text-slate-500">To:</span> {lead.name} &lt;{lead.email}&gt;
+              <span className="text-slate-500">To:</span> {lead.name} &lt;{recipientEmail}&gt;
             </p>
+            {recipientLabel ? <p className="text-xs text-slate-500 mt-0.5">{recipientLabel}</p> : null}
             <p className="text-sm text-slate-300 truncate">
               <span className="text-slate-500">Subject:</span> {subject}
             </p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0 ml-4">
             <a
-              href={`mailto:${lead.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
+              href={`mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"

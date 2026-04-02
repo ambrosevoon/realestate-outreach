@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
-import { sendEmail, scheduleFollowup, updateLeadStatus, generateDraft } from '@/lib/n8n'
+import { SAFE_TEST_EMAIL, sendEmail, scheduleFollowup, updateLeadStatus, generateDraft } from '@/lib/n8n'
 import { buildEmailHtml } from '@/lib/emailTemplate'
 import { EmailPreviewModal } from './EmailPreviewModal'
 import type { Lead } from '@/types'
@@ -18,6 +18,7 @@ interface Props {
   onRefreshActivities?: () => void
   onClose?: () => void
   emailEnabled?: boolean
+  sendRealEmail?: boolean
 }
 
 interface Draft {
@@ -32,6 +33,7 @@ export function ActionButtons({
   onRefreshActivities,
   onClose,
   emailEnabled = true,
+  sendRealEmail = false,
 }: Props) {
   const [sending, setSending] = useState(false)
   const [scheduling, setScheduling] = useState(false)
@@ -43,6 +45,8 @@ export function ActionButtons({
   const [customInstructions, setCustomInstructions] = useState('')
   const [copied, setCopied] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
+  const recipientEmail = sendRealEmail ? lead.email ?? '' : SAFE_TEST_EMAIL
+  const recipientLabel = sendRealEmail ? 'LIVE. Real recipient enabled.' : `TEST. Safe email route to ${SAFE_TEST_EMAIL}`
 
   const updateDraft = (patch: Partial<Draft>) => {
     setDraft(current => (current ? { ...current, ...patch } : current))
@@ -58,6 +62,7 @@ export function ActionButtons({
       subject: draft?.subject,
       body: draft?.body,
       body_html: draft ? buildEmailHtml(lead, draft.body) : undefined,
+      send_real_email: sendRealEmail,
     })
     setSending(false)
     if (error) {
@@ -135,6 +140,8 @@ export function ActionButtons({
         lead={lead}
         subject={draft.subject}
         body={draft.body}
+        recipientEmail={recipientEmail}
+        recipientLabel={recipientLabel}
       />
     )}
     <div className="lead-actions space-y-3">
@@ -167,7 +174,13 @@ export function ActionButtons({
         <p className="text-xs text-stone-500">
           Send Email is disabled while Demo Mode is active.
         </p>
-      ) : null}
+      ) : (
+        <p className={`text-xs ${sendRealEmail ? 'text-emerald-300' : 'text-amber-300'}`}>
+          {sendRealEmail
+            ? 'LIVE mode is on. Send Email will go to the lead\'s real email address.'
+            : `TEST mode is on. Send Email will route to ${SAFE_TEST_EMAIL}.`}
+        </p>
+      )}
 
       {/* AI Draft preview pane — appears after first generation */}
       {(draft || draftLoading) && (

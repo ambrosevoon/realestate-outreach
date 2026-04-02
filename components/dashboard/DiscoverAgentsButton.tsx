@@ -29,10 +29,19 @@ interface Props {
   existingLeads: Lead[]
   onImported: (count: number) => void
   bulkCreate: (agents: RawAgent[]) => Promise<{ inserted: number; errors: number }>
+  defaultLocation?: string
+  datasetLabel: string
   className?: string
 }
 
-export function DiscoverAgentsButton({ existingLeads, onImported, bulkCreate, className }: Props) {
+export function DiscoverAgentsButton({
+  existingLeads,
+  onImported,
+  bulkCreate,
+  defaultLocation,
+  datasetLabel,
+  className,
+}: Props) {
   const [settings, setSettings] = useState<DiscoverSettings>({ count: 20, location: '' })
   const [discovering, setDiscovering] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
@@ -40,8 +49,13 @@ export function DiscoverAgentsButton({ existingLeads, onImported, bulkCreate, cl
   const [importing, setImporting] = useState(false)
 
   useEffect(() => {
-    setSettings(loadSettings())
-  }, [])
+    const saved = loadSettings()
+    setSettings(current => ({
+      ...current,
+      ...saved,
+      location: saved.location || defaultLocation || '',
+    }))
+  }, [defaultLocation])
 
   const saveSettings = (next: DiscoverSettings) => {
     setSettings(next)
@@ -80,7 +94,7 @@ export function DiscoverAgentsButton({ existingLeads, onImported, bulkCreate, cl
       const { inserted, errors } = await bulkCreate(newAgents)
       setPreviewOpen(false)
       if (inserted > 0) {
-        toast.success(`Imported ${inserted} agent${inserted !== 1 ? 's' : ''}.`)
+        toast.success(`Imported ${inserted} agent${inserted !== 1 ? 's' : ''} into ${datasetLabel}.`)
         onImported(inserted)
       }
       if (errors > 0) toast.error(`${errors} failed to import.`)
@@ -140,7 +154,7 @@ export function DiscoverAgentsButton({ existingLeads, onImported, bulkCreate, cl
                 <Input
                   value={settings.location}
                   onChange={e => saveSettings({ ...settings, location: e.target.value })}
-                  placeholder="example: Canning Vale WA"
+                  placeholder={defaultLocation ? `example: ${defaultLocation}` : 'example: Canning Vale WA'}
                   className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-600 h-8 text-sm"
                 />
               </div>
@@ -156,6 +170,7 @@ export function DiscoverAgentsButton({ existingLeads, onImported, bulkCreate, cl
         existingLeads={existingLeads}
         onConfirm={handleConfirm}
         importing={importing}
+        datasetLabel={datasetLabel}
       />
     </>
   )

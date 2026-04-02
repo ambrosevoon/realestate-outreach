@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -46,11 +47,19 @@ interface Props {
   onClose: () => void
   onUpdate: (id: string, patch: Partial<Lead>) => Promise<{ data: Lead | null; error: unknown }>
   emailEnabled?: boolean
+  sendRealEmail?: boolean
 }
 
-export function LeadDrawer({ lead, open, onClose, onUpdate, emailEnabled = true }: Props) {
+export function LeadDrawer({ lead, open, onClose, onUpdate, emailEnabled = true, sendRealEmail = false }: Props) {
+  const [name, setName] = useState('')
+  const [agencyName, setAgencyName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [suburb, setSuburb] = useState('')
+  const [website, setWebsite] = useState('')
   const [notes, setNotes] = useState('')
   const [status, setStatus] = useState<LeadStatus>('new')
+  const [savingDetails, setSavingDetails] = useState(false)
   const [savingNotes, setSavingNotes] = useState(false)
   const [savingStatus, setSavingStatus] = useState(false)
   const [visible, setVisible] = useState(false)
@@ -80,6 +89,12 @@ export function LeadDrawer({ lead, open, onClose, onUpdate, emailEnabled = true 
 
   useEffect(() => {
     if (lead) {
+      setName(lead.name || '')
+      setAgencyName(lead.agency_name || '')
+      setEmail(lead.email || '')
+      setPhone(lead.phone || '')
+      setSuburb(lead.suburb || '')
+      setWebsite(lead.website || '')
       setNotes(lead.owner_notes || '')
       setStatus(lead.status)
       fetchActivities(lead.id)
@@ -93,6 +108,22 @@ export function LeadDrawer({ lead, open, onClose, onUpdate, emailEnabled = true 
     setSavingNotes(false)
     if (error) toast.error('Failed to save notes.')
     else toast.success('Notes saved.')
+  }
+
+  const saveDetails = async () => {
+    if (!lead) return
+    setSavingDetails(true)
+    const { error } = await onUpdate(lead.id, {
+      name: name.trim(),
+      agency_name: agencyName.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      suburb: suburb.trim(),
+      website: website.trim(),
+    })
+    setSavingDetails(false)
+    if (error) toast.error('Failed to save lead details.')
+    else toast.success('Lead details saved.')
   }
 
   const saveStatus = async (newStatus: LeadStatus) => {
@@ -119,6 +150,14 @@ export function LeadDrawer({ lead, open, onClose, onUpdate, emailEnabled = true 
 
   if (!mounted || !lead) return null
 
+  const detailsChanged =
+    name !== (lead.name || '') ||
+    agencyName !== (lead.agency_name || '') ||
+    email !== (lead.email || '') ||
+    phone !== (lead.phone || '') ||
+    suburb !== (lead.suburb || '') ||
+    website !== (lead.website || '')
+
   const modal = (
     <div
       ref={overlayRef}
@@ -142,10 +181,10 @@ export function LeadDrawer({ lead, open, onClose, onUpdate, emailEnabled = true 
         <div className="lead-drawer-header border-b border-white/8 px-6 pb-4 pt-5 flex-shrink-0 bg-[radial-gradient(circle_at_top_right,rgba(212,164,97,0.12),transparent_34%)]">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <h2 className="lead-drawer-title text-white text-lg font-semibold truncate">{lead.name}</h2>
+              <h2 className="lead-drawer-title text-white text-lg font-semibold truncate">{name || lead.name}</h2>
               <div className="flex items-center gap-1.5 mt-1">
                 <Building2 className="lead-drawer-muted-icon w-3.5 h-3.5 text-stone-500 flex-shrink-0" />
-                <span className="lead-drawer-muted text-sm text-stone-300 truncate">{lead.agency_name}</span>
+                <span className="lead-drawer-muted text-sm text-stone-300 truncate">{agencyName || lead.agency_name}</span>
               </div>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
@@ -162,36 +201,99 @@ export function LeadDrawer({ lead, open, onClose, onUpdate, emailEnabled = true 
 
         {/* Scrollable body */}
         <div className="overflow-y-auto flex-1 px-6 py-4 space-y-5">
+          {/* Lead Details */}
+          <div className="space-y-3">
+            <label className="lead-drawer-label text-xs font-medium text-stone-400 uppercase tracking-[0.22em]">
+              Lead Details
+            </label>
+            <div className="grid gap-3 md:grid-cols-2">
+              <Input
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Lead name"
+                className="lead-drawer-field border-white/10 bg-slate-950/60 text-white placeholder:text-stone-500 focus-visible:ring-amber-500"
+              />
+              <Input
+                value={agencyName}
+                onChange={e => setAgencyName(e.target.value)}
+                placeholder="Agency name"
+                className="lead-drawer-field border-white/10 bg-slate-950/60 text-white placeholder:text-stone-500 focus-visible:ring-amber-500"
+              />
+              <Input
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Email"
+                className="lead-drawer-field border-white/10 bg-slate-950/60 text-white placeholder:text-stone-500 focus-visible:ring-amber-500"
+              />
+              <Input
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                placeholder="Phone"
+                className="lead-drawer-field border-white/10 bg-slate-950/60 text-white placeholder:text-stone-500 focus-visible:ring-amber-500"
+              />
+              <Input
+                value={suburb}
+                onChange={e => setSuburb(e.target.value)}
+                placeholder="Suburb"
+                className="lead-drawer-field border-white/10 bg-slate-950/60 text-white placeholder:text-stone-500 focus-visible:ring-amber-500"
+              />
+              <Input
+                value={website}
+                onChange={e => setWebsite(e.target.value)}
+                placeholder="Website"
+                className="lead-drawer-field border-white/10 bg-slate-950/60 text-white placeholder:text-stone-500 focus-visible:ring-amber-500"
+              />
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={saveDetails}
+              disabled={savingDetails || !detailsChanged}
+              className="cursor-pointer border-white/10 text-stone-300 hover:bg-white/8 hover:text-white"
+            >
+              {savingDetails ? (
+                <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+              ) : (
+                <Save className="w-3.5 h-3.5 mr-1.5" />
+              )}
+              Save Details
+            </Button>
+          </div>
+
+          <Separator className="lead-drawer-separator bg-white/8" />
+
           {/* Contact Info */}
           <div className="space-y-2">
-            <a
-              href={`mailto:${lead.email}`}
+            {email && (
+              <a
+                href={`mailto:${email}`}
                 className="lead-drawer-link flex items-center gap-2 text-sm text-cyan-300 hover:text-cyan-200 transition-colors"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              {lead.email}
-            </a>
-            {lead.phone && (
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                {email}
+              </a>
+            )}
+            {phone && (
               <div className="lead-drawer-muted flex items-center gap-2 text-sm text-stone-300">
                 <Phone className="lead-drawer-muted-icon w-3.5 h-3.5 text-stone-600" />
-                {lead.phone}
+                {phone}
               </div>
             )}
-            {lead.suburb && (
+            {suburb && (
               <div className="lead-drawer-muted flex items-center gap-2 text-sm text-stone-300">
                 <MapPin className="lead-drawer-muted-icon w-3.5 h-3.5 text-stone-600" />
-                {lead.suburb}
+                {suburb}
               </div>
             )}
-            {lead.website && (
+            {website && (
               <a
-                href={lead.website}
+                href={website}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="lead-drawer-muted flex items-center gap-2 text-sm text-stone-300 hover:text-white transition-colors"
               >
                 <Globe className="lead-drawer-muted-icon w-3.5 h-3.5 text-stone-600" />
-                {lead.website.replace(/^https?:\/\//, '')}
+                {website.replace(/^https?:\/\//, '')}
               </a>
             )}
           </div>
@@ -282,6 +384,7 @@ export function LeadDrawer({ lead, open, onClose, onUpdate, emailEnabled = true 
             onRefreshActivities={() => fetchActivities(lead.id)}
             onClose={onClose}
             emailEnabled={emailEnabled}
+            sendRealEmail={sendRealEmail}
           />
           </div>
 
