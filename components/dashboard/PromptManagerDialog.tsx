@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { Bot, History, Loader2, PencilLine, RotateCcw, Save, Sparkles, Wand2 } from 'lucide-react'
+import { Bot, Check, Copy, History, Loader2, PencilLine, RotateCcw, Save, Sparkles, Wand2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
@@ -49,6 +49,7 @@ export function PromptManagerDialog({ className }: Props) {
   const [versionName, setVersionName] = useState('')
   const [userTemplate, setUserTemplate] = useState('')
   const [systemPrompt, setSystemPrompt] = useState('')
+  const [copiedField, setCopiedField] = useState<'user' | 'system' | null>(null)
 
   const activeVersion = useMemo(
     () => versions.find(version => version.is_active) || buildFallbackPromptVersion(),
@@ -186,6 +187,17 @@ export function PromptManagerDialog({ className }: Props) {
     await loadVersions()
   }
 
+  const handleCopy = async (field: 'user' | 'system', value: string) => {
+    try {
+      await navigator.clipboard.writeText(value)
+      setCopiedField(field)
+      toast.success(`${field === 'user' ? 'User prompt template' : 'System prompt'} copied.`)
+      window.setTimeout(() => setCopiedField(current => (current === field ? null : current)), 1800)
+    } catch {
+      toast.error('Copy failed.')
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -303,9 +315,19 @@ export function PromptManagerDialog({ className }: Props) {
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
-                          User Prompt Template
-                        </label>
+                        <div className="flex items-center justify-between gap-3">
+                          <label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
+                            User Prompt Template
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => void handleCopy('user', userTemplate)}
+                            className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-slate-300 transition-colors hover:border-violet-400/25 hover:text-white"
+                          >
+                            {copiedField === 'user' ? <Check className="h-3.5 w-3.5 text-emerald-300" /> : <Copy className="h-3.5 w-3.5" />}
+                            {copiedField === 'user' ? 'Copied' : 'Copy'}
+                          </button>
+                        </div>
                         <Textarea
                           value={userTemplate}
                           onChange={event => setUserTemplate(event.target.value)}
@@ -317,9 +339,19 @@ export function PromptManagerDialog({ className }: Props) {
                         </p>
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
-                          System Prompt
-                        </label>
+                        <div className="flex items-center justify-between gap-3">
+                          <label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
+                            System Prompt
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => void handleCopy('system', systemPrompt)}
+                            className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-slate-300 transition-colors hover:border-violet-400/25 hover:text-white"
+                          >
+                            {copiedField === 'system' ? <Check className="h-3.5 w-3.5 text-emerald-300" /> : <Copy className="h-3.5 w-3.5" />}
+                            {copiedField === 'system' ? 'Copied' : 'Copy'}
+                          </button>
+                        </div>
                         <Textarea
                           value={systemPrompt}
                           onChange={event => setSystemPrompt(event.target.value)}
@@ -365,26 +397,48 @@ export function PromptManagerDialog({ className }: Props) {
                         </div>
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
-                          User Prompt Template
-                        </label>
-                        <Textarea
-                          readOnly
-                          value={activeVersion.user_prompt_template}
-                          rows={10}
-                          className="min-h-[220px] resize-y rounded-[1.2rem] border-white/10 bg-slate-950/80 font-mono text-[13px] leading-6 text-slate-100"
-                        />
+                        <div className="flex items-center justify-between gap-3">
+                          <label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
+                            User Prompt Template
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => void handleCopy('user', activeVersion.user_prompt_template)}
+                            className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-slate-300 transition-colors hover:border-violet-400/25 hover:text-white"
+                          >
+                            {copiedField === 'user' ? <Check className="h-3.5 w-3.5 text-emerald-300" /> : <Copy className="h-3.5 w-3.5" />}
+                            {copiedField === 'user' ? 'Copied' : 'Copy'}
+                          </button>
+                        </div>
+                        <div className="overflow-hidden rounded-[1.2rem] border border-white/10 bg-slate-950/80">
+                          <div className="max-h-[320px] overflow-auto px-4 py-3">
+                            <pre className="whitespace-pre-wrap break-words font-mono text-[13px] leading-6 text-slate-100">
+                              {activeVersion.user_prompt_template}
+                            </pre>
+                          </div>
+                        </div>
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
-                          System Prompt
-                        </label>
-                        <Textarea
-                          readOnly
-                          value={activeVersion.system_prompt}
-                          rows={18}
-                          className="min-h-[360px] resize-y rounded-[1.2rem] border-white/10 bg-slate-950/80 font-mono text-[13px] leading-6 text-slate-100"
-                        />
+                        <div className="flex items-center justify-between gap-3">
+                          <label className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
+                            System Prompt
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => void handleCopy('system', activeVersion.system_prompt)}
+                            className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-slate-300 transition-colors hover:border-violet-400/25 hover:text-white"
+                          >
+                            {copiedField === 'system' ? <Check className="h-3.5 w-3.5 text-emerald-300" /> : <Copy className="h-3.5 w-3.5" />}
+                            {copiedField === 'system' ? 'Copied' : 'Copy'}
+                          </button>
+                        </div>
+                        <div className="overflow-hidden rounded-[1.2rem] border border-white/10 bg-slate-950/80">
+                          <div className="max-h-[460px] overflow-auto px-4 py-3">
+                            <pre className="whitespace-pre-wrap break-words font-mono text-[13px] leading-6 text-slate-100">
+                              {activeVersion.system_prompt}
+                            </pre>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
