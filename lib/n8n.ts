@@ -1,3 +1,13 @@
+import {
+  buildFallbackPromptVersion,
+  DEFAULT_EMAIL_PROMPT_SYSTEM,
+  DEFAULT_EMAIL_PROMPT_USER_TEMPLATE,
+  EMAIL_PROMPTS_TABLE,
+  renderPromptTemplate,
+} from '@/lib/emailPrompts'
+import { supabase } from '@/lib/supabase'
+import type { EmailPromptVersion } from '@/types'
+
 const N8N_BASE = process.env.NEXT_PUBLIC_N8N_URL || 'https://n8n.srv823907.hstgr.cloud'
 
 type DraftPayload = {
@@ -102,6 +112,22 @@ function buildDemoDraft(lead: DraftPayload) {
   return { subject, body }
 }
 
+async function getActivePromptVersion() {
+  const { data, error } = await supabase
+    .from(EMAIL_PROMPTS_TABLE)
+    .select('*')
+    .eq('is_active', true)
+    .order('activated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error || !data) {
+    return buildFallbackPromptVersion()
+  }
+
+  return data as EmailPromptVersion
+}
+
 async function call(path: string, body?: object) {
   try {
     const res = await fetch(`${N8N_BASE}/webhook${path}`, {
@@ -157,7 +183,23 @@ export function discoverAgents(count: number, location: string) {
 }
 
 export async function generateDraft(lead: DraftPayload) {
-  const result = await call('/generate-draft', { ...lead, _seed: Math.random().toString(36).slice(2) })
+  const seed = Math.random().toString(36).slice(2)
+  const promptVersion = await getActivePromptVersion()
+  const result = await call('/generate-draft', {
+    ...lead,
+    _seed: seed,
+    prompt_text: renderPromptTemplate(
+      promptVersion.user_prompt_template || DEFAULT_EMAIL_PROMPT_USER_TEMPLATE,
+      {
+        seed,
+        name: lead.name,
+        agency_name: lead.agency_name,
+        suburb: lead.suburb,
+        custom_instructions: lead.custom_instructions,
+      }
+    ),
+    system_message: promptVersion.system_prompt || DEFAULT_EMAIL_PROMPT_SYSTEM,
+  })
 
   if (!result.error && result.data && typeof result.data.subject === 'string' && typeof result.data.body === 'string') {
     return result

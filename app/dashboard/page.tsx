@@ -22,6 +22,7 @@ import { DemoModeControl } from '@/components/dashboard/DemoModeControl'
 import { CreateLeadDialog } from '@/components/dashboard/CreateLeadDialog'
 import { CSVImportDialog } from '@/components/dashboard/CSVImportDialog'
 import { DiscoverAgentsButton } from '@/components/dashboard/DiscoverAgentsButton'
+import { PromptManagerDialog } from '@/components/dashboard/PromptManagerDialog'
 import { LeadDrawer } from '@/components/lead/LeadDrawer'
 import { useLeads } from '@/hooks/useLeads'
 import { SAFE_TEST_EMAIL } from '@/lib/n8n'
@@ -202,6 +203,7 @@ export default function DashboardPage() {
               defaultSuburb={activeDataset.location}
               className="col-span-2 w-full sm:col-span-1 sm:w-auto"
             />
+            <PromptManagerDialog className="col-span-2 w-full sm:col-span-1 sm:w-auto" />
           </div>
         </div>
       </header>

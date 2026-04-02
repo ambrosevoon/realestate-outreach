@@ -50,3 +50,15 @@ export interface Activity {
   metadata?: Record<string, unknown>
   created_at: string
 }
+
+export interface EmailPromptVersion {
+  id: string
+  name: string
+  user_prompt_template: string
+  system_prompt: string
+  is_active: boolean
+  notes?: string | null
+  created_at: string
+  updated_at: string
+  activated_at: string
+}
